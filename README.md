@@ -1,0 +1,2 @@
+# ByeBot
+ Discord moderation bot

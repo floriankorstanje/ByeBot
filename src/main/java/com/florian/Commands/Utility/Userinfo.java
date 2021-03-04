@@ -1,7 +1,7 @@
 package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.ErrorCode;
+import com.florian.ErrorCode;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -33,7 +33,7 @@ public class Userinfo extends BaseCommand {
                 m = e.getGuild().retrieveMemberById(args[0]).complete();
             } catch (Exception ex) {
                 // Return unknown UID error
-                return ErrorCode.UNKNOWN_UID;
+                return ErrorCode.UNKNOWN_ID;
             }
         }
 

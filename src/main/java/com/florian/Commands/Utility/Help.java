@@ -1,13 +1,11 @@
 package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.ErrorCode;
+import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-
-import java.util.stream.Collectors;
 
 public class Help extends BaseCommand {
     public Help() {
@@ -23,9 +21,9 @@ public class Help extends BaseCommand {
         EmbedBuilder embed = Util.defaultEmbed();
 
         // Check if the user wants more advanced info about a command by specifying it as an argument
-        if(args.length == 1) {
-            for(BaseCommand command : Vars.commands) {
-                if(command.command.equalsIgnoreCase(args[0]) || Util.containsIgnoreCase(command.aliases, args[0])) {
+        if (args.length == 1) {
+            for (BaseCommand command : Vars.commands) {
+                if (command.command.equalsIgnoreCase(args[0]) || Util.containsIgnoreCase(command.aliases, args[0])) {
                     // Add all the info about the command
                     embed.setTitle("Command info for " + Vars.botPrefix + command.command);
                     embed.addField("Name", command.command, false);
@@ -44,7 +42,7 @@ public class Help extends BaseCommand {
 
             // Command wasn't recognized. Tell the user
             return ErrorCode.WRONG_ARGUMENTS;
-        } else if(args.length > 1) {
+        } else if (args.length > 1) {
             // There's too many arguments, so return an error
             return ErrorCode.WRONG_ARGUMENTS;
         }
@@ -52,9 +50,10 @@ public class Help extends BaseCommand {
         // Set some basic info for the embed
         embed.setTitle("Help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);
         embed.addField("You can type " + Vars.botPrefix + this.command + " " + this.arguments + " to get more specific help about a command.", "", false);
+        embed.addField("You cannot use commas [,] in ban/kick/warn reasons. This will result in a " + ErrorCode.UNALLOWED_CHARACTER.toString() + " error.", "", false);
 
         // Add all the commands and their descriptions to the list
-        for(BaseCommand command : Vars.commands) {
+        for (BaseCommand command : Vars.commands) {
             embed.addField(Vars.botPrefix + command.command, command.description, false);
         }
 

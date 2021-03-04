@@ -1,7 +1,7 @@
 package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.ErrorCode;
+import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -23,8 +23,8 @@ public class Servers extends BaseCommand {
         embed.setTitle(Vars.appInfo.getName() + " server list");
 
         // Get all the servers the bot is in and add them to the embed
-        for(Guild g : e.getJDA().getGuilds())
-            embed.addField(g.getName(), "Members: `" + g.getMemberCount() + "`\nOwner: `" +g.retrieveOwner().complete().getUser().getAsTag() + "`", false);
+        for (Guild g : e.getJDA().getGuilds())
+            embed.addField(g.getName(), "Members: `" + g.getMemberCount() + "`\nOwner: `" + g.retrieveOwner().complete().getUser().getAsTag() + "`", false);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

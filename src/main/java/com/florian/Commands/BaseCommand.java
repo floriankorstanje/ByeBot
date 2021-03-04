@@ -1,5 +1,6 @@
 package com.florian.Commands;
 
+import com.florian.ErrorCode;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -39,7 +40,7 @@ public class BaseCommand {
     }
 
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        e.getChannel().sendMessage("Executed command " + command).queue();
-        return ErrorCode.SUCCESS;
+        // This is never supposed to happen
+        return ErrorCode.UNINITIALIZED_COMMAND;
     }
 }

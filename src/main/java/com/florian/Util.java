@@ -44,8 +44,8 @@ public class Util {
 
     public static boolean containsIgnoreCase(List<String> list, String string) {
         // Loop through all the elements and check if one of the elements matches string
-        for(String element : list) {
-            if(element.equalsIgnoreCase(string))
+        for (String element : list) {
+            if (element.equalsIgnoreCase(string))
                 return true;
         }
 

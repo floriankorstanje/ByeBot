@@ -14,7 +14,7 @@ public class Userinfo extends BaseCommand {
     public Userinfo() {
         super.command = "userinfo";
         super.description = "Shows info about you or a user specified.";
-        super.arguments = "[user-id]";
+        super.arguments = "[user]";
         super.optionalArguments = true;
     }
 

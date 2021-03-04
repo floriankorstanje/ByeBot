@@ -51,8 +51,11 @@ public class CommandHandler extends ListenerAdapter {
                 // Create an embed to show the error to the user
                 EmbedBuilder embed = Util.defaultEmbed();
 
-                // Fill the embed
+                // Set title and color
                 embed.setTitle("An error occurred");
+                embed.setColor(0xFF0000);
+
+                // Fill the embed
                 embed.addField("Executor", event.getMember().getAsMention(), false);
                 embed.addField("Command", "`" + Vars.botPrefix + cmd + "`", false);
                 embed.addField("Arguments", String.valueOf(args.length), false);

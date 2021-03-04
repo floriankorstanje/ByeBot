@@ -1,6 +1,7 @@
 package com.florian;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -50,6 +51,11 @@ public class Util {
 
         // Return false if it didn't find anything
         return false;
+    }
+
+    public static String getGuildFolder(Guild g) {
+        // Return the folder where server-specific things are stored
+        return Vars.serversFolder + g.getId() + "/";
     }
 
     public static List<String> readSmallTextFile(String fileName) throws IOException {

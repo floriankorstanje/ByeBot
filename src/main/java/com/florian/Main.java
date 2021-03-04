@@ -1,6 +1,7 @@
 package com.florian;
 
 import com.florian.Commands.Utility.Help;
+import com.florian.Userlog.UserEvents;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -19,8 +20,27 @@ public class Main {
     public static void main(String[] args) throws IOException, LoginException {
         // Check if a folder for bot files exits. If not, create one
         File botFolder = new File(Vars.botFolder);
-        if(!botFolder.exists())
-            botFolder.mkdirs();
+        if(!botFolder.exists()) {
+            boolean success = botFolder.mkdirs();
+
+            // If it wasn't successful, quit
+            if(!success) {
+                System.out.println("Unable to create bot folder. Quitting.");
+                return;
+            }
+        }
+
+        // Check if the folder for server-specific files exists
+        File serversFolder = new File(Vars.serversFolder);
+        if(!serversFolder.exists()) {
+            boolean success = serversFolder.mkdirs();
+
+            // If it wasn't successful, quit
+            if(!success) {
+                System.out.println("Unable to create servers folder. Quitting.");
+                return;
+            }
+        }
 
         // Check if the file with a bot token exists. If not, create one
         if(!new File(tokenFile).exists()) {
@@ -42,7 +62,10 @@ public class Main {
         JDABuilder builder = JDABuilder.createDefault(token);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_BANS);
+
+        // Add all the event listeners
         builder.addEventListeners(new CommandHandler());
+        builder.addEventListeners(new UserEvents());
 
         // Create JDA class and start the bot
         JDA jda = builder.build();

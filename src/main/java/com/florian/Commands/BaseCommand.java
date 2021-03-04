@@ -3,11 +3,15 @@ package com.florian.Commands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BaseCommand {
     public String command;
     public String description;
     public String arguments;
     public Permission permission;
+    public List<String> aliases;
     public boolean requiredArguments;
     public boolean optionalArguments;
 
@@ -23,6 +27,9 @@ public class BaseCommand {
 
         // Permission is the permission a user needs to execute the command
         permission = null;
+
+        // Aliases are different commands to execute one command
+        aliases = new ArrayList<>();
 
         // requiredArguments is true if the command requires one or more arguments
         requiredArguments = false;

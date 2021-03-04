@@ -23,7 +23,7 @@ public class CommandHandler extends ListenerAdapter {
 
             // Check if the command was recognized, if so, execute it
             for(BaseCommand command : Vars.commands) {
-                if(command.command.equalsIgnoreCase(cmd)) {
+                if(command.command.equalsIgnoreCase(cmd) || Util.containsIgnoreCase(command.aliases, cmd)) {
                     commandExcecuted = command;
 
                     // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
@@ -54,7 +54,7 @@ public class CommandHandler extends ListenerAdapter {
                 // Fill the embed
                 embed.setTitle("An error occurred");
                 embed.addField("Executor", event.getMember().getAsMention(), false);
-                embed.addField("Command", "`" + Vars.botPrefix + commandExcecuted.command + "`", false);
+                embed.addField("Command", "`" + Vars.botPrefix + cmd + "`", false);
                 embed.addField("Arguments", String.valueOf(args.length), false);
                 embed.addField("Bot version", "`" + Vars.version + "`", false);
                 embed.addField("Java version", "`" + System.getProperty("java.version") + "`", false);

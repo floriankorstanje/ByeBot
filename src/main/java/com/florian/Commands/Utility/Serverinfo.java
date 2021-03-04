@@ -10,6 +10,7 @@ public class Serverinfo extends BaseCommand {
     public Serverinfo() {
         super.command = "serverinfo";
         super.description = "Gives some info about the server.";
+        super.aliases.add("server");
     }
 
     @Override

@@ -41,6 +41,17 @@ public class Util {
         return embed;
     }
 
+    public static boolean containsIgnoreCase(List<String> list, String string) {
+        // Loop through all the elements and check if one of the elements matches string
+        for(String element : list) {
+            if(element.equalsIgnoreCase(string))
+                return true;
+        }
+
+        // Return false if it didn't find anything
+        return false;
+    }
+
     public static List<String> readSmallTextFile(String fileName) throws IOException {
         Path path = Paths.get(fileName);
         return Files.readAllLines(path, StandardCharsets.UTF_8);

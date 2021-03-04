@@ -7,6 +7,8 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.util.stream.Collectors;
+
 public class Help extends BaseCommand {
     public Help() {
         super.command = "help";
@@ -23,12 +25,13 @@ public class Help extends BaseCommand {
         // Check if the user wants more advanced info about a command by specifying it as an argument
         if(args.length == 1) {
             for(BaseCommand command : Vars.commands) {
-                if(command.command.equalsIgnoreCase(args[0])) {
+                if(command.command.equalsIgnoreCase(args[0]) || Util.containsIgnoreCase(command.aliases, args[0])) {
                     // Add all the info about the command
                     embed.setTitle("Command info for " + Vars.botPrefix + command.command);
                     embed.addField("Name", command.command, false);
                     embed.addField("Description", command.description, false);
                     embed.addField("Usage", "`" + Vars.botPrefix + command.command + " " + command.arguments + "`", false);
+                    embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);
                     embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission.toString() + "`", false);
 
                     // Send the embed to the user

@@ -27,7 +27,6 @@ public class Serverinfo extends BaseCommand {
         embed.addField("Owner", e.getGuild().retrieveOwner().complete().getAsMention(), true);
         embed.addField("Boosts", "`" + e.getGuild().getBoostCount() + "/30` (Tier " + e.getGuild().getBoostTier().getKey() + ")", true);
         embed.addField("Roles", "`" + e.getGuild().getRoles().size() + "`", true);
-        embed.addField("Categories", "`" + e.getGuild().getCategories().size() + "`", true);
         embed.addField("Members", "`" + e.getGuild().getMemberCount() + "`", true);
         embed.addField("Channels", "Total: `" + e.getGuild().getChannels().size() + "`\nVoice: `" + e.getGuild().getVoiceChannels().size() + "`\nText: `" + e.getGuild().getTextChannels().size() + "`", true);
 

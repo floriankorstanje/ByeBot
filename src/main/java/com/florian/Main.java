@@ -1,5 +1,6 @@
 package com.florian;
 
+import com.florian.Commands.Utility.Help;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -47,7 +48,7 @@ public class Main {
         JDA jda = builder.build();
 
         // Set the bot presence
-        jda.getPresence().setActivity(Activity.listening(Vars.botPrefix + "help"));
+        jda.getPresence().setActivity(Activity.listening(Vars.botPrefix + new Help().command));
 
         // Set some variables
         Vars.appInfo = jda.retrieveApplicationInfo().complete();

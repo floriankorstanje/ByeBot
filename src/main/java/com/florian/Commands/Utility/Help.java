@@ -30,7 +30,7 @@ public class Help extends BaseCommand {
                     embed.setTitle("Command info for " + Vars.botPrefix + command.command);
                     embed.addField("Name", command.command, false);
                     embed.addField("Description", command.description, false);
-                    embed.addField("Usage", "`" + Vars.botPrefix + command.command + " " + command.arguments + "`", false);
+                    embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.optionalArguments || command.requiredArguments ? " " + command.arguments + "`" : "`"), false);
                     embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);
                     embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission.toString() + "`", false);
 

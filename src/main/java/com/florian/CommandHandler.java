@@ -56,8 +56,8 @@ public class CommandHandler extends ListenerAdapter {
                 embed.addField("Executor", event.getMember().getAsMention(), false);
                 embed.addField("Command", "`" + Vars.botPrefix + cmd + "`", false);
                 embed.addField("Arguments", String.valueOf(args.length), false);
-                embed.addField("Bot version", "`" + Vars.version + "`", false);
-                embed.addField("Java version", "`" + System.getProperty("java.version") + "`", false);
+                embed.addField("Bot Version", "`" + Vars.version + "`", false);
+                embed.addField("Java Version", "`" + System.getProperty("java.version") + "`", false);
                 embed.addField("Error", "`" + error.toString() + "`", false);
                 embed.addField("Report Bug", "If you'd like to report this error as a bug, submit a new issue [here](https://github.com/floriankorstanje/ByeBot/issues)", false);
 

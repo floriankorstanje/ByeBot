@@ -7,6 +7,7 @@ import com.florian.UserHistory.UserHistory;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -22,6 +23,7 @@ public class History extends BaseCommand {
         super.command = "history";
         super.description = "Shows, or edits someones history.";
         super.arguments = "<user> [get|edit|remove] [history-id] [new-reason]";
+        super.permission = Permission.KICK_MEMBERS;
         super.requiredArguments = true;
         super.optionalArguments = true;
         super.aliases.add("h");

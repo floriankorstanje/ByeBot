@@ -24,7 +24,7 @@ public class Servers extends BaseCommand {
 
         // Get all the servers the bot is in and add them to the embed
         for (Guild g : e.getJDA().getGuilds())
-            embed.addField(g.getName(), "Members: `" + g.getMemberCount() + "`\nOwner: `" + g.retrieveOwner().complete().getUser().getAsTag() + "`", false);
+            embed.addField(g.getName(), "Members: `" + g.getMemberCount() + "`\nOwner: `" + g.retrieveOwner().complete().getUser().getAsTag() + "`", true);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

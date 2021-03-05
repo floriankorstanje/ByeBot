@@ -17,6 +17,7 @@ public class Kick extends BaseCommand {
         super.description = "Kicks a user.";
         super.arguments = "<user> <reason>";
         super.permission = Permission.KICK_MEMBERS;
+        super.moderation = true;
         super.requiredArguments = true;
     }
 

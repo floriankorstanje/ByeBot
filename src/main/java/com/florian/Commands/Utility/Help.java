@@ -12,7 +12,6 @@ public class Help extends BaseCommand {
         super.command = "help";
         super.description = "Shows all the commands and how to use them.";
         super.arguments = "[command]";
-        super.optionalArguments = true;
     }
 
     @Override
@@ -28,7 +27,7 @@ public class Help extends BaseCommand {
                     embed.setTitle("Command info for " + Vars.botPrefix + command.command);
                     embed.addField("Name", command.command, false);
                     embed.addField("Description", command.description, false);
-                    embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.optionalArguments || command.requiredArguments ? " " + command.arguments + "`" : "`"), false);
+                    embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.requiredArguments ? " " + command.arguments + "`" : "`"), false);
                     embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);
                     embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission.toString() + "`", false);
 
@@ -49,12 +48,14 @@ public class Help extends BaseCommand {
 
         // Set some basic info for the embed
         embed.setTitle("Help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);
-        embed.addField("You can type " + Vars.botPrefix + this.command + " " + this.arguments + " to get more specific help about a command.", "", false);
-        embed.addField("You cannot use commas [,] in ban/kick/warn reasons. This will result in a " + ErrorCode.UNALLOWED_CHARACTER.toString() + " error.", "", false);
+        embed.addField("You can type `" + Vars.botPrefix + this.command + " " + this.arguments + "` to get more specific help about a command.", "", false);
+        embed.addField("To view moderation commands, type `" + Vars.botPrefix + new Modhelp().command + "`", "", false);
 
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {
-            embed.addField(Vars.botPrefix + command.command, command.description, false);
+            // Only add commands that don't need permission to execute (mod commands)
+            if(!command.moderation)
+                embed.addField(Vars.botPrefix + command.command, command.description, false);
         }
 
         // Send the embed

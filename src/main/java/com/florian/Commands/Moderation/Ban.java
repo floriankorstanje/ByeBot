@@ -17,6 +17,7 @@ public class Ban extends BaseCommand {
         super.description = "Bans a user.";
         super.arguments = "<user> <reason>";
         super.permission = Permission.BAN_MEMBERS;
+        super.moderation = true;
         super.requiredArguments = true;
     }
 

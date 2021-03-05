@@ -2,21 +2,18 @@ package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.ErrorCode;
-import com.florian.UserHistory.OffenseType;
 import com.florian.UserHistory.UserHistory;
+import com.florian.UserHistory.UserHistoryEntries;
+import com.florian.UserHistory.UserHistoryEntry;
 import com.florian.Util;
-import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class History extends BaseCommand {
     public History() {
@@ -24,8 +21,8 @@ public class History extends BaseCommand {
         super.description = "Shows, or edits someones history.";
         super.arguments = "<user> [get|edit|remove] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
+        super.moderation = true;
         super.requiredArguments = true;
-        super.optionalArguments = true;
         super.aliases.add("h");
     }
 
@@ -44,45 +41,8 @@ public class History extends BaseCommand {
             }
 
             if (operation.equalsIgnoreCase("get")) {
-                // Get location for file
-                String folder = Util.getGuildFolder(e.getGuild()) + Vars.historyFolder;
-                String file = folder + m.getId();
-
-                // Check if folder exists
-                File historyFolder = new File(folder);
-                if (!historyFolder.exists()) {
-                    boolean success = historyFolder.mkdirs();
-
-                    // If it couldn't create the folder, quit
-                    if (!success) {
-                        System.out.println("Couldn't create history folder for guild " + e.getGuild().getId() + " (" + e.getGuild().getName() + ")");
-                        return ErrorCode.OTHER_ERROR;
-                    }
-
-                    // If it did create, return no history because there is no history files for this server
-                    return ErrorCode.NO_USER_HISTORY;
-                }
-
-                // If the file doesn't exist, there is also no history
-                if (!new File(file).exists())
-                    return ErrorCode.NO_USER_HISTORY;
-
-                // Get all lines in the file
-                List<String> lines;
-                try {
-                    lines = Util.readSmallTextFile(file);
-                } catch (IOException ex) {
-                    System.out.println("Couldn't read user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + e.getGuild().getId() + " (" + e.getGuild().getName() + ")");
-                    return ErrorCode.OTHER_ERROR;
-                }
-
-                // Make sure lines isn't null
-                if (lines == null)
-                    return ErrorCode.OTHER_ERROR;
-
-                // Check if there is any history
-                if(lines.size() == 0)
-                    return ErrorCode.NO_USER_HISTORY;
+                // Get all the entries
+                UserHistoryEntries entries = UserHistory.getHistory(e.getGuild(), m);
 
                 // Formatter for the date
                 DateFormat formatter = new SimpleDateFormat("hh:mm:ss dd/MM/yyyy z");
@@ -94,13 +54,9 @@ public class History extends BaseCommand {
                 embed.setTitle("History for " + m.getUser().getAsTag());
 
                 // Fill embed
-                // Entries are formatted as following: executor-id,epoch-time,offense,entry
-                for (int i = 0; i < lines.size(); i++) {
-                    String[] data = lines.get(i).split(",");
-                    String executor = data[0];
-                    Date date = new Date(Long.parseLong(data[1]));
-                    OffenseType type = OffenseType.valueOf(data[2]);
-                    String reason = data[3];
+                for (UserHistoryEntry entry : entries.getEntries()) {
+                    // Save the executors ID so we can try and change it to a tag
+                    String executor = entry.getExecutor();
 
                     // Try to change the executors ID to a tag if the user is still in the server
                     try {
@@ -109,7 +65,7 @@ public class History extends BaseCommand {
                     }
 
                     // Add it to the embed
-                    embed.addField("Entry #" + i, "Issued By: `" + executor + "`\nDate Issued: `" + formatter.format(date) + "`\nType: `" + type.toString() + "`\nReason: " + reason, false);
+                    embed.addField("Entry #" + entry.getId(), "Issued By: `" + executor + "`\nDate Issued: `" + formatter.format(new Date(entry.getTime())) + "`\nType: `" + entry.getOffense() + "`\nReason: " + entry.getReason(), false);
                 }
 
                 // Send the embed

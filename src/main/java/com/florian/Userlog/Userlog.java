@@ -1,5 +1,6 @@
 package com.florian.Userlog;
 
+import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
@@ -19,11 +20,17 @@ public class Userlog {
             return;
 
         // Get the guilds folder and file
-        String folder = Util.getGuildFolder(g);
-        String file = folder + Vars.userlogFile;
+        String folder = Util.getGuildFolder(g) + Vars.userlogFolder;
+        String file = folder + m.getId();
 
         // Remove "Event" from the action
-        action = action.replace("Event", "");
+        action = action.replaceAll("Event", "");
+
+        // Remove "Guild" from the action
+        action = action.replaceAll("Guild", "");
+
+        // Replace "Received" with "Sent" (MessageReceived -> MessageSent)
+        action = action.replaceAll("Received", "Sent");
 
         // Check if the guild has a folder
         File server = new File(folder);
@@ -62,11 +69,11 @@ public class Userlog {
         long time = Instant.now().toEpochMilli();
 
         // Add entry to the file
-        // Entries are formatted as following: userid,epoch-time,action
-        lines.add(m.getId() + "," + time + "," + action);
+        // Entries are formatted as following: epoch-time,action
+        lines.add(time + "," + action);
 
         // Clear old entries
-        lines = clearOldEntries(lines, m);
+        clearOldEntries(lines);
 
         // Write back to the file
         try {
@@ -76,21 +83,73 @@ public class Userlog {
         }
     }
 
-    private static List<String> clearOldEntries(List<String> file, Member m) {
-        // Clear entries if the user has more then max entries
-        // Oldest entries are at the top of the file so if we start searching from the bottom and we reach the max, we delete the oldest entries
-        int entries = 0;
-        for (int i = file.size() - 1; i >= 0; i--) {
-            // Check if the entry is about the specified user
-            if (file.get(i).split(",")[0].equals(m.getId())) {
-                // Increment entries and remove entries from the file if they're above the maximum
-                entries++;
-                if (entries > Vars.maxUserlogEntries)
-                    file.remove(i);
+    public static UserlogEntries getEntries(Guild g, Member m) {
+        // Get the guilds folder and file
+        String folder = Util.getGuildFolder(g) + Vars.userlogFolder;
+        String file = folder + m.getId();
+
+        // Initialize class to return if an error occurred
+        UserlogEntries entries = new UserlogEntries(new UserlogEntry[] {}, ErrorCode.SUCCESS);
+
+        // Check if the guild has a folder
+        File server = new File(folder);
+        if (!server.exists()) {
+            boolean success = server.mkdirs();
+
+            // If it couldn't create the folder, quit
+            if (!success) {
+                System.out.println("Couldn't create server folder for guild " + g.getId() + " (" + g.getName() + ")");
+                entries.setError(ErrorCode.OTHER_ERROR);
+                return entries;
             }
         }
 
-        // Return the new list
-        return file;
+        // Check if the file for this guild is here
+        if (!new File(file).exists()) {
+            try {
+                Files.createFile(Paths.get(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Get the full file
+        List<String> lines = null;
+        try {
+            lines = Util.readSmallTextFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Make sure lines isn't nul
+        if (lines == null) {
+            entries.setError(ErrorCode.OTHER_ERROR);
+            return entries;
+        }
+
+        // Get all the entries
+        // Loop needs to decrement so newest entry is top of the list
+        UserlogEntry[] list = new UserlogEntry[lines.size()];
+        for(int i = lines.size() - 1; i >= 0; i--) {
+            String[] data = lines.get(i).split(",");
+            long time = Long.parseLong(data[0]);
+            String action = data[1];
+
+            list[lines.size() - i - 1] = new UserlogEntry(time, action);
+        }
+
+        // Add all the entries to return class
+        entries.setEntries(list);
+
+        // Return success
+        return entries;
+    }
+
+    private static void clearOldEntries(List<String> file) {
+        // Clear entries if the user has more then max entries
+        while(file.size() > Vars.maxUserlogEntries) {
+            // Remove the first element in the list. This is the oldest event
+            file.remove(0);
+        }
     }
 }

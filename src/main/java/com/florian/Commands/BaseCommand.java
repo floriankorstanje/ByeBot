@@ -13,8 +13,8 @@ public class BaseCommand {
     public String arguments;
     public Permission permission;
     public List<String> aliases;
+    public boolean moderation;
     public boolean requiredArguments;
-    public boolean optionalArguments;
 
     public BaseCommand() {
         // Command is just the command
@@ -32,11 +32,11 @@ public class BaseCommand {
         // Aliases are different commands to execute one command
         aliases = new ArrayList<>();
 
+        // Moderation is to differentiate between mod commands and normal-user commands for the different help menus
+        moderation = false;
+
         // requiredArguments is true if the command requires one or more arguments
         requiredArguments = false;
-
-        // optionalArguments is true if the command has one or more optional arguments
-        optionalArguments = false;
     }
 
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {

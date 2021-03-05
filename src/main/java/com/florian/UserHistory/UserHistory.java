@@ -21,18 +21,18 @@ public class UserHistory {
 
         // Check if folder exists
         File historyFolder = new File(folder);
-        if(!historyFolder.exists()) {
+        if (!historyFolder.exists()) {
             boolean success = historyFolder.mkdirs();
 
             // If it couldn't create the folder, quit
-            if(!success) {
+            if (!success) {
                 System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
             }
         }
 
         // Check if file exists
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 Files.createFile(Paths.get(file));
             } catch (IOException e) {
@@ -50,7 +50,7 @@ public class UserHistory {
         }
 
         // Make sure lines isn't null
-        if(lines == null)
+        if (lines == null)
             return ErrorCode.OTHER_ERROR;
 
 
@@ -79,11 +79,11 @@ public class UserHistory {
 
         // Check if folder exists
         File historyFolder = new File(folder);
-        if(!historyFolder.exists()) {
+        if (!historyFolder.exists()) {
             boolean success = historyFolder.mkdirs();
 
             // If it couldn't create the folder, quit
-            if(!success) {
+            if (!success) {
                 System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
             }
@@ -93,7 +93,7 @@ public class UserHistory {
         }
 
         // If the file doesn't exist, there is also no history
-        if(!new File(file).exists())
+        if (!new File(file).exists())
             return ErrorCode.NO_USER_HISTORY;
 
         // Get all lines in the file
@@ -106,11 +106,16 @@ public class UserHistory {
         }
 
         // Make sure lines isn't null
-        if(lines == null)
+        if (lines == null)
             return ErrorCode.OTHER_ERROR;
 
         // Remove the entry we want to remove
-        lines.remove(entry);
+        try {
+            lines.remove(entry);
+        } catch (Exception ex) {
+            // Couldn't remove entry
+            return ErrorCode.UNKNOWN_ENTRY;
+        }
 
         // Write changes back to file
         try {
@@ -130,11 +135,11 @@ public class UserHistory {
 
         // Check if folder exists
         File historyFolder = new File(folder);
-        if(!historyFolder.exists()) {
+        if (!historyFolder.exists()) {
             boolean success = historyFolder.mkdirs();
 
             // If it couldn't create the folder, quit
-            if(!success) {
+            if (!success) {
                 System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
             }
@@ -144,7 +149,7 @@ public class UserHistory {
         }
 
         // If the file doesn't exist, there is also no history
-        if(!new File(file).exists())
+        if (!new File(file).exists())
             return ErrorCode.NO_USER_HISTORY;
 
         // Get all lines in the file
@@ -157,12 +162,17 @@ public class UserHistory {
         }
 
         // Make sure lines isn't null
-        if(lines == null)
+        if (lines == null)
             return ErrorCode.OTHER_ERROR;
 
         // Edit the entry we want to edit
-        String[] oldData = lines.get(entry).split(",");
-        lines.set(entry, oldData[0] + "," + oldData[1] + "," + oldData[2] + "," + newReason);
+        try {
+            String[] oldData = lines.get(entry).split(",");
+            lines.set(entry, oldData[0] + "," + oldData[1] + "," + oldData[2] + "," + newReason);
+        } catch (Exception ex) {
+            // Couldn't remove entry
+            return ErrorCode.UNKNOWN_ENTRY;
+        }
 
         // Write changes back to file
         try {
@@ -173,5 +183,77 @@ public class UserHistory {
         }
 
         return ErrorCode.SUCCESS;
+    }
+
+    public static UserHistoryEntries getHistory(Guild g, Member m) {
+        // Get location for file
+        String folder = Util.getGuildFolder(g) + Vars.historyFolder;
+        String file = folder + m.getId();
+
+        // Return variable
+        UserHistoryEntries entries = new UserHistoryEntries(new UserHistoryEntry[]{}, ErrorCode.SUCCESS);
+
+        // Check if folder exists
+        File historyFolder = new File(folder);
+        if (!historyFolder.exists()) {
+            boolean success = historyFolder.mkdirs();
+
+            // If it couldn't create the folder, quit
+            if (!success) {
+                System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
+                entries.setError(ErrorCode.OTHER_ERROR);
+                return entries;
+            }
+
+            // If it did create, return no history because there is no history files for this server
+            entries.setError(ErrorCode.NO_USER_HISTORY);
+            return entries;
+        }
+
+        // If the file doesn't exist, there is also no history
+        if (!new File(file).exists()) {
+            entries.setError(ErrorCode.NO_USER_HISTORY);
+            return entries;
+        }
+
+        // Get all lines in the file
+        List<String> lines;
+        try {
+            lines = Util.readSmallTextFile(file);
+        } catch (IOException ex) {
+            System.out.println("Couldn't read user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            entries.setError(ErrorCode.OTHER_ERROR);
+            return entries;
+        }
+
+        // Make sure lines isn't null
+        if (lines == null) {
+            entries.setError(ErrorCode.OTHER_ERROR);
+            return entries;
+        }
+
+        // Check if there is any history
+        if (lines.size() == 0) {
+            entries.setError(ErrorCode.NO_USER_HISTORY);
+            return entries;
+        }
+
+        // Get all the entries
+        UserHistoryEntry[] list = new UserHistoryEntry[lines.size()];
+        for (int i = 0; i < lines.size(); i++) {
+            String[] data = lines.get(i).split(",");
+            String executor = data[0];
+            long date = Long.parseLong(data[1]);
+            String type = data[2];
+            String reason = data[3];
+
+            list[i] = new UserHistoryEntry(executor, date, type, reason, i);
+        }
+
+        // Add the list to the entries
+        entries.setEntries(list);
+
+        // Return the entries
+        return entries;
     }
 }

@@ -15,7 +15,6 @@ public class Userinfo extends BaseCommand {
         super.command = "userinfo";
         super.description = "Shows info about you or a user specified.";
         super.arguments = "[user]";
-        super.optionalArguments = true;
     }
 
     @Override

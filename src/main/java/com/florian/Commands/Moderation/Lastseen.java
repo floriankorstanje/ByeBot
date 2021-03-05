@@ -106,7 +106,11 @@ public class Lastseen extends BaseCommand {
             // Get all entries and add them to a file. Then send the file.
             for (int i = 0; i < entries.getEntries().length; i++) {
                 UserlogEntry entry = entries.getEntries()[i];
-                fileContents.add(entry.getAction() + "\tat\t" + formatter.format(new Date(entry.getTime())));
+
+                // Add it to the file
+                fileContents.add("Action: " + entry.getAction());
+                fileContents.add("Time: " + formatter.format(entry.getTime()));
+                fileContents.add("\n");
             }
 
             // Write to file

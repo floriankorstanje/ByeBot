@@ -33,6 +33,7 @@ public class Hostinfo extends BaseCommand {
         // Fill the embed
         embed.addField("Gateway Latency", "`" + e.getJDA().getGatewayPing() + "ms`", false);
         embed.addField("REST Latency", "`" + e.getJDA().getRestPing().complete() + "ms`", false);
+        embed.addField("Java Version", "`" + System.getProperty("java.version") + "`", false);
         embed.addField("Memory Usage", "`" + Math.round((double)used / 1024.0) + "kB / " + Math.round((double)total / 1024.0) + "kB`", false);
         embed.addField("Operating System", "`" + System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ")`", false);
 

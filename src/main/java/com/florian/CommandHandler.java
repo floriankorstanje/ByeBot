@@ -37,14 +37,10 @@ public class CommandHandler extends ListenerAdapter {
 
             // Save the error code and command for error handling
             ErrorCode error = ErrorCode.UNKNOWN_COMMAND;
-            BaseCommand executed = new BaseCommand();
 
             // Check if the command was recognized, if so, execute it
             for (BaseCommand command : Vars.commands) {
                 if (command.command.equalsIgnoreCase(cmd) || Util.containsIgnoreCase(command.aliases, cmd)) {
-                    // Get the command that gets executed and save it
-                    executed = command;
-
                     // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
                     if (command.requiredArguments && args.length == 0) {
                         error = ErrorCode.WRONG_ARGUMENTS;
@@ -87,7 +83,7 @@ public class CommandHandler extends ListenerAdapter {
             }
 
             // Log executed command to console
-            System.out.println("Command " + executed.command + " returned error code " + error.toString() + " in " + event.getGuild().getName());
+            System.out.println("Command " + cmd + " returned error code " + error.toString() + " in " + event.getGuild().getName());
         }
     }
 }

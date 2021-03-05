@@ -15,12 +15,12 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.3.8";
+    public static final String version = "0.4.0";
     public static ApplicationInfo appInfo;
     public static User botOwner;
 
     // Other
     public static final int maxUserlogEntries = 32;
     public static final int color = 0x890BEF;
-    public static final BaseCommand[] commands = new BaseCommand[]{new Help(), new Modhelp(), new Invite(), new Userinfo(), new Serverinfo(), new Servers(), new Botinfo(), new Ban(), new Kick(), new Warn(), new History(), new Lastseen()};
+    public static final BaseCommand[] commands = new BaseCommand[]{new Help(), new Modhelp(), new Invite(), new Userinfo(), new Serverinfo(), new Servers(), new Botinfo(), new Ban(), new Kick(), new Warn(), new History(), new Lastseen(), new Hostinfo()};
 }

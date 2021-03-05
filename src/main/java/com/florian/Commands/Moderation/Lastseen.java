@@ -52,9 +52,6 @@ public class Lastseen extends BaseCommand {
             if (entries.getErrorCode() != ErrorCode.SUCCESS)
                 return entries.getErrorCode();
 
-            // Formatter for the date
-            DateFormat formatter = new SimpleDateFormat("hh:mm:ss dd/MM/yyyy z");
-
             // Create an embed
             EmbedBuilder embed = Util.defaultEmbed();
 
@@ -123,18 +120,16 @@ public class Lastseen extends BaseCommand {
             // Send the file and tell the user the file will be deleted soon
             AtomicReference<Message> botBessage = new AtomicReference<>();
             e.getChannel().sendMessage("Here's your report. This report will be deleted in " + Vars.deleteUserlogFullDelay + " seconds.").queue(botBessage::set);
-            e.getChannel().sendFile(new File(tempFilename), m.getId() + "_lastseen.txt").queue(message -> {
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(Vars.deleteUserlogFullDelay * 1000);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
+            e.getChannel().sendFile(new File(tempFilename), m.getId() + "_lastseen.txt").queue(message -> new Thread(() -> {
+                try {
+                    Thread.sleep(Vars.deleteUserlogFullDelay * 1000);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
 
-                    botBessage.get().editMessage("*This report has been deleted*").queue();
-                    message.delete().complete();
-                }).start();
-            });
+                botBessage.get().editMessage("*This report has been deleted*").queue();
+                message.delete().complete();
+            }).start());
 
             // Delete the temp file
             new File(tempFilename).delete();

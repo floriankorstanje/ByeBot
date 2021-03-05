@@ -11,8 +11,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class History extends BaseCommand {
@@ -43,9 +41,6 @@ public class History extends BaseCommand {
             if (operation.equalsIgnoreCase("get")) {
                 // Get all the entries
                 UserHistoryEntries entries = UserHistory.getHistory(e.getGuild(), m);
-
-                // Formatter for the date
-                DateFormat formatter = new SimpleDateFormat("hh:mm:ss dd/MM/yyyy z");
 
                 // Create embed to show all entries
                 EmbedBuilder embed = Util.defaultEmbed();

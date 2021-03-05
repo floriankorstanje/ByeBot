@@ -23,14 +23,14 @@ public class Warn extends BaseCommand {
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         // Command needs at least 2 arguments.
-        if(args.length >= 2) {
+        if (args.length >= 2) {
             // Add all args from index 1 to a string as reason
             StringBuilder reason = new StringBuilder();
-            for(int i = 1; i < args.length; i++) {
+            for (int i = 1; i < args.length; i++) {
                 reason.append(args[i]).append(" ");
 
                 // Reason cannot contain commas since the history file uses commas to separate values
-                if(args[i].contains(","))
+                if (args[i].contains(","))
                     return ErrorCode.UNALLOWED_CHARACTER;
             }
 

@@ -20,11 +20,11 @@ public class Main {
     public static void main(String[] args) throws IOException, LoginException {
         // Check if a folder for bot files exits. If not, create one
         File botFolder = new File(Vars.botFolder);
-        if(!botFolder.exists()) {
+        if (!botFolder.exists()) {
             boolean success = botFolder.mkdirs();
 
             // If it wasn't successful, quit
-            if(!success) {
+            if (!success) {
                 System.out.println("Unable to create bot folder. Quitting.");
                 return;
             }
@@ -32,25 +32,25 @@ public class Main {
 
         // Check if the folder for server-specific files exists
         File serversFolder = new File(Vars.serversFolder);
-        if(!serversFolder.exists()) {
+        if (!serversFolder.exists()) {
             boolean success = serversFolder.mkdirs();
 
             // If it wasn't successful, quit
-            if(!success) {
+            if (!success) {
                 System.out.println("Unable to create servers folder. Quitting.");
                 return;
             }
         }
 
         // Check if the file with a bot token exists. If not, create one
-        if(!new File(tokenFile).exists()) {
+        if (!new File(tokenFile).exists()) {
             System.out.println("Please enter your bots token in \"" + tokenFile + "\" to start the bot.");
             Files.createFile(Paths.get(tokenFile));
             return;
         }
 
         // Check if the token file isn't empty. If the user entered a wrong token, JDA will output an error
-        if(Util.readSmallTextFile(tokenFile).size() == 0) {
+        if (Util.readSmallTextFile(tokenFile).size() == 0) {
             System.out.println("Please enter your bots token in \"" + tokenFile + "\" to start the bot.");
             return;
         }

@@ -54,7 +54,7 @@ public class Help extends BaseCommand {
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {
             // Only add commands that don't need permission to execute (mod commands)
-            if(!command.moderation)
+            if (!command.moderation)
                 embed.addField(Vars.botPrefix + command.command, command.description, false);
         }
 

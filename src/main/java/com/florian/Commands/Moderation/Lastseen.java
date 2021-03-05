@@ -24,7 +24,7 @@ public class Lastseen extends BaseCommand {
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if(args.length == 1) {
+        if (args.length == 1) {
             Member m;
 
             // Try to get member from ID
@@ -38,7 +38,7 @@ public class Lastseen extends BaseCommand {
             UserlogEntries entries = Userlog.getEntries(e.getGuild(), m);
 
             // If getting entries failed, return
-            if(entries.getErrorCode() != ErrorCode.SUCCESS)
+            if (entries.getErrorCode() != ErrorCode.SUCCESS)
                 return entries.getErrorCode();
 
             // Formatter for the date
@@ -51,9 +51,9 @@ public class Lastseen extends BaseCommand {
             embed.setTitle("Lastseen " + m.getUser().getAsTag());
 
             // Get all entries and add to embed
-            for(int i = 0; i < entries.getEntries().length; i++) {
+            for (int i = 0; i < entries.getEntries().length; i++) {
                 // Don't add more than 5 entries to the list
-                if(i >= 5)
+                if (i >= 5)
                     break;
 
                 UserlogEntry entry = entries.getEntries()[i];

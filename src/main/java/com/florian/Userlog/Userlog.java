@@ -89,7 +89,7 @@ public class Userlog {
         String file = folder + m.getId();
 
         // Initialize class to return if an error occurred
-        UserlogEntries entries = new UserlogEntries(new UserlogEntry[] {}, ErrorCode.SUCCESS);
+        UserlogEntries entries = new UserlogEntries(new UserlogEntry[]{}, ErrorCode.SUCCESS);
 
         // Check if the guild has a folder
         File server = new File(folder);
@@ -130,7 +130,7 @@ public class Userlog {
         // Get all the entries
         // Loop needs to decrement so newest entry is top of the list
         UserlogEntry[] list = new UserlogEntry[lines.size()];
-        for(int i = lines.size() - 1; i >= 0; i--) {
+        for (int i = lines.size() - 1; i >= 0; i--) {
             String[] data = lines.get(i).split(",");
             long time = Long.parseLong(data[0]);
             String action = data[1];
@@ -147,7 +147,7 @@ public class Userlog {
 
     private static void clearOldEntries(List<String> file) {
         // Clear entries if the user has more then max entries
-        while(file.size() > Vars.maxUserlogEntries) {
+        while (file.size() > Vars.maxUserlogEntries) {
             // Remove the first element in the list. This is the oldest event
             file.remove(0);
         }

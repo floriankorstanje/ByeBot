@@ -26,7 +26,7 @@ public class Userinfo extends BaseCommand {
         EmbedBuilder embed = Util.defaultEmbed();
 
         // Check if the user entered an argument with a user ID to get info about that user
-        if(args.length == 1) {
+        if (args.length == 1) {
             try {
                 // Get the member from the specified user ID
                 m = e.getGuild().retrieveMemberById(args[0]).complete();
@@ -47,7 +47,7 @@ public class Userinfo extends BaseCommand {
 
         // Get a list of all the roles the user has
         StringBuilder builder = new StringBuilder();
-        for(Role role : m.getRoles())
+        for (Role role : m.getRoles())
             builder.append(role.getAsMention()).append(" ");
         embed.addField("Roles", builder.toString(), false);
 

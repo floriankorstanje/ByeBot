@@ -16,6 +16,7 @@ public class Warn extends BaseCommand {
         super.description = "Warns a user.";
         super.arguments = "<user> <reason>";
         super.permission = Permission.KICK_MEMBERS;
+        super.moderation = true;
         super.requiredArguments = true;
     }
 

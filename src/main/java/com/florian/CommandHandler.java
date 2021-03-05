@@ -2,9 +2,13 @@ package com.florian;
 
 import com.florian.Commands.BaseCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandHandler extends ListenerAdapter {
     @Override
@@ -15,6 +19,21 @@ public class CommandHandler extends ListenerAdapter {
             String[] msg = event.getMessage().getContentRaw().split("\\s+");
             String cmd = msg[0].replace(Vars.botPrefix, "");
             String[] args = Util.removeElement(msg, 0);
+
+            // Supported types to convert from ping to ID
+            Message.MentionType[] types = {Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.ROLE, Message.MentionType.EMOTE};
+
+            // Check arguments if it contains a ping to something. If so, convert it to an ID
+            for (int i = 0; i < args.length; i++) {
+                for (Message.MentionType type : types) {
+                    Matcher matcher = type.getPattern().matcher(args[i]);
+                    if (matcher.matches()) {
+                        Matcher nums = Pattern.compile("[^0-9]").matcher(args[i]);
+                        args[i] = nums.replaceAll("");
+                    }
+                }
+
+            }
 
             // Save the error code and command for error handling
             ErrorCode error = ErrorCode.UNKNOWN_COMMAND;

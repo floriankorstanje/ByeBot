@@ -2,12 +2,14 @@ package com.florian;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 public class Util {
@@ -56,6 +58,12 @@ public class Util {
     public static String getGuildFolder(Guild g) {
         // Return the folder where server-specific things are stored
         return Vars.serversFolder + g.getId() + "/";
+    }
+
+    public static String getTimeAgo(Date date) {
+        // Use the PrettyTime library to format time
+        PrettyTime pretty = new PrettyTime();
+        return pretty.format(date);
     }
 
     public static List<String> readSmallTextFile(String fileName) throws IOException {

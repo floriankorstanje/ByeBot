@@ -27,7 +27,7 @@ public class CommandHandler extends ListenerAdapter {
                     executed = command;
 
                     // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
-                    if ((!command.requiredArguments && args.length != 0) || (command.requiredArguments && args.length == 0)) {
+                    if (command.requiredArguments && args.length == 0) {
                         error = ErrorCode.WRONG_ARGUMENTS;
                         break;
                     }

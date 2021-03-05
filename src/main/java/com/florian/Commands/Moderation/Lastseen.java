@@ -10,6 +10,7 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Lastseen extends BaseCommand {
     public Lastseen() {
@@ -114,8 +116,21 @@ public class Lastseen extends BaseCommand {
                 return ErrorCode.OTHER_ERROR;
             }
 
-            // Send the file
-            e.getChannel().sendFile(new File(tempFilename), m.getId() + "_lastseen.txt").queue();
+            // Send the file and tell the user the file will be deleted soon
+            AtomicReference<Message> botBessage = new AtomicReference<>();
+            e.getChannel().sendMessage("Here's your report. This report will be deleted in " + Vars.deleteUserlogFullDelay + " seconds.").queue(botBessage::set);
+            e.getChannel().sendFile(new File(tempFilename), m.getId() + "_lastseen.txt").queue(message -> {
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(Vars.deleteUserlogFullDelay * 1000);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+
+                    botBessage.get().editMessage("*This report has been deleted*").queue();
+                    message.delete().complete();
+                }).start();
+            });
 
             // Delete the temp file
             new File(tempFilename).delete();

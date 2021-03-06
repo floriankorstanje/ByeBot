@@ -49,7 +49,10 @@ public class History extends BaseCommand {
                 embed.setTitle("History for " + m.getUser().getAsTag());
 
                 // Fill embed
-                for (UserHistoryEntry entry : entries.getEntries()) {
+                for (int i = 0; i < entries.getEntries().length; i++) {
+                    // Get entry as easy variable
+                    UserHistoryEntry entry = entries.getEntries()[i];
+
                     // Save the executors ID so we can try and change it to a tag
                     String executor = entry.getExecutor();
 
@@ -60,19 +63,14 @@ public class History extends BaseCommand {
                     }
 
                     // Add it to the embed
-                    embed.addField("Entry #" + entry.getId(), "Issued By: `" + executor + "`\nDate Issued: " + Util.formatDate(new Date(entry.getTime())) + "\nType: `" + entry.getOffense() + "`\nReason: " + entry.getReason(), false);
+                    embed.addField("Entry #" + i, "ID: `" + entry.getId() + "`\nIssued By: `" + executor + "`\nDate Issued: " + Util.formatDate(new Date(entry.getTime())) + "\nType: `" + entry.getOffense() + "`\nReason: " + entry.getReason(), false);
                 }
 
                 // Send the embed
                 e.getChannel().sendMessage(embed.build()).queue();
             } else if (operation.equalsIgnoreCase("edit")) {
-                int entry;
-                try {
-                    entry = Integer.parseInt(args[2]);
-                } catch (Exception ex) {
-                    // Couldn't parse to int
-                    return ErrorCode.WRONG_ARGUMENTS;
-                }
+                // Get entry ID
+                String id = args[2];
 
                 StringBuilder newReason = new StringBuilder();
                 for (int i = 3; i < args.length; i++) {
@@ -82,7 +80,7 @@ public class History extends BaseCommand {
                         return ErrorCode.UNALLOWED_CHARACTER;
                 }
 
-                ErrorCode error = UserHistory.editEntry(e.getGuild(), m, entry, newReason.toString());
+                ErrorCode error = UserHistory.editEntry(e.getGuild(), m, id, newReason.toString());
                 if (error != ErrorCode.SUCCESS)
                     return error;
 
@@ -99,15 +97,10 @@ public class History extends BaseCommand {
                 // Send the embed
                 e.getChannel().sendMessage(embed.build()).queue();
             } else if (operation.equalsIgnoreCase("remove")) {
-                int entry;
-                try {
-                    entry = Integer.parseInt(args[2]);
-                } catch (Exception ex) {
-                    // Couldn't parse to int
-                    return ErrorCode.WRONG_ARGUMENTS;
-                }
+                // Get entry ID
+                String id = args[2];
 
-                ErrorCode error = UserHistory.removeEntry(e.getGuild(), m, entry);
+                ErrorCode error = UserHistory.removeEntry(e.getGuild(), m, id);
                 if (error != ErrorCode.SUCCESS)
                     return error;
 

@@ -5,9 +5,9 @@ public class UserHistoryEntry {
     private final long time;
     private final String offense;
     private final String reason;
-    private final int id;
+    private final String id;
 
-    public UserHistoryEntry(String executor, long time, String offense, String reason, int id) {
+    public UserHistoryEntry(String executor, long time, String offense, String reason, String id) {
         this.executor = executor;
         this.time = time;
         this.offense = offense;
@@ -31,7 +31,7 @@ public class UserHistoryEntry {
         return reason;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 }

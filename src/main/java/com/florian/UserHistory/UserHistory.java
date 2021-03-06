@@ -57,9 +57,12 @@ public class UserHistory {
         // Get current epoch time (ms)
         long time = Instant.now().toEpochMilli();
 
+        // Generate history ID
+        String historyId = Util.randomHex(12);
+
         // Add this entry to the list
-        // Entries are formatted as following: executor-id,epoch-time,offense,entry
-        lines.add(executor.getId() + "," + time + "," + type.toString() + "," + entry);
+        // Entries are formatted as following: history-id,executor-id,epoch-time,offense,entry
+        lines.add(historyId + "," + executor.getId() + "," + time + "," + type.toString() + "," + entry);
 
         // Write changes back to file
         try {
@@ -72,7 +75,7 @@ public class UserHistory {
         return ErrorCode.SUCCESS;
     }
 
-    public static ErrorCode removeEntry(Guild g, Member m, int entry) {
+    public static ErrorCode removeEntry(Guild g, Member m, String id) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
         String file = folder + m.getId();
@@ -109,26 +112,43 @@ public class UserHistory {
         if (lines == null)
             return ErrorCode.OTHER_ERROR;
 
+        // Get the line of the entry we want to edit
+        int line = getEntryLine(lines, id);
+
+        // If getEntryLine returns -1 it couldn't file the ID
+        if(line == -1)
+            return ErrorCode.UNKNOWN_ENTRY;
+
+
         // Remove the entry we want to remove
         try {
-            lines.remove(entry);
+            lines.remove(line);
         } catch (Exception ex) {
             // Couldn't remove entry
             return ErrorCode.UNKNOWN_ENTRY;
         }
 
-        // Write changes back to file
-        try {
-            Util.writeSmallTextFile(file, lines);
-        } catch (Exception e) {
-            System.out.println("Couldn't write user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
-            return ErrorCode.OTHER_ERROR;
+        // Write changes back to file, if there's no entries anymore we can just delete the file
+        if(lines.size() == 0) {
+            boolean success = new File(file).delete();
+
+            if(!success) {
+                System.out.println("Couldn't delete empty history file for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+                return ErrorCode.OTHER_ERROR;
+            }
+        } else {
+            try {
+                Util.writeSmallTextFile(file, lines);
+            } catch (Exception e) {
+                System.out.println("Couldn't write user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+                return ErrorCode.OTHER_ERROR;
+            }
         }
 
         return ErrorCode.SUCCESS;
     }
 
-    public static ErrorCode editEntry(Guild g, Member m, int entry, String newReason) {
+    public static ErrorCode editEntry(Guild g, Member m, String id, String newReason) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
         String file = folder + m.getId();
@@ -165,10 +185,17 @@ public class UserHistory {
         if (lines == null)
             return ErrorCode.OTHER_ERROR;
 
+        // Get the line of the entry we want to edit
+        int line = getEntryLine(lines, id);
+
+        // If getEntryLine returns -1 it couldn't file the ID
+        if(line == -1)
+            return ErrorCode.UNKNOWN_ENTRY;
+
         // Edit the entry we want to edit
         try {
-            String[] oldData = lines.get(entry).split(",");
-            lines.set(entry, oldData[0] + "," + oldData[1] + "," + oldData[2] + "," + newReason);
+            String[] oldData = lines.get(line).split(",");
+            lines.set(line, oldData[0] + "," + oldData[1] + "," + oldData[2] + "," + newReason);
         } catch (Exception ex) {
             // Couldn't remove entry
             return ErrorCode.UNKNOWN_ENTRY;
@@ -242,12 +269,13 @@ public class UserHistory {
         UserHistoryEntry[] list = new UserHistoryEntry[lines.size()];
         for (int i = 0; i < lines.size(); i++) {
             String[] data = lines.get(i).split(",");
-            String executor = data[0];
-            long date = Long.parseLong(data[1]);
-            String type = data[2];
-            String reason = data[3];
+            String id = data[0];
+            String executor = data[1];
+            long date = Long.parseLong(data[2]);
+            String type = data[3];
+            String reason = data[4];
 
-            list[i] = new UserHistoryEntry(executor, date, type, reason, i);
+            list[i] = new UserHistoryEntry(executor, date, type, reason, id);
         }
 
         // Add the list to the entries
@@ -255,5 +283,14 @@ public class UserHistory {
 
         // Return the entries
         return entries;
+    }
+
+    private static int getEntryLine(List<String> lines, String id) {
+        for(int i = 0; i < lines.size(); i++) {
+            if(lines.get(i).split(",")[0].equals(id))
+                return i;
+        }
+
+        return -1;
     }
 }

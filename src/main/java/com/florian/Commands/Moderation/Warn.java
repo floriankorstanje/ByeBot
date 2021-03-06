@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ContextException;
 
 public class Warn extends BaseCommand {
     public Warn() {
@@ -44,25 +45,6 @@ public class Warn extends BaseCommand {
 
             // Create an embed to send to the warned user
             EmbedBuilder embed = Util.defaultEmbed();
-
-            // Set the embed title
-            embed.setTitle("You have been warned in " + e.getGuild().getName());
-            embed.setColor(0xFF0000);
-
-            // Fill in the embed
-            embed.addField("Warned By", e.getMember().getAsMention(), false);
-            embed.addField("Reason", reason.toString(), false);
-
-            // Send the warned user a DM to let them know they've been warned
-            try {
-                m.getUser().openPrivateChannel().complete().sendMessage(embed.build()).queue();
-            } catch (Exception ex) {
-                // This isn't a fatal error, so we just tell the person that's warning the other that the warn was successful but the user didn't receive the message
-                e.getChannel().sendMessage("I couldn't send a message to **" + m.getUser().getAsTag() + "**, but I've added the warning to their history.").queue();
-            }
-
-            // Reuse the old embed to tell the user the warn was successful
-            embed = Util.defaultEmbed();
 
             // Set the title
             embed.setTitle(m.getUser().getAsTag() + " was warned");

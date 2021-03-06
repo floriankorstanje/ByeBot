@@ -67,7 +67,7 @@ public class Lastseen extends BaseCommand {
                 UserlogEntry entry = entries.getEntries()[i];
 
                 // Add entry to the embed
-                embed.addField("Entry #" + i, "Time: `" + Util.getTimeAgo(new Date(entry.getTime())) + "`\nAction: `" + entry.getAction() + "`", false);
+                embed.addField("Entry #" + i, "Time: " + Util.formatDate(new Date(entry.getTime())) + "\nAction: `" + entry.getAction() + "`", false);
             }
 
             // Send the embed

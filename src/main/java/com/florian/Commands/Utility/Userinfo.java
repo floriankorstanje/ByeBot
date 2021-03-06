@@ -9,12 +9,15 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Date;
 
 public class Userinfo extends BaseCommand {
     public Userinfo() {
         super.command = "userinfo";
         super.description = "Shows info about you or a user specified.";
         super.arguments = "[user]";
+        super.aliases.add("uinfo");
     }
 
     @Override
@@ -41,8 +44,8 @@ public class Userinfo extends BaseCommand {
         embed.addField("User", m.getAsMention(), true);
         embed.addField("User ID", "`" + m.getId() + "`", true);
         embed.addField("Member Color", String.format("`#%06X`", m.getColor().getRGB() & 0xFFFFFF), true);
-        embed.addField("Joined Discord", String.format("%s%n", m.getUser().getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME)), true);
-        embed.addField("Joined Guild", String.format("%s%n", m.getTimeJoined().format(DateTimeFormatter.RFC_1123_DATE_TIME)), true);
+        embed.addField("Joined Discord", Util.formatDate(new Date(m.getUser().getTimeCreated().toEpochSecond() * 1000)), true);
+        embed.addField("Joined Server", Util.formatDate(new Date(m.getTimeJoined().toEpochSecond() * 1000)), true);
         embed.addField("Server Owner", m.isOwner() ? "Yes" : "No", true);
 
         // Get a list of all the roles the user has

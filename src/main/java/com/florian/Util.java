@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.List;
 
@@ -60,10 +63,15 @@ public class Util {
         return Vars.serversFolder + g.getId() + "/";
     }
 
-    public static String getTimeAgo(Date date) {
-        // Use the PrettyTime library to format time
+    public static String formatDate(Date date) {
+        // SimpleDateFormat to get the date
+        SimpleDateFormat formatter = new SimpleDateFormat("d/M/yy H:m");
+
+        // PrettyTime to get time ago
         PrettyTime pretty = new PrettyTime();
-        return pretty.format(date);
+
+        // Return result
+        return "`" + formatter.format(date) + "` (" + pretty.format(date) + ")";
     }
 
     public static List<String> readSmallTextFile(String fileName) throws IOException {

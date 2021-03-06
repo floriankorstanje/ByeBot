@@ -76,7 +76,7 @@ public class Kick extends BaseCommand {
         e.getChannel().sendMessage(embed.build()).queue();
 
         // Add this to the user's history if everything succeeded
-        UserHistory.addEntry(e.getGuild(), m, e.getMember(), OffenseType.KICK, reason.toString());
+        UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.KICK, reason.toString());
 
         // Return success
         return ErrorCode.SUCCESS;

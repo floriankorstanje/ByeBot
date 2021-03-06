@@ -14,10 +14,10 @@ import java.time.Instant;
 import java.util.List;
 
 public class UserHistory {
-    public static ErrorCode addEntry(Guild g, Member offender, Member executor, OffenseType type, String entry) {
+    public static ErrorCode addEntry(Guild g, String user, Member executor, OffenseType type, String entry) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + offender.getId();
+        String file = folder + user;
 
         // Check if folder exists
         File historyFolder = new File(folder);
@@ -45,7 +45,7 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + offender.getId() + "(" + offender.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
@@ -68,17 +68,17 @@ public class UserHistory {
         try {
             Util.writeSmallTextFile(file, lines);
         } catch (Exception e) {
-            System.out.println("Couldn't write user history for user " + offender.getId() + "(" + offender.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't write user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
         return ErrorCode.SUCCESS;
     }
 
-    public static ErrorCode removeEntry(Guild g, Member m, String id) {
+    public static ErrorCode removeEntry(Guild g, String user, String id) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + m.getId();
+        String file = folder + user;
 
         // Check if folder exists
         File historyFolder = new File(folder);
@@ -104,10 +104,9 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
-
         // Make sure lines isn't null
         if (lines == null)
             return ErrorCode.OTHER_ERROR;
@@ -116,12 +115,20 @@ public class UserHistory {
         int line = getEntryLine(lines, id);
 
         // If getEntryLine returns -1 it couldn't file the ID
-        if(line == -1)
+        if (line == -1)
             return ErrorCode.UNKNOWN_ENTRY;
 
 
         // Remove the entry we want to remove
         try {
+            // Get the line to check if it's a ban
+            String[] data = lines.get(line).split(",");
+            OffenseType type = OffenseType.valueOf(data[3]);
+
+            // If it's a ban, unban the user
+            if (type == OffenseType.BAN)
+                g.unban(user).complete();
+
             lines.remove(line);
         } catch (Exception ex) {
             // Couldn't remove entry
@@ -129,18 +136,18 @@ public class UserHistory {
         }
 
         // Write changes back to file, if there's no entries anymore we can just delete the file
-        if(lines.size() == 0) {
+        if (lines.size() == 0) {
             boolean success = new File(file).delete();
 
-            if(!success) {
-                System.out.println("Couldn't delete empty history file for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            if (!success) {
+                System.out.println("Couldn't delete empty history file for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
             }
         } else {
             try {
                 Util.writeSmallTextFile(file, lines);
             } catch (Exception e) {
-                System.out.println("Couldn't write user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+                System.out.println("Couldn't write user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
             }
         }
@@ -148,10 +155,10 @@ public class UserHistory {
         return ErrorCode.SUCCESS;
     }
 
-    public static ErrorCode editEntry(Guild g, Member m, String id, String newReason) {
+    public static ErrorCode editEntry(Guild g, String user, String id, String newReason) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + m.getId();
+        String file = folder + user;
 
         // Check if folder exists
         File historyFolder = new File(folder);
@@ -177,7 +184,7 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
@@ -189,7 +196,7 @@ public class UserHistory {
         int line = getEntryLine(lines, id);
 
         // If getEntryLine returns -1 it couldn't file the ID
-        if(line == -1)
+        if (line == -1)
             return ErrorCode.UNKNOWN_ENTRY;
 
         // Edit the entry we want to edit
@@ -205,17 +212,17 @@ public class UserHistory {
         try {
             Util.writeSmallTextFile(file, lines);
         } catch (Exception e) {
-            System.out.println("Couldn't write user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't write user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
         return ErrorCode.SUCCESS;
     }
 
-    public static UserHistoryEntries getHistory(Guild g, Member m) {
+    public static UserHistoryEntries getAllHistory(Guild g, String user) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + m.getId();
+        String file = folder + user;
 
         // Return variable
         UserHistoryEntries entries = new UserHistoryEntries(new UserHistoryEntry[]{}, ErrorCode.SUCCESS);
@@ -248,7 +255,7 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException ex) {
-            System.out.println("Couldn't read user history for user " + m.getId() + "(" + m.getUser().getAsTag() + ") in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
             entries.setError(ErrorCode.OTHER_ERROR);
             return entries;
         }
@@ -286,8 +293,8 @@ public class UserHistory {
     }
 
     private static int getEntryLine(List<String> lines, String id) {
-        for(int i = 0; i < lines.size(); i++) {
-            if(lines.get(i).split(",")[0].equals(id))
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).split(",")[0].equals(id))
                 return i;
         }
 

@@ -14,14 +14,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandHandler extends ListenerAdapter {
-    private Dictionary<String, Long> cooldowns = new Hashtable<>();
+    private final Dictionary<String, Long> cooldowns = new Hashtable<>();
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // Check if the message starts with the bot prefix
         if (event.getMessage().getContentRaw().startsWith(Vars.botPrefix)) {
             // Check if the user is still on cooldown
-            if(cooldowns.get(event.getMember().getId()) != null) {
+            if (cooldowns.get(event.getMember().getId()) != null) {
                 long expiresAt = cooldowns.get(event.getMember().getId()) + Vars.commandCooldown * 1000;
                 long timeLeft = Math.round((expiresAt - Instant.now().toEpochMilli()) / 1000.0);
                 event.getChannel().sendMessage("Please wait " + timeLeft + " second(s) before running a command again, " + event.getMember().getAsMention() + ".").queue();
@@ -74,7 +74,7 @@ public class CommandHandler extends ListenerAdapter {
             }
 
             // Add user to cooldown list
-            if(error == ErrorCode.SUCCESS) {
+            if (error == ErrorCode.SUCCESS) {
                 cooldowns.put(event.getMember().getId(), Instant.now().toEpochMilli());
 
                 // Wait for the amount of cooldown and then remove the user from the cooldown list

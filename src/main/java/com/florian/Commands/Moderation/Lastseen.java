@@ -132,7 +132,12 @@ public class Lastseen extends BaseCommand {
             }).start());
 
             // Delete the temp file
-            new File(tempFilename).delete();
+            boolean success = new File(tempFilename).delete();
+
+            if (!success) {
+                System.out.println("Unable to delete temp file " + tempFilename);
+                return ErrorCode.OTHER_ERROR;
+            }
         } else {
             // Wrong arguments
             return ErrorCode.WRONG_ARGUMENTS;

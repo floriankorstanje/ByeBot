@@ -23,7 +23,7 @@ public class Ban extends BaseCommand {
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if(args.length < 1)
+        if (args.length < 1)
             return ErrorCode.WRONG_ARGUMENTS;
 
         // Add all args from index 1 to a string as reason
@@ -64,7 +64,7 @@ public class Ban extends BaseCommand {
         }
 
         // Add this to the user's history if everything succeeded
-        ErrorCode error = UserHistory.addEntry(e.getGuild(), m, e.getMember(), OffenseType.BAN, reason.toString());
+        ErrorCode error = UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.BAN, reason.toString());
 
         if (error == ErrorCode.OTHER_ERROR)
             return ErrorCode.OTHER_ERROR;

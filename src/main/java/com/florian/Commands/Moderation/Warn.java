@@ -56,7 +56,7 @@ public class Warn extends BaseCommand {
             e.getChannel().sendMessage(embed.build()).queue();
 
             // Add this to the user's history if everything succeeded
-            UserHistory.addEntry(e.getGuild(), m, e.getMember(), OffenseType.WARN, reason.toString());
+            UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.WARN, reason.toString());
         } else {
             // There aren't enough arguments
             return ErrorCode.WRONG_ARGUMENTS;

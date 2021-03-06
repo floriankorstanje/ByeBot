@@ -8,7 +8,6 @@ import com.florian.UserHistory.UserHistoryEntry;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Date;
@@ -29,24 +28,22 @@ public class History extends BaseCommand {
         if (args.length >= 2) {
             String operation = args[1];
 
-            // Get the member before doing something else so we don't have to repeat this
-            Member m;
-            try {
-                m = e.getGuild().retrieveMemberById(args[0]).complete();
-            } catch (Exception ex) {
-                // Failed to get member
-                return ErrorCode.UNKNOWN_ID;
-            }
+            // Save user id
+            String user = args[0];
 
             if (operation.equalsIgnoreCase("get")) {
                 // Get all the entries
-                UserHistoryEntries entries = UserHistory.getHistory(e.getGuild(), m);
+                UserHistoryEntries entries = UserHistory.getAllHistory(e.getGuild(), user);
+
+                // If entries failed, return the error
+                if (entries.getError() != ErrorCode.SUCCESS)
+                    return entries.getError();
 
                 // Create embed to show all entries
                 EmbedBuilder embed = Util.defaultEmbed();
 
                 // Set title
-                embed.setTitle("History for " + m.getUser().getAsTag());
+                embed.setTitle("History for `" + user + "`");
 
                 // Fill embed
                 for (int i = 0; i < entries.getEntries().length; i++) {
@@ -80,7 +77,7 @@ public class History extends BaseCommand {
                         return ErrorCode.UNALLOWED_CHARACTER;
                 }
 
-                ErrorCode error = UserHistory.editEntry(e.getGuild(), m, id, newReason.toString());
+                ErrorCode error = UserHistory.editEntry(e.getGuild(), user, id, newReason.toString());
                 if (error != ErrorCode.SUCCESS)
                     return error;
 
@@ -88,10 +85,11 @@ public class History extends BaseCommand {
                 EmbedBuilder embed = Util.defaultEmbed();
 
                 // Set title
-                embed.setTitle("Updated history for " + m.getUser().getAsTag());
+                embed.setTitle("Updated history for `" + user + "`");
 
                 // Fill in embed
                 embed.addField("Changed By", e.getMember().getAsMention(), false);
+                embed.addField("History ID", "`" + id + "`", false);
                 embed.addField("New Reason", newReason.toString(), false);
 
                 // Send the embed
@@ -100,7 +98,7 @@ public class History extends BaseCommand {
                 // Get entry ID
                 String id = args[2];
 
-                ErrorCode error = UserHistory.removeEntry(e.getGuild(), m, id);
+                ErrorCode error = UserHistory.removeEntry(e.getGuild(), user, id);
                 if (error != ErrorCode.SUCCESS)
                     return error;
 
@@ -108,10 +106,11 @@ public class History extends BaseCommand {
                 EmbedBuilder embed = Util.defaultEmbed();
 
                 // Set title
-                embed.setTitle("Removed history for " + m.getUser().getAsTag());
+                embed.setTitle("Removed history for `" + user + "`");
 
                 // Fill in embed
                 embed.addField("Removed By", e.getMember().getAsMention(), false);
+                embed.addField("History ID", "`" + id + "`", false);
 
                 // Send the embed
                 e.getChannel().sendMessage(embed.build()).queue();

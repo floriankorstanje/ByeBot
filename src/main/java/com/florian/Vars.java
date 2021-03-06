@@ -19,9 +19,10 @@ public class Vars {
     public static ApplicationInfo appInfo;
     public static User botOwner;
 
-    // Delays
+    // Delays (Seconds)
     public static final int deleteUserlogFullDelay = 10;
     public static final int waitForPruneReactionDelay = 5;
+    public static final int commandCooldown = 3;
 
     // Other
     public static final int maxUserlogEntries = 64;

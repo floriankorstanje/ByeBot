@@ -75,16 +75,6 @@ public class Util {
         return "`" + formatter.format(date) + "` (" + pretty.format(date) + ")";
     }
 
-    public static String randomHex(int length) {
-        StringBuilder string = new StringBuilder();
-        Random r = new Random();
-
-        for(int i = 0; i < length; i++)
-            string.append(String.format("%02x", r.nextInt(0xFF)));
-
-        return string.toString();
-    }
-
     public static List<String> readSmallTextFile(String fileName) throws IOException {
         Path path = Paths.get(fileName);
         return Files.readAllLines(path, StandardCharsets.UTF_8);

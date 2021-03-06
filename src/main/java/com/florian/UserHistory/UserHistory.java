@@ -58,7 +58,7 @@ public class UserHistory {
         long time = Instant.now().toEpochMilli();
 
         // Generate history ID
-        String historyId = Util.randomHex(12);
+        String historyId = Long.toHexString(time);
 
         // Add this entry to the list
         // Entries are formatted as following: history-id,executor-id,epoch-time,offense,entry

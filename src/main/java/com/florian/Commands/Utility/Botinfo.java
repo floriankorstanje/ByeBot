@@ -7,6 +7,10 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.concurrent.TimeUnit;
+
 public class Botinfo extends BaseCommand {
     public Botinfo() {
         super.command = "botinfo";
@@ -27,6 +31,7 @@ public class Botinfo extends BaseCommand {
         embed.addField("Creator", Vars.botOwner.getAsMention(), false);
         embed.addField("Version", "`" + Vars.version + "`", false);
         embed.addField("Java Version", "`" + System.getProperty("java.version") + "`", false);
+        embed.addField("Uptime", "`" + getUptime() + "`", false);
         embed.addField("Commands", "Total: `" + Vars.commands.length + "`\n*Type " + Vars.botPrefix + new Help().command + " to see all the commands.*", false);
 
         // Send the embed
@@ -34,5 +39,16 @@ public class Botinfo extends BaseCommand {
 
         // Return success
         return ErrorCode.SUCCESS;
+    }
+
+    private String getUptime() {
+        RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
+        final long uptime = rb.getUptime();
+        final long days = TimeUnit.MILLISECONDS.toDays(uptime);
+        final long hours = TimeUnit.MILLISECONDS.toHours(uptime) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(uptime));
+        final long minutes = TimeUnit.MILLISECONDS.toMinutes(uptime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(uptime));
+        final long seconds = TimeUnit.MILLISECONDS.toSeconds(uptime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(uptime));
+
+        return String.format("%d Days, %d Hours, %d Minutes, %d Seconds", days, hours, minutes, seconds);
     }
 }

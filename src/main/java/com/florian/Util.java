@@ -63,7 +63,7 @@ public class Util {
 
     public static String formatDate(Date date) {
         // SimpleDateFormat to get the date
-        SimpleDateFormat formatter = new SimpleDateFormat("d/M/yy H:m");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
 
         // PrettyTime to get time ago
         PrettyTime pretty = new PrettyTime();

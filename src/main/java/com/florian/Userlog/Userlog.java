@@ -33,13 +33,13 @@ public class Userlog {
         action = action.replaceAll("Received", "Sent");
 
         // Check if the guild has a folder
-        File server = new File(folder);
-        if (!server.exists()) {
-            boolean success = server.mkdirs();
+        File guild = new File(folder);
+        if (!guild.exists()) {
+            boolean success = guild.mkdirs();
 
             // If it couldn't create the folder, quit
             if (!success) {
-                System.out.println("Couldn't create server folder for guild " + g.getId() + " (" + g.getName() + ")");
+                System.out.println("Couldn't create guild folder for guild " + g.getId() + " (" + g.getName() + ")");
                 return;
             }
         }
@@ -92,13 +92,13 @@ public class Userlog {
         UserlogEntries entries = new UserlogEntries(new UserlogEntry[]{}, ErrorCode.SUCCESS);
 
         // Check if the guild has a folder
-        File server = new File(folder);
-        if (!server.exists()) {
-            boolean success = server.mkdirs();
+        File guild = new File(folder);
+        if (!guild.exists()) {
+            boolean success = guild.mkdirs();
 
             // If it couldn't create the folder, quit
             if (!success) {
-                System.out.println("Couldn't create server folder for guild " + g.getId() + " (" + g.getName() + ")");
+                System.out.println("Couldn't create guild folder for guild " + g.getId() + " (" + g.getName() + ")");
                 entries.setError(ErrorCode.OTHER_ERROR);
                 return entries;
             }

@@ -1,6 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
 import com.florian.Vars;
 import net.dv8tion.jda.api.Permission;
@@ -19,7 +20,7 @@ public class Prune extends BaseCommand {
         super.command = "prune";
         super.description = "Deletes specified amount of messages from channel.";
         super.arguments = "<amount>";
-        super.moderation = true;
+        super.userType = UserType.MODERATOR;
         super.permission = Permission.MESSAGE_MANAGE;
         super.requiredArguments = true;
         super.aliases.add("purge");
@@ -51,7 +52,7 @@ public class Prune extends BaseCommand {
                         interruptedException.printStackTrace();
                     }
 
-                    if(message.retrieveReactionUsers("\uD83D\uDC4D").complete().contains(e.getMember().getUser())) {
+                    if (message.retrieveReactionUsers("\uD83D\uDC4D").complete().contains(e.getMember().getUser())) {
                         // Start deleting the messages. Add 2 for the users and the bots message
                         clear(e.getChannel(), e.getMember(), amount + 2);
                     } else {

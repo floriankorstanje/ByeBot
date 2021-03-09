@@ -30,14 +30,14 @@ public class Main {
             }
         }
 
-        // Check if the folder for server-specific files exists
-        File serversFolder = new File(Vars.serversFolder);
-        if (!serversFolder.exists()) {
-            boolean success = serversFolder.mkdirs();
+        // Check if the folder for guild-specific files exists
+        File guildsFolder = new File(Vars.guildsFolder);
+        if (!guildsFolder.exists()) {
+            boolean success = guildsFolder.mkdirs();
 
             // If it wasn't successful, quit
             if (!success) {
-                System.out.println("Unable to create servers folder. Quitting.");
+                System.out.println("Unable to create guilds folder. Quitting.");
                 return;
             }
         }

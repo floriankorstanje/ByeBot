@@ -45,7 +45,7 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
@@ -68,7 +68,7 @@ public class UserHistory {
         try {
             Util.writeSmallTextFile(file, lines);
         } catch (Exception e) {
-            System.out.println("Couldn't write user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
@@ -91,7 +91,7 @@ public class UserHistory {
                 return ErrorCode.OTHER_ERROR;
             }
 
-            // If it did create, return no history because there is no history files for this server
+            // If it did create, return no history because there is no history files for this guild
             return ErrorCode.NO_USER_HISTORY;
         }
 
@@ -104,7 +104,7 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
         // Make sure lines isn't null
@@ -140,14 +140,14 @@ public class UserHistory {
             boolean success = new File(file).delete();
 
             if (!success) {
-                System.out.println("Couldn't delete empty history file for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+                System.out.println("Couldn't delete empty history file for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
             }
         } else {
             try {
                 Util.writeSmallTextFile(file, lines);
             } catch (Exception e) {
-                System.out.println("Couldn't write user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+                System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
             }
         }
@@ -171,7 +171,7 @@ public class UserHistory {
                 return ErrorCode.OTHER_ERROR;
             }
 
-            // If it did create, return no history because there is no history files for this server
+            // If it did create, return no history because there is no history files for this guild
             return ErrorCode.NO_USER_HISTORY;
         }
 
@@ -184,7 +184,7 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
@@ -212,7 +212,7 @@ public class UserHistory {
         try {
             Util.writeSmallTextFile(file, lines);
         } catch (Exception e) {
-            System.out.println("Couldn't write user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
         }
 
@@ -239,7 +239,7 @@ public class UserHistory {
                 return entries;
             }
 
-            // If it did create, return no history because there is no history files for this server
+            // If it did create, return no history because there is no history files for this guild
             entries.setError(ErrorCode.NO_USER_HISTORY);
             return entries;
         }
@@ -255,7 +255,7 @@ public class UserHistory {
         try {
             lines = Util.readSmallTextFile(file);
         } catch (IOException ex) {
-            System.out.println("Couldn't read user history for user " + user + " in server " + g.getId() + " (" + g.getName() + ")");
+            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             entries.setError(ErrorCode.OTHER_ERROR);
             return entries;
         }

@@ -13,7 +13,7 @@ public class BaseCommand {
     public String arguments;
     public Permission permission;
     public List<String> aliases;
-    public boolean moderation;
+    public UserType userType;
     public boolean requiredArguments;
 
     public BaseCommand() {
@@ -32,8 +32,8 @@ public class BaseCommand {
         // Aliases are different commands to execute one command
         aliases = new ArrayList<>();
 
-        // Moderation is to differentiate between mod commands and normal-user commands for the different help menus
-        moderation = false;
+        // userType is used to differentiate between mod, owner and normal commands
+        userType = UserType.EVERYONE;
 
         // requiredArguments is true if the command requires one or more arguments
         requiredArguments = false;

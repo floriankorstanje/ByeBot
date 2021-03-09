@@ -8,11 +8,13 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Date;
 
-public class Serverinfo extends BaseCommand {
-    public Serverinfo() {
-        super.command = "serverinfo";
-        super.description = "Gives some info about the server.";
+public class Guildinfo extends BaseCommand {
+    public Guildinfo() {
+        super.command = "guildinfo";
+        super.description = "Gives some info about the guild.";
+        super.aliases.add("guild");
         super.aliases.add("server");
+        super.aliases.add("serverinfo");
     }
 
     @Override
@@ -24,9 +26,9 @@ public class Serverinfo extends BaseCommand {
         embed.setTitle(e.getGuild().getName() + " info");
         embed.setImage(e.getGuild().getIconUrl());
 
-        // Fill in the embed with server info
-        embed.addField("Server ID", "`" + e.getGuild().getId() + "`", true);
-        embed.addField("Server Region", "`" + e.getGuild().getRegionRaw() + "`", true);
+        // Fill in the embed with guild info
+        embed.addField("Guild ID", "`" + e.getGuild().getId() + "`", true);
+        embed.addField("Guild Region", "`" + e.getGuild().getRegionRaw() + "`", true);
         embed.addField("Owner", e.getGuild().retrieveOwner().complete().getAsMention(), true);
         embed.addField("Boosts", "`" + e.getGuild().getBoostCount() + "/30` (Tier " + e.getGuild().getBoostTier().getKey() + ")", true);
         embed.addField("Roles", "`" + e.getGuild().getRoles().size() + "`", true);

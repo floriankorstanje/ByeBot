@@ -1,6 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
 import com.florian.UserHistory.OffenseType;
 import com.florian.UserHistory.UserHistory;
@@ -17,7 +18,7 @@ public class Kick extends BaseCommand {
         super.description = "Kicks a user.";
         super.arguments = "<user> [reason]";
         super.permission = Permission.KICK_MEMBERS;
-        super.moderation = true;
+        super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
     }
 

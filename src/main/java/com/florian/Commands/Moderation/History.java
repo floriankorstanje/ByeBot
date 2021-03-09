@@ -1,6 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
 import com.florian.UserHistory.UserHistory;
 import com.florian.UserHistory.UserHistoryEntries;
@@ -18,7 +19,7 @@ public class History extends BaseCommand {
         super.description = "Shows, or edits someones history.";
         super.arguments = "<user> [get|edit|remove] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
-        super.moderation = true;
+        super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
         super.aliases.add("h");
     }
@@ -53,7 +54,7 @@ public class History extends BaseCommand {
                     // Save the executors ID so we can try and change it to a tag
                     String executor = entry.getExecutor();
 
-                    // Try to change the executors ID to a tag if the user is still in the server
+                    // Try to change the executors ID to a tag if the user is still in the guild
                     try {
                         executor = e.getGuild().retrieveMemberById(executor).complete().getUser().getAsTag();
                     } catch (Exception ignored) {

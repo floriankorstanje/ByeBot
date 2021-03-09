@@ -1,6 +1,7 @@
 package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
@@ -54,7 +55,7 @@ public class Help extends BaseCommand {
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {
             // Only add commands that don't need permission to execute (mod commands)
-            if (!command.moderation)
+            if (command.userType == UserType.EVERYONE)
                 embed.addField(Vars.botPrefix + command.command, command.description, false);
         }
 

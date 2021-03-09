@@ -1,6 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
 import com.florian.Userlog.Userlog;
 import com.florian.Userlog.UserlogEntries;
@@ -25,9 +26,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Lastseen extends BaseCommand {
     public Lastseen() {
         super.command = "lastseen";
-        super.description = "Shows when I last saw this user do something in this server. Full gives you the last " + Vars.maxUserlogEntries + " actions of this user.";
+        super.description = "Shows when I last saw this user do something in this guild. Full gives you the last " + Vars.maxUserlogEntries + " actions of this user.";
         super.arguments = "<user> [full]";
-        super.moderation = true;
+        super.userType = UserType.MODERATOR;
         super.permission = Permission.KICK_MEMBERS;
         super.requiredArguments = true;
     }

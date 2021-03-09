@@ -57,8 +57,8 @@ public class Util {
     }
 
     public static String getGuildFolder(Guild g) {
-        // Return the folder where server-specific things are stored
-        return Vars.serversFolder + g.getId() + "/";
+        // Return the folder where guild-specific things are stored
+        return Vars.guildsFolder + g.getId() + "/";
     }
 
     public static String formatDate(Date date) {

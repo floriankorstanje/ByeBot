@@ -1,6 +1,7 @@
 package com.florian;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.UserType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -54,6 +55,12 @@ public class CommandHandler extends ListenerAdapter {
             // Check if the command was recognized, if so, execute it
             for (BaseCommand command : Vars.commands) {
                 if (command.command.equalsIgnoreCase(cmd) || Util.containsIgnoreCase(command.aliases, cmd)) {
+                    // Check if the user that's trying to execute isn't executing an owner-only command as owner
+                    if (command.userType == UserType.OWNER && !event.getMember().getId().equals(Vars.botOwner.getId())) {
+                        error = ErrorCode.NO_PERMISSION;
+                        break;
+                    }
+
                     // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
                     if (command.requiredArguments && args.length == 0) {
                         error = ErrorCode.WRONG_ARGUMENTS;
@@ -99,10 +106,8 @@ public class CommandHandler extends ListenerAdapter {
 
                 // Fill the embed
                 embed.addField("Executor", event.getMember().getAsMention(), false);
-                embed.addField("Command", "`" + Vars.botPrefix + cmd + "`", false);
-                embed.addField("Arguments", String.valueOf(args.length), false);
+                embed.addField("Command", "`" + Vars.botPrefix + cmd + " [" + args.length + "]`", false);
                 embed.addField("Bot Version", "`" + Vars.version + "`", false);
-                embed.addField("Java Version", "`" + System.getProperty("java.version") + "`", false);
                 embed.addField("Error", "`" + error.toString() + "`", false);
                 embed.addField("Report Bug", "If you'd like to report this error as a bug, submit a new issue [here](https://github.com/floriankorstanje/ByeBot/issues)", false);
 

@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class Invite extends BaseCommand {
     public Invite() {
         this.command = "invite";
-        this.description = "Invite link to get this bot in your server.";
+        this.description = "Invite link to get this bot in your guild.";
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Invite extends BaseCommand {
 
         // Set embed info
         embed.setTitle("Invite for " + Vars.appInfo.getName());
-        embed.addField("", "[Click Here](" + url + ") to add the bot to your server.", false);
+        embed.addField("", "[Click Here](" + url + ") to add the bot to your guild.", false);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

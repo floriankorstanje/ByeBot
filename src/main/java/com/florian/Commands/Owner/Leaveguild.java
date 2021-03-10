@@ -1,4 +1,4 @@
-package com.florian.Commands.OwnerCommands;
+package com.florian.Commands.Owner;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;

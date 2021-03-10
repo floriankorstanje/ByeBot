@@ -56,7 +56,7 @@ public class Userlog {
         // Get the full file
         List<String> lines = null;
         try {
-            lines = Util.readSmallTextFile(file);
+            lines = Util.readFile(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,7 +77,7 @@ public class Userlog {
 
         // Write back to the file
         try {
-            Util.writeSmallTextFile(file, lines);
+            Util.writeFile(file, lines);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,7 +116,7 @@ public class Userlog {
         // Get the full file
         List<String> lines = null;
         try {
-            lines = Util.readSmallTextFile(file);
+            lines = Util.readFile(file);
         } catch (IOException e) {
             e.printStackTrace();
         }

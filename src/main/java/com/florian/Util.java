@@ -5,6 +5,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +14,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Util {
     public static String[] removeElement(String[] arr, int index) {
@@ -72,12 +75,23 @@ public class Util {
         return "`" + formatter.format(date) + "` (" + pretty.format(date) + ")";
     }
 
-    public static List<String> readSmallTextFile(String fileName) throws IOException {
+    public static String getUptime() {
+        RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
+        final long uptime = rb.getUptime();
+        final long days = TimeUnit.MILLISECONDS.toDays(uptime);
+        final long hours = TimeUnit.MILLISECONDS.toHours(uptime) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(uptime));
+        final long minutes = TimeUnit.MILLISECONDS.toMinutes(uptime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(uptime));
+        final long seconds = TimeUnit.MILLISECONDS.toSeconds(uptime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(uptime));
+
+        return String.format("%d Days, %d Hours, %d Minutes, %d Seconds", days, hours, minutes, seconds);
+    }
+
+    public static List<String> readFile(String fileName) throws IOException {
         Path path = Paths.get(fileName);
         return Files.readAllLines(path, StandardCharsets.UTF_8);
     }
 
-    public static void writeSmallTextFile(String fileName, List<String> lines) throws IOException {
+    public static void writeFile(String fileName, List<String> lines) throws IOException {
         Path path = Paths.get(fileName);
         Files.write(path, lines, StandardCharsets.UTF_8);
     }

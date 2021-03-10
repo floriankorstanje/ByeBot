@@ -43,7 +43,7 @@ public class UserHistory {
         // Get all lines in the file
         List<String> lines;
         try {
-            lines = Util.readSmallTextFile(file);
+            lines = Util.readFile(file);
         } catch (IOException e) {
             System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
@@ -66,7 +66,7 @@ public class UserHistory {
 
         // Write changes back to file
         try {
-            Util.writeSmallTextFile(file, lines);
+            Util.writeFile(file, lines);
         } catch (Exception e) {
             System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
@@ -102,7 +102,7 @@ public class UserHistory {
         // Get all lines in the file
         List<String> lines;
         try {
-            lines = Util.readSmallTextFile(file);
+            lines = Util.readFile(file);
         } catch (IOException e) {
             System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
@@ -145,7 +145,7 @@ public class UserHistory {
             }
         } else {
             try {
-                Util.writeSmallTextFile(file, lines);
+                Util.writeFile(file, lines);
             } catch (Exception e) {
                 System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
                 return ErrorCode.OTHER_ERROR;
@@ -182,7 +182,7 @@ public class UserHistory {
         // Get all lines in the file
         List<String> lines;
         try {
-            lines = Util.readSmallTextFile(file);
+            lines = Util.readFile(file);
         } catch (IOException e) {
             System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
@@ -210,7 +210,7 @@ public class UserHistory {
 
         // Write changes back to file
         try {
-            Util.writeSmallTextFile(file, lines);
+            Util.writeFile(file, lines);
         } catch (Exception e) {
             System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             return ErrorCode.OTHER_ERROR;
@@ -253,7 +253,7 @@ public class UserHistory {
         // Get all lines in the file
         List<String> lines;
         try {
-            lines = Util.readSmallTextFile(file);
+            lines = Util.readFile(file);
         } catch (IOException ex) {
             System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
             entries.setError(ErrorCode.OTHER_ERROR);

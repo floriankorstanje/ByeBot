@@ -17,7 +17,7 @@ public class History extends BaseCommand {
     public History() {
         super.command = "history";
         super.description = "Shows, or edits someones history.";
-        super.arguments = "<user> [get|edit|remove] [history-id] [new-reason]";
+        super.arguments = "<user> [edit|remove] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
         super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
@@ -26,47 +26,50 @@ public class History extends BaseCommand {
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if (args.length >= 2) {
+        if (args.length == 1) {
+            // Save user id
+            String user = args[0];
+
+            // Get all the entries
+            UserHistoryEntries entries = UserHistory.getAllHistory(e.getGuild(), user);
+
+            // If entries failed, return the error
+            if (entries.getError() != ErrorCode.SUCCESS)
+                return entries.getError();
+
+            // Create embed to show all entries
+            EmbedBuilder embed = Util.defaultEmbed();
+
+            // Set title
+            embed.setTitle("History for `" + user + "`");
+
+            // Fill embed
+            for (int i = 0; i < entries.getEntries().length; i++) {
+                // Get entry as easy variable
+                UserHistoryEntry entry = entries.getEntries()[i];
+
+                // Save the executors ID so we can try and change it to a tag
+                String executor = entry.getExecutor();
+
+                // Try to change the executors ID to a tag if the user is still in the guild
+                try {
+                    executor = e.getGuild().retrieveMemberById(executor).complete().getUser().getAsTag();
+                } catch (Exception ignored) {
+                }
+
+                // Add it to the embed
+                embed.addField("Entry #" + i, "ID: `" + entry.getId() + "`\nIssued By: `" + executor + "`\nDate Issued: " + Util.formatDate(new Date(entry.getTime())) + "\nType: `" + entry.getOffense() + "`\nReason: " + entry.getReason(), false);
+            }
+
+            // Send the embed
+            e.getChannel().sendMessage(embed.build()).queue();
+        } else if (args.length >= 2) {
             String operation = args[1];
 
             // Save user id
             String user = args[0];
 
-            if (operation.equalsIgnoreCase("get")) {
-                // Get all the entries
-                UserHistoryEntries entries = UserHistory.getAllHistory(e.getGuild(), user);
-
-                // If entries failed, return the error
-                if (entries.getError() != ErrorCode.SUCCESS)
-                    return entries.getError();
-
-                // Create embed to show all entries
-                EmbedBuilder embed = Util.defaultEmbed();
-
-                // Set title
-                embed.setTitle("History for `" + user + "`");
-
-                // Fill embed
-                for (int i = 0; i < entries.getEntries().length; i++) {
-                    // Get entry as easy variable
-                    UserHistoryEntry entry = entries.getEntries()[i];
-
-                    // Save the executors ID so we can try and change it to a tag
-                    String executor = entry.getExecutor();
-
-                    // Try to change the executors ID to a tag if the user is still in the guild
-                    try {
-                        executor = e.getGuild().retrieveMemberById(executor).complete().getUser().getAsTag();
-                    } catch (Exception ignored) {
-                    }
-
-                    // Add it to the embed
-                    embed.addField("Entry #" + i, "ID: `" + entry.getId() + "`\nIssued By: `" + executor + "`\nDate Issued: " + Util.formatDate(new Date(entry.getTime())) + "\nType: `" + entry.getOffense() + "`\nReason: " + entry.getReason(), false);
-                }
-
-                // Send the embed
-                e.getChannel().sendMessage(embed.build()).queue();
-            } else if (operation.equalsIgnoreCase("edit")) {
+            if (operation.equalsIgnoreCase("edit")) {
                 // Get entry ID
                 String id = args[2];
 

@@ -1,4 +1,4 @@
-package com.florian.Commands.Utility;
+package com.florian.Commands.Help;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
@@ -24,8 +24,10 @@ public class Help extends BaseCommand {
         if (args.length == 1) {
             for (BaseCommand command : Vars.commands) {
                 if (command.command.equalsIgnoreCase(args[0]) || Util.containsIgnoreCase(command.aliases, args[0])) {
-                    // Add all the info about the command
+                    // Set title
                     embed.setTitle("Command info for " + Vars.botPrefix + command.command);
+
+                    // Add all the info about the command
                     embed.addField("Name", command.command, false);
                     embed.addField("Description", command.description, false);
                     embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.requiredArguments ? " " + command.arguments + "`" : "`"), false);
@@ -50,7 +52,6 @@ public class Help extends BaseCommand {
         // Set some basic info for the embed
         embed.setTitle("Help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);
         embed.addField("You can type `" + Vars.botPrefix + this.command + " " + this.arguments + "` to get more specific help about a command.", "", false);
-        embed.addField("To view moderation commands, type `" + Vars.botPrefix + new Modhelp().command + "`", "", false);
 
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {

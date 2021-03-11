@@ -36,16 +36,22 @@ public class Util {
         return newArray;
     }
 
-    public static EmbedBuilder defaultEmbed() {
+    public static EmbedBuilder defaultEmbed(boolean footer) {
         // This creates an embed with a default footer and color
         EmbedBuilder embed = new EmbedBuilder();
 
         // Set the default values
         embed.setColor(Vars.color);
-        embed.setFooter(Vars.appInfo.getName() + " made with ❤ by " + Vars.botOwner.getName(), Vars.botOwner.getAvatarUrl());
+        if(footer)
+            embed.setFooter(Vars.appInfo.getName() + " made with ❤ by " + Vars.botOwner.getName(), Vars.botOwner.getAvatarUrl());
 
         // Return the embed
         return embed;
+    }
+
+    public static EmbedBuilder defaultEmbed() {
+        // Creates an embed with footer
+        return defaultEmbed(true);
     }
 
     public static boolean containsIgnoreCase(List<String> list, String string) {

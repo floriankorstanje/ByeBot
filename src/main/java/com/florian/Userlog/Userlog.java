@@ -97,7 +97,7 @@ public class Userlog {
             // If it couldn't create the folder, quit
             if (!success) {
                 System.out.println("Couldn't create guild folder for guild " + g.getId() + " (" + g.getName() + ")");
-                return Pair.of(new UserlogEntry[] {}, ErrorCode.OTHER_ERROR);
+                return Pair.of(new UserlogEntry[]{}, ErrorCode.OTHER_ERROR);
             }
         }
 
@@ -120,7 +120,7 @@ public class Userlog {
 
         // Make sure lines isn't null
         if (lines == null)
-            return Pair.of(new UserlogEntry[] {}, ErrorCode.OTHER_ERROR);
+            return Pair.of(new UserlogEntry[]{}, ErrorCode.OTHER_ERROR);
 
         // Get all the entries
         // Loop needs to decrement so newest entry is top of the list

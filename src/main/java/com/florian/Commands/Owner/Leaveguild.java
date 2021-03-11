@@ -30,7 +30,7 @@ public class Leaveguild extends BaseCommand {
             }
 
             // Also check that the guild isn't null
-            if(g == null)
+            if (g == null)
                 return ErrorCode.UNKNOWN_ID;
 
             // Create an epic embed to tell the user the bot left the guild

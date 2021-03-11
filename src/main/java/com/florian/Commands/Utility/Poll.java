@@ -19,11 +19,11 @@ public class Poll extends BaseCommand {
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         // Add all arguments into a string
         StringBuilder question = new StringBuilder();
-        for(String str : args)
+        for (String str : args)
             question.append(str).append(" ");
 
         // The title of an embed can't be longer than 256 characters because Discord said so
-        if(question.length() > 256)
+        if (question.length() > 256)
             return ErrorCode.QUESTION_TOO_LONG;
 
         // Emoji

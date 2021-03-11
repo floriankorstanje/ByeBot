@@ -233,16 +233,16 @@ public class UserHistory {
             // If it couldn't create the folder, quit
             if (!success) {
                 System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
-                return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
+                return Pair.of(new UserHistoryEntry[]{}, ErrorCode.OTHER_ERROR);
             }
 
             // If it did create, return no history because there is no history files for this guild
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
         }
 
         // If the file doesn't exist, there is also no history
         if (!new File(file).exists())
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
 
         // Get all lines in the file
         List<String> lines;
@@ -250,16 +250,16 @@ public class UserHistory {
             lines = Util.readFile(file);
         } catch (IOException ex) {
             System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.OTHER_ERROR);
         }
 
         // Make sure lines isn't null
         if (lines == null)
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.OTHER_ERROR);
 
         // Check if there is any history
         if (lines.size() == 0)
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
 
         // Get all the entries
         UserHistoryEntry[] list = new UserHistoryEntry[lines.size()];

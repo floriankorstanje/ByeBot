@@ -5,6 +5,7 @@ import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,13 +84,10 @@ public class Userlog {
         }
     }
 
-    public static UserlogEntries getEntries(Guild g, Member m) {
+    public static Pair<UserlogEntry[], ErrorCode> getEntries(Guild g, Member m) {
         // Get the guilds folder and file
         String folder = Util.getGuildFolder(g) + Vars.userlogFolder;
         String file = folder + m.getId();
-
-        // Initialize class to return if an error occurred
-        UserlogEntries entries = new UserlogEntries(new UserlogEntry[]{}, ErrorCode.SUCCESS);
 
         // Check if the guild has a folder
         File guild = new File(folder);
@@ -99,8 +97,7 @@ public class Userlog {
             // If it couldn't create the folder, quit
             if (!success) {
                 System.out.println("Couldn't create guild folder for guild " + g.getId() + " (" + g.getName() + ")");
-                entries.setError(ErrorCode.OTHER_ERROR);
-                return entries;
+                return Pair.of(new UserlogEntry[] {}, ErrorCode.OTHER_ERROR);
             }
         }
 
@@ -121,11 +118,9 @@ public class Userlog {
             e.printStackTrace();
         }
 
-        // Make sure lines isn't nul
-        if (lines == null) {
-            entries.setError(ErrorCode.OTHER_ERROR);
-            return entries;
-        }
+        // Make sure lines isn't null
+        if (lines == null)
+            return Pair.of(new UserlogEntry[] {}, ErrorCode.OTHER_ERROR);
 
         // Get all the entries
         // Loop needs to decrement so newest entry is top of the list
@@ -138,11 +133,8 @@ public class Userlog {
             list[lines.size() - i - 1] = new UserlogEntry(time, action);
         }
 
-        // Add all the entries to return class
-        entries.setEntries(list);
-
         // Return success
-        return entries;
+        return Pair.of(list, ErrorCode.SUCCESS);
     }
 
     private static void clearOldEntries(List<String> file) {

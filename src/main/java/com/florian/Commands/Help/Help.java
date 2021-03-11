@@ -13,6 +13,7 @@ public class Help extends BaseCommand {
         super.command = "help";
         super.description = "Shows all the commands and how to use them.";
         super.arguments = "[command]";
+        super.examples.add("invite");
     }
 
     @Override
@@ -30,7 +31,8 @@ public class Help extends BaseCommand {
                     // Add all the info about the command
                     embed.addField("Name", command.command, false);
                     embed.addField("Description", command.description, false);
-                    embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.requiredArguments ? " " + command.arguments + "`" : "`"), false);
+                    embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.arguments.length() > 0 ? " " + command.arguments + "`" : "`"), false);
+                    embed.addField("Examples", command.examples.size() == 0 ? "none" : "`" + Vars.botPrefix + command.command + " " + String.join("`\n`" + Vars.botPrefix + command.command + " ", command.examples) + "`", false);
                     embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);
                     embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission.toString() + "`", false);
 

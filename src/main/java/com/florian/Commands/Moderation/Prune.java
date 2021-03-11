@@ -25,6 +25,7 @@ public class Prune extends BaseCommand {
         super.requiredArguments = true;
         super.aliases.add("purge");
         super.aliases.add("clear");
+        super.examples.add("10");
     }
 
     @Override

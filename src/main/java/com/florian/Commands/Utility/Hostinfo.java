@@ -7,10 +7,6 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.concurrent.TimeUnit;
-
 public class Hostinfo extends BaseCommand {
     public Hostinfo() {
         super.command = "hostinfo";
@@ -36,7 +32,7 @@ public class Hostinfo extends BaseCommand {
 
         // Fill the embed
         embed.addField("Java Version", "`" + System.getProperty("java.version") + "`", false);
-        embed.addField("Memory Usage", "`" + Math.round((double) used / 1024.0) + "kB / " + Math.round((double) total / 1024.0) + "kB`", false);
+        embed.addField("Memory Usage", "`" + Math.round((double) used / 1024.0) + "KiB / " + Math.round((double) total / 1024.0) + "KiB`", false);
         embed.addField("Uptime", "`" + Util.getUptime() + "`", false);
         embed.addField("Operating System", "`" + System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ")`", false);
 

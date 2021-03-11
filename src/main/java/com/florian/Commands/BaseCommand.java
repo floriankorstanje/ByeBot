@@ -13,6 +13,7 @@ public class BaseCommand {
     public String arguments;
     public Permission permission;
     public List<String> aliases;
+    public List<String> examples;
     public UserType userType;
     public boolean requiredArguments;
 
@@ -31,6 +32,9 @@ public class BaseCommand {
 
         // Aliases are different commands to execute one command
         aliases = new ArrayList<>();
+
+        // Examples are some examples for a command if it's hard to use
+        examples = new ArrayList<>();
 
         // userType is used to differentiate between mod, owner and normal commands
         userType = UserType.EVERYONE;

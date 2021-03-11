@@ -20,6 +20,7 @@ public class Ban extends BaseCommand {
         super.permission = Permission.BAN_MEMBERS;
         super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
+        super.examples.add("399594813390848002 Too cool");
     }
 
     @Override

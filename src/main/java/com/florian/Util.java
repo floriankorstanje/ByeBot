@@ -77,11 +77,14 @@ public class Util {
 
     public static String getUptime() {
         RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-        final long uptime = rb.getUptime();
-        final long days = TimeUnit.MILLISECONDS.toDays(uptime);
-        final long hours = TimeUnit.MILLISECONDS.toHours(uptime) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(uptime));
-        final long minutes = TimeUnit.MILLISECONDS.toMinutes(uptime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(uptime));
-        final long seconds = TimeUnit.MILLISECONDS.toSeconds(uptime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(uptime));
+        return formatTime(rb.getUptime());
+    }
+
+    public static String formatTime(long millis) {
+        final long days = TimeUnit.MILLISECONDS.toDays(millis);
+        final long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis));
+        final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
+        final long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
 
         return String.format("%d Days, %d Hours, %d Minutes, %d Seconds", days, hours, minutes, seconds);
     }

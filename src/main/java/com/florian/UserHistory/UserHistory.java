@@ -5,6 +5,7 @@ import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -219,13 +220,10 @@ public class UserHistory {
         return ErrorCode.SUCCESS;
     }
 
-    public static UserHistoryEntries getAllHistory(Guild g, String user) {
+    public static Pair<UserHistoryEntry[], ErrorCode> getAllHistory(Guild g, String user) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
         String file = folder + user;
-
-        // Return variable
-        UserHistoryEntries entries = new UserHistoryEntries(new UserHistoryEntry[]{}, ErrorCode.SUCCESS);
 
         // Check if folder exists
         File historyFolder = new File(folder);
@@ -235,20 +233,16 @@ public class UserHistory {
             // If it couldn't create the folder, quit
             if (!success) {
                 System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
-                entries.setError(ErrorCode.OTHER_ERROR);
-                return entries;
+                return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
             }
 
             // If it did create, return no history because there is no history files for this guild
-            entries.setError(ErrorCode.NO_USER_HISTORY);
-            return entries;
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
         }
 
         // If the file doesn't exist, there is also no history
-        if (!new File(file).exists()) {
-            entries.setError(ErrorCode.NO_USER_HISTORY);
-            return entries;
-        }
+        if (!new File(file).exists())
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
 
         // Get all lines in the file
         List<String> lines;
@@ -256,21 +250,16 @@ public class UserHistory {
             lines = Util.readFile(file);
         } catch (IOException ex) {
             System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            entries.setError(ErrorCode.OTHER_ERROR);
-            return entries;
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
         }
 
         // Make sure lines isn't null
-        if (lines == null) {
-            entries.setError(ErrorCode.OTHER_ERROR);
-            return entries;
-        }
+        if (lines == null)
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
 
         // Check if there is any history
-        if (lines.size() == 0) {
-            entries.setError(ErrorCode.NO_USER_HISTORY);
-            return entries;
-        }
+        if (lines.size() == 0)
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
 
         // Get all the entries
         UserHistoryEntry[] list = new UserHistoryEntry[lines.size()];
@@ -285,11 +274,8 @@ public class UserHistory {
             list[i] = new UserHistoryEntry(executor, date, type, reason, id);
         }
 
-        // Add the list to the entries
-        entries.setEntries(list);
-
         // Return the entries
-        return entries;
+        return Pair.of(list, ErrorCode.SUCCESS);
     }
 
     private static int getEntryLine(List<String> lines, String id) {

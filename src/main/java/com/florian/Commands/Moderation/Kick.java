@@ -20,6 +20,7 @@ public class Kick extends BaseCommand {
         super.permission = Permission.KICK_MEMBERS;
         super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
+        super.examples.add("399594813390848002 You are now kicked");
     }
 
     @Override

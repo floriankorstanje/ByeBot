@@ -4,13 +4,13 @@ import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
 import com.florian.Userlog.Userlog;
-import com.florian.Userlog.UserlogEntries;
 import com.florian.Userlog.UserlogEntry;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.util.Date;
 
@@ -38,11 +38,11 @@ public class Lastseen extends BaseCommand {
             }
 
             // Get all the entries
-            UserlogEntries entries = Userlog.getEntries(e.getGuild(), m);
+            Pair<UserlogEntry[], ErrorCode> entries = Userlog.getEntries(e.getGuild(), m);
 
             // If getting entries failed, return
-            if (entries.getErrorCode() != ErrorCode.SUCCESS)
-                return entries.getErrorCode();
+            if (entries.getRight() != ErrorCode.SUCCESS)
+                return entries.getRight();
 
             // Create an embed
             EmbedBuilder embed = Util.defaultEmbed();
@@ -51,12 +51,12 @@ public class Lastseen extends BaseCommand {
             embed.setTitle("Lastseen " + m.getUser().getAsTag());
 
             // Get all entries and add to embed
-            for (int i = 0; i < entries.getEntries().length; i++) {
+            for (int i = 0; i < entries.getLeft().length; i++) {
                 // Don't add more than 5 entries to the list
                 if (i >= 5)
                     break;
 
-                UserlogEntry entry = entries.getEntries()[i];
+                UserlogEntry entry = entries.getLeft()[i];
 
                 // Add entry to the embed
                 embed.addField("Entry #" + i, "Time: " + Util.formatDate(new Date(entry.getTime())) + "\nAction: `" + entry.getAction() + "`", false);

@@ -4,12 +4,12 @@ import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
 import com.florian.UserHistory.UserHistory;
-import com.florian.UserHistory.UserHistoryEntries;
 import com.florian.UserHistory.UserHistoryEntry;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.util.Date;
 
@@ -17,11 +17,13 @@ public class History extends BaseCommand {
     public History() {
         super.command = "history";
         super.description = "Shows, or edits someones history.";
-        super.arguments = "<user> [edit|remove] [history-id] [new-reason]";
+        super.arguments = "<user> [operation(edit/remove)] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
         super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
-        super.aliases.add("h");
+        super.examples.add("399594813390848002");
+        super.examples.add("399594813390848002 edit 178218de667 This is a new reason");
+        super.examples.add("399594813390848002 remove 178218de667");
     }
 
     @Override
@@ -31,11 +33,11 @@ public class History extends BaseCommand {
             String user = args[0];
 
             // Get all the entries
-            UserHistoryEntries entries = UserHistory.getAllHistory(e.getGuild(), user);
+            Pair<UserHistoryEntry[], ErrorCode> entries = UserHistory.getAllHistory(e.getGuild(), user);
 
             // If entries failed, return the error
-            if (entries.getError() != ErrorCode.SUCCESS)
-                return entries.getError();
+            if (entries.getRight() != ErrorCode.SUCCESS)
+                return entries.getRight();
 
             // Create embed to show all entries
             EmbedBuilder embed = Util.defaultEmbed();
@@ -44,9 +46,9 @@ public class History extends BaseCommand {
             embed.setTitle("History for `" + user + "`");
 
             // Fill embed
-            for (int i = 0; i < entries.getEntries().length; i++) {
+            for (int i = 0; i < entries.getLeft().length; i++) {
                 // Get entry as easy variable
-                UserHistoryEntry entry = entries.getEntries()[i];
+                UserHistoryEntry entry = entries.getLeft()[i];
 
                 // Save the executors ID so we can try and change it to a tag
                 String executor = entry.getExecutor();

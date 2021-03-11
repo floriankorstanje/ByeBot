@@ -15,7 +15,8 @@ public class Userinfo extends BaseCommand {
         super.command = "userinfo";
         super.description = "Shows info about you or a user specified.";
         super.arguments = "[user]";
-        super.aliases.add("uinfo");
+        super.aliases.add("user");
+        super.aliases.add("memberinfo");
     }
 
     @Override

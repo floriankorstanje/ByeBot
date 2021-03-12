@@ -6,18 +6,23 @@ import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Reminders extends BaseCommand {
-    private static List<Reminder> reminders = new ArrayList<>();
+    private static final List<Reminder> reminders = new ArrayList<>();
 
     public Reminders() {
         super.command = "reminders";
         super.description = "Pings you in a set time to remind you of something.";
-        super.arguments = "[operation(add/remove)] [time|reminder-id] [time-unit(hours/minutes/seconds)] [reminder]";
+        super.arguments = "[operation(add/remove)] [time|reminder-id] [time-unit(hours/minutes/seconds/date)] [reminder]";
         super.examples.add("add 3 hours Make a discord bot");
+        super.examples.add("add 12/3/2021 date Do something epic!");
         super.examples.add("remove 178217adda0");
         super.aliases.add("reminder");
         super.aliases.add("remindme");
@@ -56,7 +61,7 @@ public class Reminders extends BaseCommand {
                     return ErrorCode.WRONG_ARGUMENTS;
 
                 // Get arguments
-                int time = Integer.parseInt(args[1]);
+                String time = args[1];
                 String unit = args[2];
                 StringBuilder reason = new StringBuilder();
                 for(int i = 3; i < args.length; i++)
@@ -66,13 +71,21 @@ public class Reminders extends BaseCommand {
                 long waitFor = 0;
                 switch (unit.toLowerCase()) {
                     case "hours":
-                        waitFor = (long) time * 60 * 60 * 1000;
+                        waitFor = (long) Integer.parseInt(time) * 60 * 60 * 1000;
                         break;
                     case "minutes":
-                        waitFor = (long) time * 60 * 1000;
+                        waitFor = (long) Integer.parseInt(time) * 60 * 1000;
                         break;
                     case "seconds":
-                        waitFor = (long) time * 1000;
+                        waitFor = (long) Integer.parseInt(time) * 1000;
+                        break;
+                    case "date":
+                        try {
+                            waitFor = new SimpleDateFormat("d/M/yy").parse(time).toInstant().toEpochMilli() - Instant.now().toEpochMilli();
+                        } catch (Exception ex) {
+                            // Couldn't parse date
+                            return ErrorCode.WRONG_ARGUMENTS;
+                        }
                         break;
                     default:
                         return ErrorCode.WRONG_ARGUMENTS;
@@ -96,6 +109,7 @@ public class Reminders extends BaseCommand {
 
                 // Fill embed
                 embed.addField("ID", "`" + reminder.getId() + "`", false);
+                embed.addField("Time Done", Util.formatDateTime(new Date(finalTime)), false);
                 embed.addField("Reminder", reminder.getReason(), false);
 
                 // Send the embed
@@ -114,7 +128,7 @@ public class Reminders extends BaseCommand {
                     reminders.remove(reminder);
 
                     // Send message to tell the user
-                    e.getChannel().sendMessage(e.getMember().getAsMention() + ", your reminder for \"" + reason.toString() + "\" is done.").queue();
+                    e.getChannel().sendMessage(e.getMember().getAsMention() + ", your reminder for \"" + reason.toString().trim() + "\" is done.").queue();
                 }).start();
             } else if(operation.equalsIgnoreCase("remove")) {
                 // Remove only takes 2 args

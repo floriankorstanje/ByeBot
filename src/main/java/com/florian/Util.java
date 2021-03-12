@@ -70,9 +70,16 @@ public class Util {
         return Vars.guildsFolder + g.getId() + "/";
     }
 
-    public static String formatDate(Date date) {
+    public static String formatDateTime(Date date) {
         // SimpleDateFormat to get the date
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss zz");
+
+        return "`" + formatter.format(date) + "`";
+    }
+
+    public static String formatDateAgo(Date date) {
+        // SimpleDateFormat to get the date
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         // PrettyTime to get time ago
         PrettyTime pretty = new PrettyTime();

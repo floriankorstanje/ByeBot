@@ -34,7 +34,7 @@ public class Guildinfo extends BaseCommand {
         embed.addField("Roles", "`" + e.getGuild().getRoles().size() + "`", true);
         embed.addField("Members", "`" + e.getGuild().getMemberCount() + "`", true);
         embed.addField("Channels", "Total: `" + e.getGuild().getChannels().size() + "`\nVoice: `" + e.getGuild().getVoiceChannels().size() + "`\nText: `" + e.getGuild().getTextChannels().size() + "`", true);
-        embed.addField("Time Created", Util.formatDate(new Date(e.getGuild().getTimeCreated().toEpochSecond() * 1000)), true);
+        embed.addField("Time Created", Util.formatDateAgo(new Date(e.getGuild().getTimeCreated().toEpochSecond() * 1000)), true);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

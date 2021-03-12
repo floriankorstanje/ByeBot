@@ -29,7 +29,8 @@ public class Roll extends BaseCommand {
         // Set max if it was specified
         if(args.length == 1) {
             try {
-                max = Integer.parseInt(args[0]);
+                // Add one so $roll 100 can return 100
+                max = Integer.parseInt(args[0]) + 1;
             } catch (Exception ex) {
                 return ErrorCode.WRONG_ARGUMENTS;
             }

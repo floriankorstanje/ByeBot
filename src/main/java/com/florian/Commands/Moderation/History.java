@@ -60,7 +60,7 @@ public class History extends BaseCommand {
                 }
 
                 // Add it to the embed
-                embed.addField("Entry #" + i, "ID: `" + entry.getId() + "`\nIssued By: `" + executor + "`\nDate Issued: " + Util.formatDate(new Date(entry.getTime())) + "\nType: `" + entry.getOffense() + "`\nReason: " + entry.getReason(), false);
+                embed.addField("Entry #" + i, "ID: `" + entry.getId() + "`\nIssued By: `" + executor + "`\nDate Issued: " + Util.formatDateAgo(new Date(entry.getTime())) + "\nType: `" + entry.getOffense() + "`\nReason: " + entry.getReason(), false);
             }
 
             // Send the embed

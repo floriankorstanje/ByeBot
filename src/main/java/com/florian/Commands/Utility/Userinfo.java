@@ -43,8 +43,8 @@ public class Userinfo extends BaseCommand {
         embed.addField("User", m.getAsMention(), true);
         embed.addField("User ID", "`" + m.getId() + "`", true);
         embed.addField("Member Color", String.format("`#%06X`", m.getColor().getRGB() & 0xFFFFFF), true);
-        embed.addField("Joined Discord", Util.formatDate(new Date(m.getUser().getTimeCreated().toEpochSecond() * 1000)), true);
-        embed.addField("Joined Guild", Util.formatDate(new Date(m.getTimeJoined().toEpochSecond() * 1000)), true);
+        embed.addField("Joined Discord", Util.formatDateAgo(new Date(m.getUser().getTimeCreated().toEpochSecond() * 1000)), true);
+        embed.addField("Joined Guild", Util.formatDateAgo(new Date(m.getTimeJoined().toEpochSecond() * 1000)), true);
         embed.addField("Guild Owner", m.isOwner() ? "Yes" : "No", true);
 
         // Get a list of all the roles the user has

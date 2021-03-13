@@ -11,6 +11,7 @@ import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Reminders extends BaseCommand {
@@ -81,7 +82,13 @@ public class Reminders extends BaseCommand {
                         break;
                     case "date":
                         try {
-                            waitFor = new SimpleDateFormat("d/M/yy").parse(time).toInstant().toEpochMilli() - Instant.now().toEpochMilli();
+                            // Add 12 hours to the date so people don't get a ping at 12 o'clock midnight
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(new SimpleDateFormat("d/M/yy").parse(time));
+                            calendar.add(Calendar.HOUR_OF_DAY, 12);
+
+                            // Get amount of milliseconds to wait for
+                            waitFor = calendar.getTime().toInstant().toEpochMilli() - Instant.now().toEpochMilli();
                         } catch (Exception ex) {
                             // Couldn't parse date
                             return ErrorCode.WRONG_ARGUMENTS;

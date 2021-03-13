@@ -24,7 +24,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.6.3";
+    public static final String version = "0.6.4";
     public static ApplicationInfo appInfo;
     public static User botOwner;
 

@@ -29,8 +29,7 @@ public class Roll extends BaseCommand {
         // Set max if it was specified
         if(args.length == 1) {
             try {
-                // Add one so $roll 100 can return 100
-                max = Integer.parseInt(args[0]) + 1;
+                max = Integer.parseInt(args[0]);
             } catch (Exception ex) {
                 return ErrorCode.WRONG_ARGUMENTS;
             }
@@ -39,8 +38,8 @@ public class Roll extends BaseCommand {
         if(max < 1)
             return ErrorCode.WRONG_ARGUMENTS;
 
-        // Generate number
-        int rnd = Vars.random.nextInt(max);
+        // Generate number. Add one so $roll 100 can return 100
+        int rnd = Vars.random.nextInt(max + 1);
 
         // Create embed to send
         EmbedBuilder embed = Util.defaultEmbed(false);

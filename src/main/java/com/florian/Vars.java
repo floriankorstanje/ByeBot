@@ -20,10 +20,11 @@ public class Vars {
     public static final String guildsFolder = botFolder + "/guilds/";
     public static final String userlogFolder = "/userlogs/";
     public static final String historyFolder = "/history/";
+    public static final String remindersFile = "/reminders.txt";
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.6.2";
+    public static final String version = "0.6.3";
     public static ApplicationInfo appInfo;
     public static User botOwner;
 

@@ -2,25 +2,22 @@ package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.ErrorCode;
+import com.florian.Reminders.ReminderEntry;
+import com.florian.Reminders.UserReminders;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Reminders extends BaseCommand {
-    private static final List<Reminder> reminders = new ArrayList<>();
-
     public Reminders() {
         super.command = "reminders";
         super.description = "Pings you in a set time to remind you of something.";
-        super.arguments = "[operation(add/remove)] [time|reminder-id] [time-unit(hours/minutes/seconds/date)] [reminder]";
+        super.arguments = "[operation(add/remove)] [time|reminder-id] [time-unit(days/hours/minutes/date)] [reminder]";
         super.examples.add("add 3 hours Make a discord bot");
         super.examples.add("add 12/3/2021 date Do something epic!");
         super.examples.add("remove 178217adda0");
@@ -31,26 +28,26 @@ public class Reminders extends BaseCommand {
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         if(args.length == 0) {
-            // Embed to show all the reminders
+            // Get all reminders
+            Pair<ReminderEntry[], ErrorCode> reminders = UserReminders.getReminders(e.getGuild(), e.getMember().getId());
+
+            // Check if getReminders was successful. If not, return the error
+            if(reminders.getRight() != ErrorCode.SUCCESS)
+                return reminders.getRight();
+
+            // Create embed to list reminders
             EmbedBuilder embed = Util.defaultEmbed();
 
             // Set title
             embed.setTitle("Reminders for " + e.getMember().getUser().getAsTag());
 
-            // Counter
-            int count = 0;
-
             // Fill the embed
-            for(Reminder reminder : reminders) {
-                if(reminder.getUser().equals(e.getMember().getId())) {
-                    embed.addField("Reminder #" + count, "ID: `" + reminder.getId() + "`\nTime Remaining: `" + Util.formatTime(reminder.getTime() - Instant.now().toEpochMilli()) + "`\nReason: " + reminder.getReason(),false);
-                    count++;
-                }
-            }
+            for(int i = 0; i < reminders.getLeft().length; i++) {
+                ReminderEntry entry = reminders.getLeft()[i];
 
-            // If there's no reminders, tell the user
-            if(count == 0)
-                return ErrorCode.NO_REMINDERS;
+                // Add embed field
+                embed.addField("Reminder `" + entry.getId() + "`", "Ends At: " + Util.formatDateTime(new Date(entry.getTime())) + "\nReminder: " + entry.getReason(), false);
+            }
 
             // Send the embed
             e.getChannel().sendMessage(embed.build()).queue();
@@ -70,6 +67,9 @@ public class Reminders extends BaseCommand {
                 // Get milliseconds to wait for
                 long waitFor = 0;
                 switch (unit.toLowerCase()) {
+                    case "days":
+                        waitFor = (long) Integer.parseInt(time) * 24 * 60 * 60 * 1000;
+                        break;
                     case "hours":
                         waitFor = (long) Integer.parseInt(time) * 60 * 60 * 1000;
                         break;
@@ -98,8 +98,7 @@ public class Reminders extends BaseCommand {
                 long finalTime = Instant.now().toEpochMilli() + waitFor;
 
                 // Add it to the list
-                Reminder reminder = new Reminder(e.getMember().getId(), finalTime, reason.toString());
-                reminders.add(reminder);
+                UserReminders.addReminder(e.getGuild(), e.getChannel(), e.getMember().getId(), finalTime, reason.toString());
 
                 // Tell the user the reminder got added
                 EmbedBuilder embed = Util.defaultEmbed();
@@ -108,53 +107,38 @@ public class Reminders extends BaseCommand {
                 embed.setTitle("Added reminder for " + e.getMember().getUser().getAsTag());
 
                 // Fill embed
-                embed.addField("ID", "`" + reminder.getId() + "`", false);
                 embed.addField("Time Done", Util.formatDateTime(new Date(finalTime)), false);
-                embed.addField("Reminder", reminder.getReason(), false);
+                embed.addField("Reminder", reason.toString(), false);
 
                 // Send the embed
                 e.getChannel().sendMessage(embed.build()).queue();
-
-                // Create a thread to wait
-                long finalWaitFor = waitFor;
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(finalWaitFor);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
-
-                    // Remove the reminder from the list
-                    reminders.remove(reminder);
-
-                    // Send message to tell the user
-                    e.getChannel().sendMessage(e.getMember().getAsMention() + ", your reminder for \"" + reason.toString().trim() + "\" is done.").queue();
-                }).start();
             } else if(operation.equalsIgnoreCase("remove")) {
                 // Remove only takes 2 args
                 if(args.length != 2)
                     return ErrorCode.WRONG_ARGUMENTS;
 
-                // Save the id
+                // Get reminder ID
                 String id = args[1];
 
-                // Delete reminder if it matches
-                boolean removed = reminders.removeIf(reminder -> reminder.getId().equalsIgnoreCase(id) && reminder.getUser().equals(e.getMember().getId()));
+                // Remove entry
+                Pair<ReminderEntry, ErrorCode> removed = UserReminders.removeReminder(e.getGuild(), e.getMember().getId(), id);
 
-                // Tell the user if the reminder was removed
-                if(removed) {
-                    // Create embed
-                    EmbedBuilder embed = Util.defaultEmbed();
+                // Check if removal succeeded
+                if(removed.getRight() != ErrorCode.SUCCESS)
+                    return removed.getRight();
 
-                    // Set title
-                    embed.setTitle("Removed reminder for " + e.getMember().getUser().getAsTag());
+                // Removal was successful, so tell the user the reminder was removed
+                EmbedBuilder embed = Util.defaultEmbed();
 
-                    // Fill embed
-                    embed.addField("ID", "`" + id + "`", false);
-                } else {
-                    // Return UNKNOWN_ENTRY if there was no reminder found
-                    return ErrorCode.UNKNOWN_ENTRY;
-                }
+                // Set title
+                embed.setTitle("Removed reminder `" + removed.getLeft().getId() + "`");
+
+                // Fill embed
+                embed.addField("Ends At", Util.formatDateTime(new Date(removed.getLeft().getTime())), false);
+                embed.addField("Reminder", removed.getLeft().getReason(), false);
+
+                // Send the embed
+                e.getChannel().sendMessage(embed.build()).queue();
             } else {
                 // Wrong arguments
                 return ErrorCode.WRONG_ARGUMENTS;
@@ -166,36 +150,5 @@ public class Reminders extends BaseCommand {
 
         // Return success
         return ErrorCode.SUCCESS;
-    }
-
-    // Class to save reminders
-    private static class Reminder {
-        private final String id;
-        private final String user;
-        private final long time;
-        private final String reason;
-
-        public Reminder(String user, long time, String reason) {
-            this.id = Long.toHexString(Instant.now().toEpochMilli());
-            this.user = user;
-            this.time = time;
-            this.reason = reason;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getUser() {
-            return user;
-        }
-
-        public long getTime() {
-            return time;
-        }
-
-        public String getReason() {
-            return reason;
-        }
     }
 }

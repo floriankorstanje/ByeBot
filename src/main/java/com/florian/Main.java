@@ -1,19 +1,28 @@
 package com.florian;
 
 import com.florian.Commands.Help.Help;
+import com.florian.Reminders.ReminderEntry;
 import com.florian.Userlog.UserEvents;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.Iterator;
+import java.util.List;
 
 public class Main extends ListenerAdapter {
     private static final String tokenFile = Vars.botFolder + "token.txt";
@@ -70,6 +79,7 @@ public class Main extends ListenerAdapter {
         // Add all the event listeners
         builder.addEventListeners(new CommandHandler());
         builder.addEventListeners(new UserEvents());
+        builder.addEventListeners(new Main());
 
         // Create JDA class and start the bot
         JDA jda = builder.build();
@@ -80,5 +90,71 @@ public class Main extends ListenerAdapter {
         // Set some variables
         Vars.appInfo = jda.retrieveApplicationInfo().complete();
         Vars.botOwner = Vars.appInfo.getOwner();
+    }
+
+    @Override
+    public void onReady(@NotNull ReadyEvent e) {
+        // Make a thread to check if any reminders expired and notify the user
+        new Thread(() -> {
+            while(true) {
+                // Check for a reminders file for each guild
+                for (Guild g : e.getJDA().getGuilds()) {
+                    String file = Util.getGuildFolder(g) + Vars.remindersFile;
+
+                    // Check for all the reminders if the file exists
+                    if (new File(file).exists()) {
+                        List<String> lines;
+                        try {
+                            lines = Util.readFile(file);
+                        } catch (IOException ex) {
+                            System.out.println("Unable to read reminders file for guild " + g.getId());
+                            continue;
+                        }
+
+                        // Keep track if a reminder was finished
+                        boolean finished = false;
+
+                        // Loop through all the lines to check if a reminder is done
+                        if (lines.size() > 0) {
+                            for (String line : lines.toArray(new String[0])) {
+                                String[] data = line.split(",");
+                                String userId = data[1];
+                                String channelId = data[2];
+                                long time = Long.parseLong(data[3]);
+                                String reason = data[4];
+
+                                // Check if current time is later than the reminder
+                                if (Instant.now().toEpochMilli() >= time) {
+                                    // Get the member and then send the message
+                                    g.retrieveMemberById(userId).queue(member -> {
+                                        g.getTextChannelById(channelId).sendMessage(member.getAsMention() + ", your reminder for \"" + reason + "\" is done.").queue();
+                                    });
+
+                                    // Remove the reminder from the file
+                                    lines.remove(line);
+                                    finished = true;
+                                }
+                            }
+                        }
+
+                        // Write changes back to file
+                        if(finished) {
+                            try {
+                                Util.writeFile(file, lines);
+                            } catch (IOException ex) {
+                                System.out.println("Unable to write to reminder file for guild " + g.getId());
+                            }
+                        }
+                    }
+                }
+
+                // Wait for 5 seconds
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

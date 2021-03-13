@@ -127,7 +127,7 @@ public class Main extends ListenerAdapter {
                                 if (Instant.now().toEpochMilli() >= time) {
                                     // Get the member and then send the message
                                     g.retrieveMemberById(userId).queue(member -> {
-                                        g.getTextChannelById(channelId).sendMessage(member.getAsMention() + ", your reminder for \"" + reason + "\" is done.").queue();
+                                        g.getTextChannelById(channelId).sendMessage(member.getAsMention() + ", your reminder for \"" + reason.trim() + "\" is done.").queue();
                                     });
 
                                     // Remove the reminder from the file

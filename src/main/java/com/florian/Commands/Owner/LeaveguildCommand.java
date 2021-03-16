@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Leaveguild extends BaseCommand {
-    public Leaveguild() {
+public class LeaveguildCommand extends BaseCommand {
+    public LeaveguildCommand() {
         super.command = "leaveguild";
         super.description = "Leaves a guild.";
         super.userType = UserType.OWNER;
@@ -47,7 +47,7 @@ public class Leaveguild extends BaseCommand {
             e.getChannel().sendMessage(embed.build()).queue();
 
             // Leave the guild
-            //g.leave().queue();
+            g.leave().queue();
 
             // Return success
             return ErrorCode.SUCCESS;

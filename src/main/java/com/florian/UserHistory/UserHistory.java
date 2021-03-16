@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class UserHistory {
-    public static ErrorCode addEntry(Guild g, String user, Member executor, OffenseType type, String entry) {
+    public static ErrorCode addEntry(Guild g, String user, Member executor, OffenseType type, String historyId, String entry) {
         // Get location for file
         String folder = Util.getGuildFolder(g) + Vars.historyFolder;
         String file = folder + user;
@@ -57,9 +57,6 @@ public class UserHistory {
 
         // Get current epoch time (ms)
         long time = Instant.now().toEpochMilli();
-
-        // Generate history ID
-        String historyId = Long.toHexString(time);
 
         // Add this entry to the list
         // Entries are formatted as following: history-id,executor-id,epoch-time,offense,entry

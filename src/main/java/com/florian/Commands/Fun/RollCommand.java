@@ -7,8 +7,8 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Roll extends BaseCommand {
-    public Roll() {
+public class RollCommand extends BaseCommand {
+    public RollCommand() {
         super.command = "roll";
         super.description = "Generates a random number. Max must be greater than 0 and smaller than " + Integer.MAX_VALUE + ".";
         super.arguments = "[max]";

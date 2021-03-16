@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Guilds extends BaseCommand {
-    public Guilds() {
+public class GuildsCommand extends BaseCommand {
+    public GuildsCommand() {
         super.command = "guilds";
         super.description = "Shows a list of guilds this bot is in.";
         super.aliases.add("guidlist");

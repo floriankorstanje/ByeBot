@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Invite extends BaseCommand {
-    public Invite() {
+public class InviteCommand extends BaseCommand {
+    public InviteCommand() {
         this.command = "invite";
         this.description = "Invite link to get this bot in your guild.";
     }

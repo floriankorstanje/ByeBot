@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -100,6 +101,10 @@ public class Util {
         final long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
 
         return String.format("%d Days, %d Hours, %d Minutes, %d Seconds", days, hours, minutes, seconds);
+    }
+
+    public static String generateId() {
+        return Long.toHexString(Instant.now().toEpochMilli());
     }
 
     public static List<String> readFile(String fileName) throws IOException {

@@ -12,15 +12,15 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 
-public class Ban extends BaseCommand {
-    public Ban() {
-        super.command = "ban";
-        super.description = "Bans a user.";
+public class KickCommand extends BaseCommand {
+    public KickCommand() {
+        super.command = "kick";
+        super.description = "Kicks a user.";
         super.arguments = "<user> [reason]";
-        super.permission = Permission.BAN_MEMBERS;
+        super.permission = Permission.KICK_MEMBERS;
         super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
-        super.examples.add("399594813390848002 Too cool");
+        super.examples.add("399594813390848002 You are now kicked");
     }
 
     @Override
@@ -45,7 +45,6 @@ public class Ban extends BaseCommand {
             reason.append("none");
         }
 
-        // Get the member by ID
         Member m;
         try {
             m = e.getGuild().retrieveMemberById(args[0]).complete();
@@ -54,38 +53,32 @@ public class Ban extends BaseCommand {
             return ErrorCode.UNKNOWN_ID;
         }
 
-        // Actually ban the user
+        // Actually kick the user
         try {
-            e.getGuild().ban(m, 1, reason.toString()).complete();
+            e.getGuild().kick(m, reason.toString()).complete();
         } catch (HierarchyException ex) {
-            // User didn't get banned because bot didn't have enough permissions
+            // User didn't get kicked because bot didn't have enough permissions
             return ErrorCode.NO_PERMISSION;
         } catch (Exception ex) {
             // Something else happened
             return ErrorCode.OTHER_ERROR;
         }
 
-        // Add this to the user's history if everything succeeded
-        ErrorCode error = UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.BAN, reason.toString());
-
-        if (error == ErrorCode.OTHER_ERROR)
-            return ErrorCode.OTHER_ERROR;
-
-        if (error != ErrorCode.SUCCESS)
-            return error;
-
-        // Create an embed to tell the user the ban was successful
+        // Create an embed to tell the user the kick was successful
         EmbedBuilder embed = Util.defaultEmbed();
 
         // Set the title
-        embed.setTitle(m.getUser().getAsTag() + " was banned");
+        embed.setTitle(m.getUser().getAsTag() + " was kicked");
 
         // Fill in the embed
-        embed.addField("Banned By", e.getMember().getAsMention(), false);
+        embed.addField("Kicked By", e.getMember().getAsMention(), false);
         embed.addField("Reason", reason.toString(), false);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();
+
+        // Add this to the user's history if everything succeeded
+        UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.KICK, Util.generateId(), reason.toString());
 
         // Return success
         return ErrorCode.SUCCESS;

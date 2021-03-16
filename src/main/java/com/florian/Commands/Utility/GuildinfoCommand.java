@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Date;
 
-public class Guildinfo extends BaseCommand {
-    public Guildinfo() {
+public class GuildinfoCommand extends BaseCommand {
+    public GuildinfoCommand() {
         super.command = "guildinfo";
         super.description = "Gives some info about the guild.";
         super.aliases.add("guild");

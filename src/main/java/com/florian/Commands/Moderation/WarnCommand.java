@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Warn extends BaseCommand {
-    public Warn() {
+public class WarnCommand extends BaseCommand {
+    public WarnCommand() {
         super.command = "warn";
         super.description = "Warns a user.";
         super.arguments = "<user> <reason>";
@@ -58,7 +58,7 @@ public class Warn extends BaseCommand {
             e.getChannel().sendMessage(embed.build()).queue();
 
             // Add this to the user's history if everything succeeded
-            UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.WARN, reason.toString());
+            UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.WARN, Util.generateId(), reason.toString());
         } else {
             // There aren't enough arguments
             return ErrorCode.WRONG_ARGUMENTS;

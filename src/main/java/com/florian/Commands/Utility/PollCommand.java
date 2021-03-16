@@ -6,8 +6,8 @@ import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Poll extends BaseCommand {
-    public Poll() {
+public class PollCommand extends BaseCommand {
+    public PollCommand() {
         super.command = "poll";
         super.description = "Creates a yes or no poll. Question can't be longer than 256 characters.";
         super.arguments = "<question>";

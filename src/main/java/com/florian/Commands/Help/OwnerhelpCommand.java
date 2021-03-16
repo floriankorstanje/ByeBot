@@ -8,8 +8,8 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Ownerhelp extends BaseCommand {
-    public Ownerhelp() {
+public class OwnerhelpCommand extends BaseCommand {
+    public OwnerhelpCommand() {
         super.command = "ownerhelp";
         super.description = "Lists all the bot owner commands.";
     }
@@ -20,7 +20,7 @@ public class Ownerhelp extends BaseCommand {
         EmbedBuilder embed = Util.defaultEmbed();
 
         // Get instance of Help for command and args
-        Help help = new Help();
+        HelpCommand help = new HelpCommand();
 
         // Set some basic info for the embed
         embed.setTitle("Owner help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);

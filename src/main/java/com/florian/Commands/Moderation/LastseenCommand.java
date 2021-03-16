@@ -14,8 +14,8 @@ import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.util.Date;
 
-public class Lastseen extends BaseCommand {
-    public Lastseen() {
+public class LastseenCommand extends BaseCommand {
+    public LastseenCommand() {
         super.command = "lastseen";
         super.description = "Shows when I last saw this user do something in this guild.";
         super.arguments = "<user>";

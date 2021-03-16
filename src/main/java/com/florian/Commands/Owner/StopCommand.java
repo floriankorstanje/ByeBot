@@ -6,8 +6,8 @@ import com.florian.ErrorCode;
 import com.florian.Util;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Stop extends BaseCommand {
-    public Stop() {
+public class StopCommand extends BaseCommand {
+    public StopCommand() {
         super.command = "stop";
         super.description = "Stops the bot.";
         super.userType = UserType.OWNER;
@@ -17,7 +17,7 @@ public class Stop extends BaseCommand {
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         // Say bye
-        e.getChannel().sendMessage("Shutting down.. I was up for `" + Util.getUptime() + "`").queue();
+        e.getChannel().sendMessage("Shutting down. I was up for `" + Util.getUptime() + "`").queue();
 
         // Stop the bot
         System.exit(0);

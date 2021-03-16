@@ -8,8 +8,8 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Modhelp extends BaseCommand {
-    public Modhelp() {
+public class ModhelpCommand extends BaseCommand {
+    public ModhelpCommand() {
         super.command = "modhelp";
         super.description = "Lists all the moderation commands.";
         super.aliases.add("adminhelp");
@@ -21,7 +21,7 @@ public class Modhelp extends BaseCommand {
         EmbedBuilder embed = Util.defaultEmbed();
 
         // Get instance of Help for command and args
-        Help help = new Help();
+        HelpCommand help = new HelpCommand();
 
         // Set some basic info for the embed
         embed.setTitle("Moderation help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);

@@ -7,8 +7,8 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Hostinfo extends BaseCommand {
-    public Hostinfo() {
+public class HostinfoCommand extends BaseCommand {
+    public HostinfoCommand() {
         super.command = "hostinfo";
         super.description = "Gives info about the bot host.";
         super.aliases.add("host");

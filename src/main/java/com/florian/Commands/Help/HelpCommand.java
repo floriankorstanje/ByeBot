@@ -8,8 +8,8 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class Help extends BaseCommand {
-    public Help() {
+public class HelpCommand extends BaseCommand {
+    public HelpCommand() {
         super.command = "help";
         super.description = "Shows all the commands and how to use them.";
         super.arguments = "[command]";

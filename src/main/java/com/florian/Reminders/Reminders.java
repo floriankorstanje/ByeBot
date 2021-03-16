@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserReminders {
+public class Reminders {
     public static ErrorCode addReminder(Guild g, TextChannel channel, String user, long time, String reason) {
         // Get file for reminders
         String file = Util.getGuildFolder(g) + Vars.remindersFile;

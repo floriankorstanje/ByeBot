@@ -13,8 +13,8 @@ import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.util.Date;
 
-public class History extends BaseCommand {
-    public History() {
+public class HistoryCommand extends BaseCommand {
+    public HistoryCommand() {
         super.command = "history";
         super.description = "Shows, or edits someones history.";
         super.arguments = "<user> [operation(edit/remove)] [history-id] [new-reason]";

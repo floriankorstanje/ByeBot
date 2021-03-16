@@ -15,8 +15,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Prune extends BaseCommand {
-    public Prune() {
+public class PruneCommand extends BaseCommand {
+    public PruneCommand() {
         super.command = "prune";
         super.description = "Deletes specified amount of messages from channel.";
         super.arguments = "<amount>";

@@ -38,7 +38,7 @@ public class LastseenCommand extends BaseCommand {
             }
 
             // Get all the entries
-            Pair<UserlogEntry[], ErrorCode> entries = Userlog.getEntries(e.getGuild(), m);
+            Pair<UserlogEntry[], ErrorCode> entries = Userlog.getEntries(e.getGuild(), m.getId());
 
             // If getting entries failed, return
             if (entries.getRight() != ErrorCode.SUCCESS)

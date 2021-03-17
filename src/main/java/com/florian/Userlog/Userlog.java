@@ -6,12 +6,14 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Userlog {
@@ -20,9 +22,8 @@ public class Userlog {
         if (g == null || m == null || action == null)
             return;
 
-        // Get the guilds folder and file
-        String folder = Util.getGuildFolder(g) + Vars.userlogFolder;
-        String file = folder + m.getId();
+        // Get the file location
+        String file = Util.getGuildFolder(g) + Vars.userlogFile;
 
         // Remove "Event" from the action
         action = action.replaceAll("Event", "");
@@ -33,115 +34,134 @@ public class Userlog {
         // Replace "Received" with "Sent" (MessageReceived -> MessageSent)
         action = action.replaceAll("Received", "Sent");
 
-        // Check if the guild has a folder
-        File guild = new File(folder);
-        if (!guild.exists()) {
-            boolean success = guild.mkdirs();
-
-            // If it couldn't create the folder, quit
-            if (!success) {
-                System.out.println("Couldn't create guild folder for guild " + g.getId() + " (" + g.getName() + ")");
+        // Check if the file for this guild is here
+        if(!new File(file).exists()) {
+            try {
+                Util.createXmlFile(file, "userlog");
+            } catch (Exception e) {
+                System.out.println("Couldn't create history file for guild " + g.getId());
                 return;
             }
         }
 
-        // Check if the file for this guild is here
-        if (!new File(file).exists()) {
-            try {
-                Files.createFile(Paths.get(file));
-            } catch (IOException e) {
-                e.printStackTrace();
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return;
+        }
+
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
+
+        // Save index of user
+        int userIndex = -1;
+
+        // Get one for the current user=
+        for(int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("user").equals(m.getId())) {
+                    userIndex = i;
+                    break;
+                }
             }
         }
 
-        // Get the full file
-        List<String> lines = null;
-        try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Save user element
+        Element element;
+
+        // Check if an element was found, if not create
+        if(userIndex == -1) {
+            Element toAdd = document.createElement("entries");
+            toAdd.setAttribute("user", m.getId());
+            element = (Element) document.getElementsByTagName("userlog").item(0).appendChild(toAdd);
+        } else {
+            element = (Element) entries.item(userIndex);
         }
 
-        // Make sure lines isn't nul
-        if (lines == null)
-            return;
+        // Create entry and add all the info
+        Element entry = document.createElement("entry");
+        entry.setAttribute("time", String.valueOf(Instant.now().toEpochMilli()));
+        entry.setAttribute("action", action);
 
-        // Get current epoch time (ms)
-        long time = Instant.now().toEpochMilli();
+        // Add entry to document
+        element.appendChild(entry);
 
-        // Add entry to the file
-        // Entries are formatted as following: epoch-time,action
-        lines.add(time + "," + action);
+        // Remove entries if there are too many
+        while(element.getChildNodes().getLength() > Vars.maxUserlogEntries)
+            element.removeChild(element.getFirstChild());
 
-        // Clear old entries
-        clearOldEntries(lines);
-
-        // Write back to the file
-        try {
-            Util.writeFile(file, lines);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Write changes back to file
+        Util.writeXml(file, document);
     }
 
-    public static Pair<UserlogEntry[], ErrorCode> getEntries(Guild g, Member m) {
-        // Get the guilds folder and file
-        String folder = Util.getGuildFolder(g) + Vars.userlogFolder;
-        String file = folder + m.getId();
+    public static Pair<UserlogEntry[], ErrorCode> getEntries(Guild g, String user) {
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.userlogFile;
 
-        // Check if the guild has a folder
-        File guild = new File(folder);
-        if (!guild.exists()) {
-            boolean success = guild.mkdirs();
+        if(!new File(file).exists())
+            return Pair.of(new UserlogEntry[] {}, ErrorCode.NO_USER_LOG);
 
-            // If it couldn't create the folder, quit
-            if (!success) {
-                System.out.println("Couldn't create guild folder for guild " + g.getId() + " (" + g.getName() + ")");
-                return Pair.of(new UserlogEntry[]{}, ErrorCode.OTHER_ERROR);
-            }
-        }
+        // Get file
+        File input = new File(file);
+        Document document;
 
-        // Check if the file for this guild is here
-        if (!new File(file).exists()) {
-            try {
-                Files.createFile(Paths.get(file));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Get the full file
-        List<String> lines = null;
+        // Try to parse existing entries
         try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return Pair.of(new UserlogEntry[] {}, ErrorCode.OTHER_ERROR);
         }
 
-        // Make sure lines isn't null
-        if (lines == null)
-            return Pair.of(new UserlogEntry[]{}, ErrorCode.OTHER_ERROR);
+        // Get all log entries
+        NodeList entries = document.getElementsByTagName("entries");
 
-        // Get all the entries
-        // Loop needs to decrement so newest entry is top of the list
-        UserlogEntry[] list = new UserlogEntry[lines.size()];
-        for (int i = lines.size() - 1; i >= 0; i--) {
-            String[] data = lines.get(i).split(",");
-            long time = Long.parseLong(data[0]);
-            String action = data[1];
+        // Save index of user
+        int userIndex = -1;
 
-            list[lines.size() - i - 1] = new UserlogEntry(time, action);
+        // Get one for the current user
+        for(int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Check if the user has logs
+        if(userIndex == -1)
+            return Pair.of(new UserlogEntry[] {}, ErrorCode.NO_USER_LOG);
+
+        // Get a list of all the user's entries
+        NodeList userEntries = entries.item(userIndex).getChildNodes();
+
+        // Create list of UserlogEntry to return
+        List<UserlogEntry> list = new ArrayList<>();
+
+        // Loop through them and add them to the list of entries
+        for(int i = userEntries.getLength() - 1; i >= 0; i--) {
+            Node node = userEntries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String action = element.getAttribute("action");
+                long time = Long.parseLong(element.getAttribute("time"));
+
+                list.add(new UserlogEntry(time, action));
+            }
         }
 
         // Return success
-        return Pair.of(list, ErrorCode.SUCCESS);
-    }
-
-    private static void clearOldEntries(List<String> file) {
-        // Clear entries if the user has more then max entries
-        while (file.size() > Vars.maxUserlogEntries) {
-            // Remove the first element in the list. This is the oldest event
-            file.remove(0);
-        }
+        return Pair.of(list.toArray(new UserlogEntry[0]), ErrorCode.SUCCESS);
     }
 }

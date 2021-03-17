@@ -6,281 +6,294 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserHistory {
-    public static ErrorCode addEntry(Guild g, String user, Member executor, OffenseType type, String historyId, String entry) {
-        // Get location for file
-        String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + user;
+    public static ErrorCode addEntry(Guild g, String user, Member executor, OffenseType type, String historyId, String reason) {
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        // Check if folder exists
-        File historyFolder = new File(folder);
-        if (!historyFolder.exists()) {
-            boolean success = historyFolder.mkdirs();
-
-            // If it couldn't create the folder, quit
-            if (!success) {
-                System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
+        if(!new File(file).exists()) {
+            try {
+                Util.createXmlFile(file, "history");
+            } catch (Exception e) {
+                System.out.println("Couldn't create history file for guild " + g.getId());
                 return ErrorCode.OTHER_ERROR;
             }
         }
 
-        // Check if file exists
-        if (!new File(file).exists()) {
-            try {
-                Files.createFile(Paths.get(file));
-            } catch (IOException e) {
-                e.printStackTrace();
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return ErrorCode.OTHER_ERROR;
+        }
+
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
+
+        // Save index of user
+        int userIndex = -1;
+
+        // Get one for the current user=
+        for(int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
             }
         }
 
-        // Get all lines in the file
-        List<String> lines;
-        try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return ErrorCode.OTHER_ERROR;
+        // Save user element
+        Element element;
+
+        // Check if an element was found, if not create
+        if(userIndex == -1) {
+            Element toAdd = document.createElement("entries");
+            toAdd.setAttribute("user", user);
+            element = (Element) document.getElementsByTagName("history").item(0).appendChild(toAdd);
+        } else {
+            element = (Element) entries.item(userIndex);
         }
 
-        // Make sure lines isn't null
-        if (lines == null)
-            return ErrorCode.OTHER_ERROR;
+        // Create entry and add all the info
+        Element entry = document.createElement("entry");
+        entry.setAttribute("id", historyId);
+        entry.setAttribute("executor", executor.getId());
+        entry.setAttribute("time", String.valueOf(Instant.now().toEpochMilli()));
+        entry.setAttribute("type", type.toString());
+        entry.setAttribute("reason", reason.trim());
 
-
-        // Get current epoch time (ms)
-        long time = Instant.now().toEpochMilli();
-
-        // Add this entry to the list
-        // Entries are formatted as following: history-id,executor-id,epoch-time,offense,entry
-        lines.add(historyId + "," + executor.getId() + "," + time + "," + type.toString() + "," + entry);
+        // Add entry to document
+        element.appendChild(entry);
 
         // Write changes back to file
-        try {
-            Util.writeFile(file, lines);
-        } catch (Exception e) {
-            System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return ErrorCode.OTHER_ERROR;
-        }
+        Util.writeXml(file, document);
 
+        // Return success
         return ErrorCode.SUCCESS;
     }
 
     public static ErrorCode removeEntry(Guild g, String user, String id) {
-        // Get location for file
-        String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + user;
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        // Check if folder exists
-        File historyFolder = new File(folder);
-        if (!historyFolder.exists()) {
-            boolean success = historyFolder.mkdirs();
-
-            // If it couldn't create the folder, quit
-            if (!success) {
-                System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
-                return ErrorCode.OTHER_ERROR;
-            }
-
-            // If it did create, return no history because there is no history files for this guild
-            return ErrorCode.NO_USER_HISTORY;
-        }
-
-        // If the file doesn't exist, there is also no history
-        if (!new File(file).exists())
+        if(!new File(file).exists())
             return ErrorCode.NO_USER_HISTORY;
 
-        // Get all lines in the file
-        List<String> lines;
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
         try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
             return ErrorCode.OTHER_ERROR;
         }
-        // Make sure lines isn't null
-        if (lines == null)
-            return ErrorCode.OTHER_ERROR;
 
-        // Get the line of the entry we want to edit
-        int line = getEntryLine(lines, id);
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
 
-        // If getEntryLine returns -1 it couldn't file the ID
-        if (line == -1)
-            return ErrorCode.UNKNOWN_ENTRY;
+        // Save index of user
+        int userIndex = -1;
 
-
-        // Remove the entry we want to remove
-        try {
-            // Get the line to check if it's a ban
-            String[] data = lines.get(line).split(",");
-            OffenseType type = OffenseType.valueOf(data[3]);
-
-            // If it's a ban, unban the user
-            if (type == OffenseType.BAN)
-                g.unban(user).complete();
-
-            lines.remove(line);
-        } catch (Exception ex) {
-            // Couldn't remove entry
-            return ErrorCode.UNKNOWN_ENTRY;
-        }
-
-        // Write changes back to file, if there's no entries anymore we can just delete the file
-        if (lines.size() == 0) {
-            boolean success = new File(file).delete();
-
-            if (!success) {
-                System.out.println("Couldn't delete empty history file for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-                return ErrorCode.OTHER_ERROR;
-            }
-        } else {
-            try {
-                Util.writeFile(file, lines);
-            } catch (Exception e) {
-                System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-                return ErrorCode.OTHER_ERROR;
+        // Get one for the current user=
+        for(int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
             }
         }
 
+        // Check if the user has history
+        if(userIndex == -1)
+            return ErrorCode.NO_USER_HISTORY;
+
+        // Get a list of all the user's entries
+        NodeList userEntries = entries.item(userIndex).getChildNodes();
+
+        // Loop through them and delete one if it matches the ID
+        boolean deleted = false;
+        for(int i = 0; i < userEntries.getLength(); i++) {
+            Node node = userEntries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("id").equals(id)) {
+                    // Make sure no empty lines are left behind
+                    element.getParentNode().setTextContent("");
+
+                    entries.item(userIndex).removeChild(node);
+                    deleted = true;
+                    break;
+                }
+            }
+        }
+
+        // Check if we actually deleted an entry
+        if(!deleted)
+            return ErrorCode.UNKNOWN_ENTRY;
+
+        // Write changes back to file
+        Util.writeXml(file, document);
+
+        // Return success
         return ErrorCode.SUCCESS;
     }
 
     public static ErrorCode editEntry(Guild g, String user, String id, String newReason) {
-        // Get location for file
-        String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + user;
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        // Check if folder exists
-        File historyFolder = new File(folder);
-        if (!historyFolder.exists()) {
-            boolean success = historyFolder.mkdirs();
+        if(!new File(file).exists())
+            return ErrorCode.NO_USER_HISTORY;
 
-            // If it couldn't create the folder, quit
-            if (!success) {
-                System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
-                return ErrorCode.OTHER_ERROR;
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return ErrorCode.OTHER_ERROR;
+        }
+
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
+
+        // Save index of user
+        int userIndex = -1;
+
+        // Get one for the current user=
+        for(int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
             }
-
-            // If it did create, return no history because there is no history files for this guild
-            return ErrorCode.NO_USER_HISTORY;
         }
 
-        // If the file doesn't exist, there is also no history
-        if (!new File(file).exists())
+        // Check if the user has history
+        if(userIndex == -1)
             return ErrorCode.NO_USER_HISTORY;
 
-        // Get all lines in the file
-        List<String> lines;
-        try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return ErrorCode.OTHER_ERROR;
+        // Get a list of all the user's entries
+        NodeList userEntries = entries.item(userIndex).getChildNodes();
+
+        // Loop through them and edit one if it matches the ID
+        boolean edited = false;
+        for(int i = 0; i < userEntries.getLength(); i++) {
+            Node node = userEntries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("id").equals(id)) {
+                    element.setAttribute("reason", newReason);
+                    edited = true;
+                    break;
+                }
+            }
         }
 
-        // Make sure lines isn't null
-        if (lines == null)
-            return ErrorCode.OTHER_ERROR;
-
-        // Get the line of the entry we want to edit
-        int line = getEntryLine(lines, id);
-
-        // If getEntryLine returns -1 it couldn't file the ID
-        if (line == -1)
+        // Check if we actually edited an entry
+        if(!edited)
             return ErrorCode.UNKNOWN_ENTRY;
-
-        // Edit the entry we want to edit
-        try {
-            String[] oldData = lines.get(line).split(",");
-            lines.set(line, oldData[0] + "," + oldData[1] + "," + oldData[2] + "," + newReason);
-        } catch (Exception ex) {
-            // Couldn't remove entry
-            return ErrorCode.UNKNOWN_ENTRY;
-        }
 
         // Write changes back to file
-        try {
-            Util.writeFile(file, lines);
-        } catch (Exception e) {
-            System.out.println("Couldn't write user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return ErrorCode.OTHER_ERROR;
-        }
+        Util.writeXml(file, document);
 
+        // Return success
         return ErrorCode.SUCCESS;
     }
 
     public static Pair<UserHistoryEntry[], ErrorCode> getAllHistory(Guild g, String user) {
-        // Get location for file
-        String folder = Util.getGuildFolder(g) + Vars.historyFolder;
-        String file = folder + user;
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        // Check if folder exists
-        File historyFolder = new File(folder);
-        if (!historyFolder.exists()) {
-            boolean success = historyFolder.mkdirs();
+        if(!new File(file).exists())
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
 
-            // If it couldn't create the folder, quit
-            if (!success) {
-                System.out.println("Couldn't create history folder for guild " + g.getId() + " (" + g.getName() + ")");
-                return Pair.of(new UserHistoryEntry[]{}, ErrorCode.OTHER_ERROR);
-            }
+        // Get file
+        File input = new File(file);
+        Document document;
 
-            // If it did create, return no history because there is no history files for this guild
-            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
-        }
-
-        // If the file doesn't exist, there is also no history
-        if (!new File(file).exists())
-            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
-
-        // Get all lines in the file
-        List<String> lines;
+        // Try to parse existing entries
         try {
-            lines = Util.readFile(file);
-        } catch (IOException ex) {
-            System.out.println("Couldn't read user history for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.OTHER_ERROR);
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
         }
 
-        // Make sure lines isn't null
-        if (lines == null)
-            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.OTHER_ERROR);
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
 
-        // Check if there is any history
-        if (lines.size() == 0)
-            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
+        // Save index of user
+        int userIndex = -1;
 
-        // Get all the entries
-        UserHistoryEntry[] list = new UserHistoryEntry[lines.size()];
-        for (int i = 0; i < lines.size(); i++) {
-            String[] data = lines.get(i).split(",");
-            String id = data[0];
-            String executor = data[1];
-            long date = Long.parseLong(data[2]);
-            String type = data[3];
-            String reason = data[4];
-
-            list[i] = new UserHistoryEntry(executor, date, type, reason, id);
+        // Get one for the current user
+        for(int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if(element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
+            }
         }
 
-        // Return the entries
-        return Pair.of(list, ErrorCode.SUCCESS);
-    }
+        // Check if the user has history
+        if(userIndex == -1)
+            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
 
-    private static int getEntryLine(List<String> lines, String id) {
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).split(",")[0].equals(id))
-                return i;
+        // Get a list of all the user's entries
+        NodeList userEntries = entries.item(userIndex).getChildNodes();
+
+        // Create list of UserHistoryEntry to return
+        List<UserHistoryEntry> list = new ArrayList<>();
+
+        // Loop through them and add them to the list of entries
+        for(int i = 0; i < userEntries.getLength(); i++) {
+            Node node = userEntries.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String executor = element.getAttribute("executor");
+                long time = Long.parseLong(element.getAttribute("time"));
+                String type = element.getAttribute("type");
+                String reason = element.getAttribute("reason");
+                String id = element.getAttribute("id");
+
+                list.add(new UserHistoryEntry(executor, time, type, reason, id));
+            }
         }
 
-        return -1;
+        // Return success
+        return Pair.of(list.toArray(new UserHistoryEntry[0]), ErrorCode.SUCCESS);
     }
 }

@@ -6,167 +6,228 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Reminders {
-    public static ErrorCode addReminder(Guild g, TextChannel channel, String user, long time, String reason) {
-        // Get file for reminders
+    public static ErrorCode addReminder(Guild g, TextChannel channel, String id, String user, long time, String reason) {
+        // Get file location
         String file = Util.getGuildFolder(g) + Vars.remindersFile;
 
-        // Check if the file exists
         if (!new File(file).exists()) {
             try {
-                // File doesn't exist, so create it
-                Files.createFile(Paths.get(file));
-            } catch (IOException e) {
-                System.out.println("Couldn't create reminders file for guild " + g.getId() + " (" + g.getName() + ")");
+                Util.createXmlFile(file, "reminders");
+            } catch (Exception e) {
+                System.out.println("Couldn't create reminders file for guild " + g.getId());
                 return ErrorCode.OTHER_ERROR;
             }
         }
 
-        // Get all lines in the file
-        List<String> lines;
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
         try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            System.out.println("Couldn't read reminders for guild " + g.getId() + " (" + g.getName() + ")");
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
             return ErrorCode.OTHER_ERROR;
         }
 
-        // Make sure lines isn't null
-        if (lines == null)
-            return ErrorCode.OTHER_ERROR;
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
 
-        // Generate history ID
-        String reminderId = Long.toHexString(Instant.now().toEpochMilli());
+        // Save index of user
+        int userIndex = -1;
 
-        // Add this entry to the list
-        // Entries are formatted as following: reminder-id,user-id,channel-id,reminder-time,reminder-reason
-        lines.add(reminderId + "," + user + "," + channel.getId() + "," + time + "," + reason);
+        // Get one for the current user=
+        for (int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Save user element
+        Element element;
+
+        // Check if an element was found, if not create
+        if (userIndex == -1) {
+            Element toAdd = document.createElement("entries");
+            toAdd.setAttribute("user", user);
+            element = (Element) document.getElementsByTagName("reminders").item(0).appendChild(toAdd);
+        } else {
+            element = (Element) entries.item(userIndex);
+        }
+
+        // Create entry and add all the info
+        Element entry = document.createElement("entry");
+        entry.setAttribute("id", id);
+        entry.setAttribute("channel", channel.getId());
+        entry.setAttribute("time", String.valueOf(time));
+        entry.setAttribute("reason", reason.trim());
+
+        // Add entry to document
+        element.appendChild(entry);
 
         // Write changes back to file
-        try {
-            Util.writeFile(file, lines);
-        } catch (Exception e) {
-            System.out.println("Couldn't write reminder for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return ErrorCode.OTHER_ERROR;
-        }
+        Util.writeXml(file, document);
 
         // Return success
         return ErrorCode.SUCCESS;
     }
 
     public static Pair<ReminderEntry, ErrorCode> removeReminder(Guild g, String user, String id) {
-        // Get file for reminders
+        // Get file location
         String file = Util.getGuildFolder(g) + Vars.remindersFile;
 
-        // Check if the file exists
         if (!new File(file).exists())
             return Pair.of(null, ErrorCode.NO_REMINDERS);
 
-        // Read all reminders in file
-        List<String> lines;
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
         try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            System.out.println("Couldn't read reminders for guild " + g.getId() + " (" + g.getName() + ")");
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
             return Pair.of(null, ErrorCode.OTHER_ERROR);
         }
 
-        // Make sure lines isn't null
-        if (lines == null)
-            return Pair.of(null, ErrorCode.OTHER_ERROR);
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
 
-        // Check if there is any history
-        if (lines.size() == 0)
-            return Pair.of(null, ErrorCode.NO_REMINDERS);
+        // Save index of user
+        int userIndex = -1;
 
-        // Loop through all lines and remove the right one
-        ReminderEntry entry = null;
-        for(int i = 0; i < lines.size(); i++) {
-            // Get the reminder at that line
-            String[] data = lines.get(i).split(",");
-            String reminderId = data[0];
-            String userId = data[1];
-            String channelId = data[2];
-            long time = Long.parseLong(data[3]);
-            String reason = data[4];
-
-            // Remove the entry if it's the right ID and user
-            if(reminderId.equalsIgnoreCase(id) && userId.equals(user)) {
-                lines.remove(i);
-                entry = new ReminderEntry(reminderId, userId, channelId, time, reason);
+        // Get one for the current user=
+        for (int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
             }
         }
 
-        // Check if an entry was removed
-        if(entry == null)
-            return Pair.of(null, ErrorCode.UNKNOWN_ENTRY);
+        // Check if the user has history
+        if (userIndex == -1)
+            return Pair.of(null, ErrorCode.NO_REMINDERS);
 
-        // Write back to the file
-        try {
-            Util.writeFile(file, lines);
-        } catch (IOException ex) {
-            System.out.println("Couldn't write reminder for user " + user + " in guild " + g.getId() + " (" + g.getName() + ")");
-            return Pair.of(null, ErrorCode.OTHER_ERROR);
+        // Get a list of all the user's entries
+        NodeList userEntries = entries.item(userIndex).getChildNodes();
+
+        // Loop through them and delete one if it matches the ID
+        ReminderEntry deleted = null;
+        for (int i = 0; i < userEntries.getLength(); i++) {
+            Node node = userEntries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.getAttribute("id").equals(id)) {
+                    String channel = element.getAttribute("channel");
+                    long time = Long.parseLong(element.getAttribute("time"));
+                    String reason = element.getAttribute("reason");
+                    String reminderId = element.getAttribute("id");
+
+                    // Save all the values of the deleted entry
+                    deleted = new ReminderEntry(reminderId, user, channel, time, reason);
+
+                    // Remove the element
+                    entries.item(userIndex).removeChild(node);
+
+                    break;
+                }
+            }
         }
 
+        // Check if we actually deleted an entry
+        if (deleted == null)
+            return Pair.of(null, ErrorCode.UNKNOWN_ENTRY);
+
+        // Write changes back to file
+        Util.writeXml(file, document);
+
         // Return success
-        return Pair.of(entry, ErrorCode.SUCCESS);
+        return Pair.of(deleted, ErrorCode.SUCCESS);
     }
 
     public static Pair<ReminderEntry[], ErrorCode> getReminders(Guild g, String user) {
-        // Get file for reminders
+        // Get file location
         String file = Util.getGuildFolder(g) + Vars.remindersFile;
 
-        // Check if the file exists
         if (!new File(file).exists())
             return Pair.of(new ReminderEntry[]{}, ErrorCode.NO_REMINDERS);
 
-        // Read all reminders in file
-        List<String> lines;
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
         try {
-            lines = Util.readFile(file);
-        } catch (IOException e) {
-            System.out.println("Couldn't read reminders for guild " + g.getId() + " (" + g.getName() + ")");
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
             return Pair.of(new ReminderEntry[]{}, ErrorCode.OTHER_ERROR);
         }
 
-        // Make sure lines isn't null
-        if (lines == null)
-            return Pair.of(new ReminderEntry[]{}, ErrorCode.OTHER_ERROR);
+        // Get all reminders
+        NodeList entries = document.getElementsByTagName("entries");
 
-        // Check if there is any history
-        if (lines.size() == 0)
+        // Save index of user
+        int userIndex = -1;
+
+        // Get one for the current user
+        for (int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Check if the user has reminders
+        if (userIndex == -1)
             return Pair.of(new ReminderEntry[]{}, ErrorCode.NO_REMINDERS);
 
-        // Get all the entries
+        // Get a list of all the user's entries
+        NodeList userEntries = entries.item(userIndex).getChildNodes();
+
+        // Create list of ReminderEntry to return
         List<ReminderEntry> list = new ArrayList<>();
-        for (String line : lines) {
-            String[] data = line.split(",");
-            String reminderId = data[0];
-            String userId = data[1];
-            String channelId = data[2];
-            long time = Long.parseLong(data[3]);
-            String reason = data[4];
 
-            // Only add the reminder to the list if the ID of the reminder is the same as the user's ID
-            if (userId.equals(user))
-                list.add(new ReminderEntry(reminderId, userId, channelId, time, reason));
+        // Loop through them and add them to the list of entries
+        for (int i = 0; i < userEntries.getLength(); i++) {
+            Node node = userEntries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String channel = element.getAttribute("channel");
+                long time = Long.parseLong(element.getAttribute("time"));
+                String reason = element.getAttribute("reason");
+                String id = element.getAttribute("id");
+
+                list.add(new ReminderEntry(id, user, channel, time, reason));
+            }
         }
 
-        // If there's no entries in the list, return NO_REMINDERS
-        if (list.size() == 0)
-            return Pair.of(new ReminderEntry[]{}, ErrorCode.NO_REMINDERS);
-
-        // Return the entries
+        // Return success
         return Pair.of(list.toArray(new ReminderEntry[0]), ErrorCode.SUCCESS);
     }
 }

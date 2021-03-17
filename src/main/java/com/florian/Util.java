@@ -3,7 +3,17 @@ package com.florian;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import org.ocpsoft.prettytime.PrettyTime;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -105,6 +115,49 @@ public class Util {
 
     public static String generateId() {
         return Long.toHexString(Instant.now().toEpochMilli());
+    }
+
+    public static boolean createXmlFile(String filename, String rootTag) {
+        try {
+            // Create file if it doesn't exist
+            if(!new File(filename).exists())
+                Files.createFile(Paths.get(filename));
+
+            // Create document
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.newDocument();
+
+            // Add root element
+            Element root = document.createElement(rootTag);
+            document.appendChild(root);
+
+            // Write to file
+            writeXml(filename, document);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean writeXml(String filename, Document document) {
+        try {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult result = new StreamResult(new File(filename));
+            transformer.transform(source, result);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static DocumentBuilder getDocBuilder() throws ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        return factory.newDocumentBuilder();
     }
 
     public static List<String> readFile(String fileName) throws IOException {

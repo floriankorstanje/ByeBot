@@ -2,6 +2,7 @@ package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.ErrorCode;
+import com.florian.GuildConfig.GuildConfig;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -35,6 +36,7 @@ public class GuildinfoCommand extends BaseCommand {
         embed.addField("Members", "`" + e.getGuild().getMemberCount() + "`", true);
         embed.addField("Channels", "Total: `" + e.getGuild().getChannels().size() + "`\nVoice: `" + e.getGuild().getVoiceChannels().size() + "`\nText: `" + e.getGuild().getTextChannels().size() + "`", true);
         embed.addField("Time Created", Util.formatDateAgo(new Date(e.getGuild().getTimeCreated().toEpochSecond() * 1000)), true);
+        embed.addField("Commands Executed", "`" + GuildConfig.getCommandCounter(e.getGuild()) + "`", true);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

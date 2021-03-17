@@ -22,10 +22,11 @@ public class RemindersCommand extends BaseCommand {
     public RemindersCommand() {
         super.command = "reminders";
         super.description = "Pings you in a set time to remind you of something.";
-        super.arguments = "[operation(add/remove)] [time|reminder-id] [time-unit(days/hours/minutes/date/time)] [reminder]";
+        super.arguments = "[operation(add/remove)] [time|reminder-id] [time-unit(days/hours/minutes/date/time/datetime)] [reminder]";
         super.examples.add("add 3 hours Make a discord bot");
         super.examples.add("add 12/3/2021 date Do something epic!");
         super.examples.add("add 09:05 time Enter the void");
+        super.examples.add("add 17/3/2021-09:33 datetime Add datetime to reminders");
         super.examples.add("remove 178217adda0");
         super.aliases.add("reminder");
         super.aliases.add("remindme");
@@ -132,7 +133,18 @@ public class RemindersCommand extends BaseCommand {
                             // Get amount of milliseconds to wait
                             timeDone = finalTime.toInstant().toEpochMilli();
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            // Couldn't parse date
+                            return ErrorCode.WRONG_ARGUMENTS;
+                        }
+                        break;
+                    case "datetime":
+                        try {
+                            // Parse date and time from argument
+                            Date date = new SimpleDateFormat("d/M/yy-HH:mm").parse(time);
+
+                            // Get epoch of this reminder's end time
+                            timeDone = date.toInstant().toEpochMilli();
+                        } catch (Exception ex) {
                             // Couldn't parse date
                             return ErrorCode.WRONG_ARGUMENTS;
                         }
@@ -145,7 +157,7 @@ public class RemindersCommand extends BaseCommand {
                     return ErrorCode.REMINDER_TOO_SHORT;
 
                 // Add it to the list
-                Reminders.addReminder(e.getGuild(), e.getChannel(), e.getMember().getId(), timeDone, reason.toString());
+                Reminders.addReminder(e.getGuild(), e.getChannel(), Util.generateId(), e.getMember().getId(), timeDone, reason.toString());
 
                 // Tell the user the reminder got added
                 EmbedBuilder embed = Util.defaultEmbed();

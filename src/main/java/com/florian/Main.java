@@ -1,16 +1,23 @@
 package com.florian;
 
 import com.florian.Commands.Help.HelpCommand;
+import com.florian.Reminders.ReminderEntry;
 import com.florian.Userlog.UserEvents;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -95,52 +102,59 @@ public class Main extends ListenerAdapter {
             while(true) {
                 // Check for a reminders file for each guild
                 for (Guild g : e.getJDA().getGuilds()) {
+                    // Get file
                     String file = Util.getGuildFolder(g) + Vars.remindersFile;
+                    File input = new File(file);
 
-                    // Check for all the reminders if the file exists
-                    if (new File(file).exists()) {
-                        List<String> lines;
+                    // Check if file exists
+                    if(input.exists()) {
+                        Document document;
+
+                        // Try to parse existing entries
                         try {
-                            lines = Util.readFile(file);
-                        } catch (IOException ex) {
-                            System.out.println("Unable to read reminders file for guild " + g.getId());
+                            document = Util.getDocBuilder().parse(input);
+                        } catch (Exception ex) {
                             continue;
                         }
 
-                        // Keep track if a reminder was finished
-                        boolean finished = false;
+                        // Get all reminders
+                        NodeList entries = document.getElementsByTagName("entry");
 
-                        // Loop through all the lines to check if a reminder is done
-                        if (lines.size() > 0) {
-                            for (String line : lines.toArray(new String[0])) {
-                                String[] data = line.split(",");
-                                String userId = data[1];
-                                String channelId = data[2];
-                                long time = Long.parseLong(data[3]);
-                                String reason = data[4];
+                        // Keep track if a reminder was done
+                        boolean reminded = false;
 
-                                // Check if current time is later than the reminder
-                                if (Instant.now().toEpochMilli() >= time) {
-                                    // Get the member and then send the message
-                                    g.retrieveMemberById(userId).queue(member -> {
-                                        g.getTextChannelById(channelId).sendMessage(member.getAsMention() + ", your reminder for \"" + reason.trim() + "\" is done.").queue();
+                        // Loop through all reminder entries and check if they're done
+                        for(int i = 0; i < entries.getLength(); i++) {
+                            Node node = entries.item(i);
+                            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                                Element element = (Element) node;
+                                long time = Long.parseLong(element.getAttribute("time"));
+
+                                if(Instant.now().toEpochMilli() > time) {
+                                    // Reminder is done, tell the user
+                                    String channel = element.getAttribute("channel");
+                                    String reason = element.getAttribute("reason");
+
+                                    // Get user ID
+                                    String user = ((Element) element.getParentNode()).getAttribute("user");
+                                    g.retrieveMemberById(user).queue(member -> {
+                                        // Send message
+                                        g.getTextChannelById(channel).sendMessage(member.getAsMention() + ", your reminder for \"" + reason + "\" is done.").queue();
                                     });
 
+                                    // Make sure no empty lines are left behind
+                                    element.getParentNode().setTextContent("");
+
                                     // Remove the reminder from the file
-                                    lines.remove(line);
-                                    finished = true;
+                                    element.getParentNode().removeChild(element);
+
+                                    reminded = true;
                                 }
                             }
                         }
 
-                        // Write changes back to file
-                        if(finished) {
-                            try {
-                                Util.writeFile(file, lines);
-                            } catch (IOException ex) {
-                                System.out.println("Unable to write to reminder file for guild " + g.getId());
-                            }
-                        }
+                        // If a change was made, update the file
+                        Util.writeXml(file, document);
                     }
                 }
 

@@ -2,7 +2,9 @@ package com.florian;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
+import com.florian.GuildConfig.GuildConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -20,7 +22,7 @@ public class CommandHandler extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // Check if the message starts with the bot prefix
-        if (event.getMessage().getContentRaw().startsWith(Vars.botPrefix)) {
+        if (event.getMessage().getContentRaw().startsWith(Vars.botPrefix) || event.getMessage().getContentRaw().startsWith(GuildConfig.getPrefix(event.getGuild()))) {
             // Check if the user is still on cooldown
             if (cooldowns.get(event.getMember().getId()) != null) {
                 long expiresAt = cooldowns.get(event.getMember().getId()) + Vars.commandCooldown * 1000;
@@ -31,7 +33,7 @@ public class CommandHandler extends ListenerAdapter {
 
             // Make some variables to make accessing the command and arguments easier
             String[] msg = event.getMessage().getContentRaw().split("\\s+");
-            String cmd = msg[0].replace(Vars.botPrefix, "");
+            String cmd = msg[0].replace(Vars.botPrefix, "").replace(GuildConfig.getPrefix(event.getGuild()), "");
             String[] args = Util.removeElement(msg, 0);
 
             // Supported types to convert from ping to ID
@@ -117,6 +119,9 @@ public class CommandHandler extends ListenerAdapter {
 
             // Log executed command to console
             System.out.println("Command " + cmd + " returned error code " + error.toString() + " in " + event.getGuild().getName());
+
+            // Increment command counter
+            GuildConfig.incrementCommandCounter(event.getGuild());
         }
     }
 }

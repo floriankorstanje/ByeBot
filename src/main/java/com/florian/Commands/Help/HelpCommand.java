@@ -3,6 +3,7 @@ package com.florian.Commands.Help;
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
+import com.florian.GuildConfig.GuildConfig;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -53,7 +54,7 @@ public class HelpCommand extends BaseCommand {
 
         // Set some basic info for the embed
         embed.setTitle("Help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);
-        embed.addField("You can type `" + Vars.botPrefix + this.command + " " + this.arguments + "` to get more specific help about a command.", "", false);
+        embed.addField("You can type `" + Vars.botPrefix + this.command + " " + this.arguments + "` to get more specific help about a command.\nThis guild's custom prefix is `" + GuildConfig.getPrefix(e.getGuild()) + "`", "", false);
 
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {

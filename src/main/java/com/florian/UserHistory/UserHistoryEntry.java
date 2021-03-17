@@ -3,14 +3,14 @@ package com.florian.UserHistory;
 public class UserHistoryEntry {
     private final String executor;
     private final long time;
-    private final String offense;
+    private final String type;
     private final String reason;
     private final String id;
 
-    public UserHistoryEntry(String executor, long time, String offense, String reason, String id) {
+    public UserHistoryEntry(String executor, long time, String type, String reason, String id) {
         this.executor = executor;
         this.time = time;
-        this.offense = offense;
+        this.type = type;
         this.reason = reason;
         this.id = id;
     }
@@ -23,8 +23,8 @@ public class UserHistoryEntry {
         return time;
     }
 
-    public String getOffense() {
-        return offense;
+    public String getType() {
+        return type;
     }
 
     public String getReason() {

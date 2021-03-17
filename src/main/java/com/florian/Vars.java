@@ -18,13 +18,14 @@ public class Vars {
     // Files and folders the bot uses
     public static final String botFolder = System.getProperty("user.dir") + "/Bot-Files/";
     public static final String guildsFolder = botFolder + "/guilds/";
-    public static final String userlogFolder = "/userlogs/";
-    public static final String historyFolder = "/history/";
-    public static final String remindersFile = "/reminders.txt";
+    public static final String userlogFile = "/userlogs.xml";
+    public static final String historyFile = "/history.xml";
+    public static final String remindersFile = "/reminders.xml";
+    public static final String guildConfigFile = "/config.xml";
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.6.5";
+    public static final String version = "0.7.0";
     public static ApplicationInfo appInfo;
     public static User botOwner;
 
@@ -34,7 +35,7 @@ public class Vars {
 
     // Other
     public static final Random random = new Random();
-    public static final int maxUserlogEntries = 64;
+    public static final int maxUserlogEntries = 3;
     public static final int color = 0x890BEF;
-    public static final BaseCommand[] commands = {new HelpCommand(), new ModhelpCommand(), new OwnerhelpCommand(), new InviteCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand()};
+    public static final BaseCommand[] commands = {new HelpCommand(), new ModhelpCommand(), new OwnerhelpCommand(), new InviteCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand()};
 }

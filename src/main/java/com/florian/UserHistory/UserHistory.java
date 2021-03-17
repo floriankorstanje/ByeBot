@@ -188,11 +188,11 @@ public class UserHistory {
         int userIndex = -1;
 
         // Get one for the current user=
-        for(int i = 0; i < entries.getLength(); i++) {
+        for (int i = 0; i < entries.getLength(); i++) {
             Node node = entries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("user").equals(user)) {
+                if (element.getAttribute("user").equals(user)) {
                     userIndex = i;
                     break;
                 }
@@ -200,7 +200,7 @@ public class UserHistory {
         }
 
         // Check if the user has history
-        if(userIndex == -1)
+        if (userIndex == -1)
             return ErrorCode.NO_USER_HISTORY;
 
         // Get a list of all the user's entries
@@ -208,11 +208,11 @@ public class UserHistory {
 
         // Loop through them and edit one if it matches the ID
         boolean edited = false;
-        for(int i = 0; i < userEntries.getLength(); i++) {
+        for (int i = 0; i < userEntries.getLength(); i++) {
             Node node = userEntries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("id").equals(id)) {
+                if (element.getAttribute("id").equals(id)) {
                     element.setAttribute("reason", newReason);
                     edited = true;
                     break;
@@ -221,7 +221,7 @@ public class UserHistory {
         }
 
         // Check if we actually edited an entry
-        if(!edited)
+        if (!edited)
             return ErrorCode.UNKNOWN_ENTRY;
 
         // Write changes back to file

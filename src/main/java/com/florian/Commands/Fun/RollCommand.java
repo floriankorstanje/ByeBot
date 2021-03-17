@@ -18,7 +18,7 @@ public class RollCommand extends BaseCommand {
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if(args.length > 1) {
+        if (args.length > 1) {
             // Too many arguments
             return ErrorCode.WRONG_ARGUMENTS;
         }
@@ -27,7 +27,7 @@ public class RollCommand extends BaseCommand {
         int max = 100;
 
         // Set max if it was specified
-        if(args.length == 1) {
+        if (args.length == 1) {
             try {
                 max = Integer.parseInt(args[0]);
             } catch (Exception ex) {
@@ -35,7 +35,7 @@ public class RollCommand extends BaseCommand {
             }
         }
 
-        if(max < 1)
+        if (max < 1)
             return ErrorCode.WRONG_ARGUMENTS;
 
         // Generate number. Add one so $roll 100 can return 100

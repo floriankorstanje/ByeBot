@@ -7,7 +7,6 @@ import com.florian.GuildConfig.GuildConfig;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class SetprefixCommand extends BaseCommand {
@@ -24,7 +23,7 @@ public class SetprefixCommand extends BaseCommand {
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if(args.length == 1) {
+        if (args.length == 1) {
             // Save old prefix
             String oldPrefix = GuildConfig.getPrefix(e.getGuild());
 

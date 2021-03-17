@@ -35,7 +35,7 @@ public class Userlog {
         action = action.replaceAll("Received", "Sent");
 
         // Check if the file for this guild is here
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 Util.createXmlFile(file, "userlog");
             } catch (Exception e) {
@@ -63,11 +63,11 @@ public class Userlog {
         int userIndex = -1;
 
         // Get one for the current user=
-        for(int i = 0; i < entries.getLength(); i++) {
+        for (int i = 0; i < entries.getLength(); i++) {
             Node node = entries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("user").equals(m.getId())) {
+                if (element.getAttribute("user").equals(m.getId())) {
                     userIndex = i;
                     break;
                 }
@@ -78,7 +78,7 @@ public class Userlog {
         Element element;
 
         // Check if an element was found, if not create
-        if(userIndex == -1) {
+        if (userIndex == -1) {
             Element toAdd = document.createElement("entries");
             toAdd.setAttribute("user", m.getId());
             element = (Element) document.getElementsByTagName("userlog").item(0).appendChild(toAdd);
@@ -95,7 +95,7 @@ public class Userlog {
         element.appendChild(entry);
 
         // Remove entries if there are too many
-        while(element.getChildNodes().getLength() > Vars.maxUserlogEntries)
+        while (element.getChildNodes().getLength() > Vars.maxUserlogEntries)
             element.removeChild(element.getFirstChild());
 
         // Write changes back to file
@@ -106,8 +106,8 @@ public class Userlog {
         // Get file location
         String file = Util.getGuildFolder(g) + Vars.userlogFile;
 
-        if(!new File(file).exists())
-            return Pair.of(new UserlogEntry[] {}, ErrorCode.NO_USER_LOG);
+        if (!new File(file).exists())
+            return Pair.of(new UserlogEntry[]{}, ErrorCode.NO_USER_LOG);
 
         // Get file
         File input = new File(file);
@@ -118,7 +118,7 @@ public class Userlog {
             document = Util.getDocBuilder().parse(input);
         } catch (Exception e) {
             // Failed to parse
-            return Pair.of(new UserlogEntry[] {}, ErrorCode.OTHER_ERROR);
+            return Pair.of(new UserlogEntry[]{}, ErrorCode.OTHER_ERROR);
         }
 
         // Get all log entries
@@ -128,11 +128,11 @@ public class Userlog {
         int userIndex = -1;
 
         // Get one for the current user
-        for(int i = 0; i < entries.getLength(); i++) {
+        for (int i = 0; i < entries.getLength(); i++) {
             Node node = entries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("user").equals(user)) {
+                if (element.getAttribute("user").equals(user)) {
                     userIndex = i;
                     break;
                 }
@@ -140,8 +140,8 @@ public class Userlog {
         }
 
         // Check if the user has logs
-        if(userIndex == -1)
-            return Pair.of(new UserlogEntry[] {}, ErrorCode.NO_USER_LOG);
+        if (userIndex == -1)
+            return Pair.of(new UserlogEntry[]{}, ErrorCode.NO_USER_LOG);
 
         // Get a list of all the user's entries
         NodeList userEntries = entries.item(userIndex).getChildNodes();
@@ -150,9 +150,9 @@ public class Userlog {
         List<UserlogEntry> list = new ArrayList<>();
 
         // Loop through them and add them to the list of entries
-        for(int i = userEntries.getLength() - 1; i >= 0; i--) {
+        for (int i = userEntries.getLength() - 1; i >= 0; i--) {
             Node node = userEntries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 String action = element.getAttribute("action");
                 long time = Long.parseLong(element.getAttribute("time"));

@@ -33,13 +33,8 @@ public class KickCommand extends BaseCommand {
 
         // If there is more than 1 argument, there is also a reason. So we can append the reason to the stringbuilder
         if (args.length >= 2) {
-            for (int i = 1; i < args.length; i++) {
+            for (int i = 1; i < args.length; i++)
                 reason.append(args[i]).append(" ");
-
-                // Reason cannot contain commas since the history file uses commas to separate values
-                if (args[i].contains(","))
-                    return ErrorCode.UNALLOWED_CHARACTER;
-            }
         } else {
             // If there is no reason provided, put it to none
             reason.append("none");

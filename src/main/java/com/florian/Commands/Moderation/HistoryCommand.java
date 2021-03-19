@@ -16,7 +16,7 @@ import java.util.Date;
 public class HistoryCommand extends BaseCommand {
     public HistoryCommand() {
         super.command = "history";
-        super.description = "Shows, or edits someones history.";
+        super.description = "Shows, removes, or edits someones history.";
         super.arguments = "<user> [operation(edit/remove)] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
         super.userType = UserType.MODERATOR;
@@ -76,12 +76,8 @@ public class HistoryCommand extends BaseCommand {
                 String id = args[2];
 
                 StringBuilder newReason = new StringBuilder();
-                for (int i = 3; i < args.length; i++) {
+                for (int i = 3; i < args.length; i++)
                     newReason.append(args[i]).append(" ");
-
-                    if (args[i].contains(","))
-                        return ErrorCode.UNALLOWED_CHARACTER;
-                }
 
                 ErrorCode error = UserHistory.editEntry(e.getGuild(), user, id, newReason.toString());
                 if (error != ErrorCode.SUCCESS)

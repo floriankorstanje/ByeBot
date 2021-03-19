@@ -32,6 +32,7 @@ public class HelpCommand extends BaseCommand {
                     // Add all the info about the command
                     embed.addField("Name", command.command, false);
                     embed.addField("Description", command.description, false);
+                    embed.addField("Advanced Description", command.advancedDescription, false);
                     embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.arguments.length() > 0 ? " " + command.arguments + "`" : "`"), false);
                     embed.addField("Examples", command.examples.size() == 0 ? "none" : "`" + Vars.botPrefix + command.command + " " + String.join("`\n`" + Vars.botPrefix + command.command + " ", command.examples) + "`", false);
                     embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);

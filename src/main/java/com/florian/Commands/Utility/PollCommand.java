@@ -9,7 +9,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class PollCommand extends BaseCommand {
     public PollCommand() {
         super.command = "poll";
-        super.description = "Creates a yes or no poll. Question can't be longer than 256 characters.";
+        super.description = "Creates a yes or no poll.";
+        super.advancedDescription = "Question can't be longer than 256 characters.";
         super.arguments = "<question>";
         super.requiredArguments = true;
         super.examples.add("Is this a good bot?");

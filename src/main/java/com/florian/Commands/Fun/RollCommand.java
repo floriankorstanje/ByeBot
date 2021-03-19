@@ -10,7 +10,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class RollCommand extends BaseCommand {
     public RollCommand() {
         super.command = "roll";
-        super.description = "Generates a random number. Max must be greater than 0 and smaller than " + Integer.MAX_VALUE + ".";
+        super.description = "Generates a random number.";
+        super.advancedDescription = "Max must be greater than 0 and smaller than " + Integer.MAX_VALUE + ".";
         super.arguments = "[max]";
         super.examples.add("100");
         super.aliases.add("random");

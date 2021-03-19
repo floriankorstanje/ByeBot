@@ -10,6 +10,7 @@ import java.util.List;
 public class BaseCommand {
     public String command;
     public String description;
+    public String advancedDescription;
     public String arguments;
     public Permission permission;
     public List<String> aliases;
@@ -23,6 +24,9 @@ public class BaseCommand {
 
         // Description briefly explains what the command does
         description = "If this shows up, I made a big oopsie and forgot to give one of the commands a description.";
+
+        // Advanced description explains what the command does
+        advancedDescription = "none";
 
         // Arguments are the arguments the command needs
         arguments = "";

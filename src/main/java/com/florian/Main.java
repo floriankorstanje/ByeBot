@@ -138,9 +138,6 @@ public class Main extends ListenerAdapter {
                                         g.getTextChannelById(channel).sendMessage(member.getAsMention() + ", your reminder for \"" + reason + "\" is done.").queue();
                                     });
 
-                                    // Make sure no empty lines are left behind
-                                    element.getParentNode().setTextContent("");
-
                                     // Remove the reminder from the file
                                     element.getParentNode().removeChild(element);
 
@@ -149,8 +146,11 @@ public class Main extends ListenerAdapter {
                             }
                         }
 
-                        // If a change was made, update the file
-                        Util.writeXml(file, document);
+                        // Only write back to the file if a reminder got removed
+                        if(reminded) {
+                            // If a change was made, update the file
+                            Util.writeXml(file, document);
+                        }
                     }
                 }
 

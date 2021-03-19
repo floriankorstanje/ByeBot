@@ -141,9 +141,7 @@ public class UserHistory {
             if(node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 if(element.getAttribute("id").equals(id)) {
-                    // Make sure no empty lines are left behind
-                    element.getParentNode().setTextContent("");
-
+                    // Remove the entry
                     entries.item(userIndex).removeChild(node);
                     deleted = true;
                     break;

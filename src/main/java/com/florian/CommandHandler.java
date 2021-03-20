@@ -84,6 +84,7 @@ public class CommandHandler extends ListenerAdapter {
 
             // Add user to cooldown list
             if (error == ErrorCode.SUCCESS) {
+                // Add user to cooldown list
                 cooldowns.put(event.getMember().getId(), Instant.now().toEpochMilli());
 
                 // Wait for the amount of cooldown and then remove the user from the cooldown list
@@ -95,6 +96,10 @@ public class CommandHandler extends ListenerAdapter {
                     }
                     cooldowns.remove(event.getMember().getId());
                 }).start();
+
+                // Increment command counter for bot and build
+                GuildConfig.incrementCommandCounter(event.getGuild());
+                BotConfig.incrementCommandCounter();
             }
 
             // Tell the user the command failed if it did, otherwise don't output anything
@@ -119,10 +124,6 @@ public class CommandHandler extends ListenerAdapter {
 
             // Log executed command to console
             System.out.println("Command " + cmd + " returned error code " + error.toString() + " in " + event.getGuild().getName());
-
-            // Increment command counter for bot and build
-            GuildConfig.incrementCommandCounter(event.getGuild());
-            BotConfig.incrementCommandCounter();
         }
     }
 }

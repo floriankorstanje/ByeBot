@@ -2,8 +2,8 @@ package com.florian.Commands.Help;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
-import com.florian.ErrorCode;
 import com.florian.Config.GuildConfig;
+import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;

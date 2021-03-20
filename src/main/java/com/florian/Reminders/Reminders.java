@@ -234,4 +234,58 @@ public class Reminders {
         // Return success
         return Pair.of(list.toArray(new ReminderEntry[0]), ErrorCode.SUCCESS);
     }
+
+    public static Pair<Integer, ErrorCode> clearReminders(Guild g, String user) {
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.remindersFile;
+
+        if (!new File(file).exists())
+            return Pair.of(0, ErrorCode.NO_REMINDERS);
+
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return Pair.of(0, ErrorCode.OTHER_ERROR);
+        }
+
+        // Get all reminders
+        NodeList entries = document.getElementsByTagName("entries");
+
+        // Save index of user
+        int userIndex = -1;
+
+        // Get one for the current user
+        for (int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Check if the user has reminders
+        if (userIndex == -1)
+            return Pair.of(0, ErrorCode.NO_REMINDERS);
+
+        // Get count of user reminder entries
+        int entryCount = entries.item(userIndex).getChildNodes().getLength();
+
+        // Remove all reminders
+        entries.item(userIndex).setTextContent("");
+
+        // Write changes back to file
+        Util.writeXml(file, document);
+
+        // Return success
+        return Pair.of(entryCount, ErrorCode.SUCCESS);
+    }
 }

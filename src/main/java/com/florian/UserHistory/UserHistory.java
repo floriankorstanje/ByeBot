@@ -21,7 +21,7 @@ public class UserHistory {
         // Get file location
         String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 Util.createXmlFile(file, "history");
             } catch (Exception e) {
@@ -49,11 +49,11 @@ public class UserHistory {
         int userIndex = -1;
 
         // Get one for the current user=
-        for(int i = 0; i < entries.getLength(); i++) {
+        for (int i = 0; i < entries.getLength(); i++) {
             Node node = entries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("user").equals(user)) {
+                if (element.getAttribute("user").equals(user)) {
                     userIndex = i;
                     break;
                 }
@@ -64,7 +64,7 @@ public class UserHistory {
         Element element;
 
         // Check if an element was found, if not create
-        if(userIndex == -1) {
+        if (userIndex == -1) {
             Element toAdd = document.createElement("entries");
             toAdd.setAttribute("user", user);
             element = (Element) document.getElementsByTagName("history").item(0).appendChild(toAdd);
@@ -73,7 +73,7 @@ public class UserHistory {
         }
 
         // Check if there isn't too many entries
-        if(element.getChildNodes().getLength() >= Vars.maxHistoryEntries)
+        if (element.getChildNodes().getLength() >= Vars.maxHistoryEntries)
             return ErrorCode.TOO_MUCH_HISTORY;
 
         // Create entry and add all the info
@@ -98,7 +98,7 @@ public class UserHistory {
         // Get file location
         String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        if(!new File(file).exists())
+        if (!new File(file).exists())
             return ErrorCode.NO_USER_HISTORY;
 
         // Get file
@@ -120,11 +120,11 @@ public class UserHistory {
         int userIndex = -1;
 
         // Get one for the current user=
-        for(int i = 0; i < entries.getLength(); i++) {
+        for (int i = 0; i < entries.getLength(); i++) {
             Node node = entries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("user").equals(user)) {
+                if (element.getAttribute("user").equals(user)) {
                     userIndex = i;
                     break;
                 }
@@ -132,7 +132,7 @@ public class UserHistory {
         }
 
         // Check if the user has history
-        if(userIndex == -1)
+        if (userIndex == -1)
             return ErrorCode.NO_USER_HISTORY;
 
         // Get a list of all the user's entries
@@ -140,11 +140,11 @@ public class UserHistory {
 
         // Loop through them and delete one if it matches the ID
         boolean deleted = false;
-        for(int i = 0; i < userEntries.getLength(); i++) {
+        for (int i = 0; i < userEntries.getLength(); i++) {
             Node node = userEntries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("id").equals(id)) {
+                if (element.getAttribute("id").equals(id)) {
                     // Remove the entry
                     entries.item(userIndex).removeChild(node);
                     deleted = true;
@@ -154,7 +154,7 @@ public class UserHistory {
         }
 
         // Check if we actually deleted an entry
-        if(!deleted)
+        if (!deleted)
             return ErrorCode.UNKNOWN_ENTRY;
 
         // Write changes back to file
@@ -168,7 +168,7 @@ public class UserHistory {
         // Get file location
         String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        if(!new File(file).exists())
+        if (!new File(file).exists())
             return ErrorCode.NO_USER_HISTORY;
 
         // Get file
@@ -237,8 +237,8 @@ public class UserHistory {
         // Get file location
         String file = Util.getGuildFolder(g) + Vars.historyFile;
 
-        if(!new File(file).exists())
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
+        if (!new File(file).exists())
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
 
         // Get file
         File input = new File(file);
@@ -249,7 +249,7 @@ public class UserHistory {
             document = Util.getDocBuilder().parse(input);
         } catch (Exception e) {
             // Failed to parse
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.OTHER_ERROR);
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.OTHER_ERROR);
         }
 
         // Get all history entries
@@ -259,11 +259,11 @@ public class UserHistory {
         int userIndex = -1;
 
         // Get one for the current user
-        for(int i = 0; i < entries.getLength(); i++) {
+        for (int i = 0; i < entries.getLength(); i++) {
             Node node = entries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getAttribute("user").equals(user)) {
+                if (element.getAttribute("user").equals(user)) {
                     userIndex = i;
                     break;
                 }
@@ -271,8 +271,8 @@ public class UserHistory {
         }
 
         // Check if the user has history
-        if(userIndex == -1)
-            return Pair.of(new UserHistoryEntry[] {}, ErrorCode.NO_USER_HISTORY);
+        if (userIndex == -1)
+            return Pair.of(new UserHistoryEntry[]{}, ErrorCode.NO_USER_HISTORY);
 
         // Get a list of all the user's entries
         NodeList userEntries = entries.item(userIndex).getChildNodes();
@@ -281,9 +281,9 @@ public class UserHistory {
         List<UserHistoryEntry> list = new ArrayList<>();
 
         // Loop through them and add them to the list of entries
-        for(int i = 0; i < userEntries.getLength(); i++) {
+        for (int i = 0; i < userEntries.getLength(); i++) {
             Node node = userEntries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 String executor = element.getAttribute("executor");
                 long time = Long.parseLong(element.getAttribute("time"));
@@ -297,5 +297,59 @@ public class UserHistory {
 
         // Return success
         return Pair.of(list.toArray(new UserHistoryEntry[0]), ErrorCode.SUCCESS);
+    }
+
+    public static Pair<Integer, ErrorCode> clearHistory(Guild g, String user) {
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.historyFile;
+
+        if (!new File(file).exists())
+            return Pair.of(0, ErrorCode.NO_USER_HISTORY);
+
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return Pair.of(0, ErrorCode.OTHER_ERROR);
+        }
+
+        // Get all reminders
+        NodeList entries = document.getElementsByTagName("entries");
+
+        // Save index of user
+        int userIndex = -1;
+
+        // Get one for the current user
+        for (int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.getAttribute("user").equals(user)) {
+                    userIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Check if the user has history
+        if (userIndex == -1)
+            return Pair.of(0, ErrorCode.NO_USER_HISTORY);
+
+        // Get count of user history entries
+        int entryCount = entries.item(userIndex).getChildNodes().getLength();
+
+        // Remove all history
+        entries.item(userIndex).setTextContent("");
+
+        // Write changes back to file
+        Util.writeXml(file, document);
+
+        // Return success
+        return Pair.of(entryCount, ErrorCode.SUCCESS);
     }
 }

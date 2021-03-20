@@ -122,7 +122,7 @@ public class CommandHandler extends ListenerAdapter {
 
             // Increment command counter for bot and build
             GuildConfig.incrementCommandCounter(event.getGuild());
-            BotConfig.getCommandCounter();
+            BotConfig.incrementCommandCounter();
         }
     }
 }

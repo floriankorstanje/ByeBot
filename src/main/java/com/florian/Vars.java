@@ -27,8 +27,6 @@ public class Vars {
     // Bot info
     public static final String botPrefix = "$";
     public static final String version = "0.7.3";
-    public static ApplicationInfo appInfo;
-    public static User botOwner;
 
     // Delays (Seconds)
     public static final int waitForPruneReactionDelay = 5;
@@ -43,4 +41,6 @@ public class Vars {
     public static final Random random = new Random();
     public static final int color = 0x890BEF;
     public static final BaseCommand[] commands = {new HelpCommand(), new ModhelpCommand(), new OwnerhelpCommand(), new InviteCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand()};
+    public static ApplicationInfo appInfo;
+    public static User botOwner;
 }

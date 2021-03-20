@@ -79,7 +79,7 @@ public class Main extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent e) {
         // Make a thread to check if any reminders expired and notify the user
         new Thread(() -> {
-            while(true) {
+            while (true) {
                 // Check for a reminders file for each guild
                 for (Guild g : e.getJDA().getGuilds()) {
                     // Get file
@@ -87,7 +87,7 @@ public class Main extends ListenerAdapter {
                     File input = new File(file);
 
                     // Check if file exists
-                    if(input.exists()) {
+                    if (input.exists()) {
                         Document document;
 
                         // Try to parse existing entries
@@ -104,13 +104,13 @@ public class Main extends ListenerAdapter {
                         boolean reminded = false;
 
                         // Loop through all reminder entries and check if they're done
-                        for(int i = 0; i < entries.getLength(); i++) {
+                        for (int i = 0; i < entries.getLength(); i++) {
                             Node node = entries.item(i);
-                            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                            if (node.getNodeType() == Node.ELEMENT_NODE) {
                                 Element element = (Element) node;
                                 long time = Long.parseLong(element.getAttribute("time"));
 
-                                if(Instant.now().toEpochMilli() > time) {
+                                if (Instant.now().toEpochMilli() > time) {
                                     // Reminder is done, tell the user
                                     String channel = element.getAttribute("channel");
                                     String reason = element.getAttribute("reason");
@@ -131,7 +131,7 @@ public class Main extends ListenerAdapter {
                         }
 
                         // Only write back to the file if a reminder got removed
-                        if(reminded) {
+                        if (reminded) {
                             // If a change was made, update the file
                             Util.writeXml(file, document);
                         }

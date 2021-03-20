@@ -17,7 +17,7 @@ public class HistoryCommand extends BaseCommand {
     public HistoryCommand() {
         super.command = "history";
         super.description = "Shows, removes, or edits someones history.";
-        super.arguments = "<user> [operation(edit/remove)] [history-id] [new-reason]";
+        super.arguments = "<user> [operation(edit/remove/clear)] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
         super.userType = UserType.MODERATOR;
         super.requiredArguments = true;
@@ -62,7 +62,29 @@ public class HistoryCommand extends BaseCommand {
 
             // Send the embed
             e.getChannel().sendMessage(embed.build()).queue();
-        } else if (args.length >= 2) {
+        } else if (args.length == 2) {
+            // Check if user meant to clear
+            if (args[1].equalsIgnoreCase("clear")) {
+                // Save result of clearHistory
+                Pair<Integer, ErrorCode> result = UserHistory.clearHistory(e.getGuild(), args[0]);
+
+                // Check if clearHistory succeeded, if not, return the error
+                if (result.getRight() != ErrorCode.SUCCESS)
+                    return result.getRight();
+
+                // Create embed to tell the executor that the history was cleared
+                EmbedBuilder embed = Util.defaultEmbed();
+
+                // Set title
+                embed.setTitle("Removed " + result.getLeft() + " history entries from `" + args[0] + "`");
+
+                // Send the embed
+                e.getChannel().sendMessage(embed.build()).queue();
+            } else {
+                // Return WRONG_ARGUMENTS
+                return ErrorCode.WRONG_ARGUMENTS;
+            }
+        } else if (args.length >= 3) {
             String operation = args[1];
 
             // Save user id

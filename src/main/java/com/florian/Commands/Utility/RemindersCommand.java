@@ -11,35 +11,33 @@ import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 public class RemindersCommand extends BaseCommand {
     public RemindersCommand() {
         super.command = "reminders";
         super.description = "Pings you in a set time to remind you of something.";
-        super.arguments = "[operation(add/remove)] [time|reminder-id] [time-unit(days/hours/minutes/date/time/datetime)] [reminder]";
+        super.arguments = "[operation(add/remove/clear)] [time|reminder-id] [time-unit(days/hours/minutes/date/time/datetime)] [reminder]";
         super.examples.add("add 3 hours Make a discord bot");
         super.examples.add("add 12/3/2021 date Do something epic!");
         super.examples.add("add 09:05 time Enter the void");
         super.examples.add("add 17/3/2021-09:33 datetime Add datetime to reminders");
         super.examples.add("remove 178217adda0");
+        super.examples.add("clear");
         super.aliases.add("reminder");
         super.aliases.add("remindme");
     }
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             // Get all reminders
             Pair<ReminderEntry[], ErrorCode> reminders = Reminders.getReminders(e.getGuild(), e.getMember().getId());
 
             // Check if getReminders was successful. If not, return the error
-            if(reminders.getRight() != ErrorCode.SUCCESS)
+            if (reminders.getRight() != ErrorCode.SUCCESS)
                 return reminders.getRight();
 
             // Create embed to list reminders
@@ -49,7 +47,7 @@ public class RemindersCommand extends BaseCommand {
             embed.setTitle("Reminders for " + e.getMember().getUser().getAsTag());
 
             // Fill the embed
-            for(int i = 0; i < reminders.getLeft().length; i++) {
+            for (int i = 0; i < reminders.getLeft().length; i++) {
                 ReminderEntry entry = reminders.getLeft()[i];
 
                 // Add embed field
@@ -58,17 +56,39 @@ public class RemindersCommand extends BaseCommand {
 
             // Send the embed
             e.getChannel().sendMessage(embed.build()).queue();
-        } else if(args.length >= 2) {
+        } else if (args.length == 1) {
+            // Check if user wants to clear all reminders
+            if (args[0].equalsIgnoreCase("clear")) {
+                // Remove all reminders and get count and error back
+                Pair<Integer, ErrorCode> result = Reminders.clearReminders(e.getGuild(), e.getMember().getId());
+
+                // Check if clearReminders succeeded, if not, return the error
+                if (result.getRight() != ErrorCode.SUCCESS)
+                    return result.getRight();
+
+                // Create embed to tell user their reminders got removed
+                EmbedBuilder embed = Util.defaultEmbed();
+
+                // Set title
+                embed.setTitle("Removed " + result.getLeft() + " reminders from " + e.getMember().getUser().getAsTag());
+
+                // Set embed
+                e.getChannel().sendMessage(embed.build()).queue();
+            } else {
+                // Wrong args
+                return ErrorCode.WRONG_ARGUMENTS;
+            }
+        } else {
             String operation = args[0];
-            if(operation.equalsIgnoreCase("add")) {
-                if(args.length < 3)
+            if (operation.equalsIgnoreCase("add")) {
+                if (args.length < 3)
                     return ErrorCode.WRONG_ARGUMENTS;
 
                 // Get arguments
                 String time = args[1];
                 String unit = args[2];
                 StringBuilder reason = new StringBuilder();
-                for(int i = 3; i < args.length; i++)
+                for (int i = 3; i < args.length; i++)
                     reason.append(args[i]).append(" ");
 
                 // Save when reminder is done
@@ -77,25 +97,25 @@ public class RemindersCommand extends BaseCommand {
                 // Get milliseconds to wait for
                 switch (unit.toLowerCase()) {
                     case "days":
-                        timeDone = (long) Integer.parseInt(time) * 24 * 60 * 60 * 1000;
+                        timeDone = (long) (Double.parseDouble(time) * 24 * 60 * 60 * 1000);
 
                         // Add current time
                         timeDone += Instant.now().toEpochMilli();
                         break;
                     case "hours":
-                        timeDone = (long) Integer.parseInt(time) * 60 * 60 * 1000;
+                        timeDone = (long) (Double.parseDouble(time) * 60 * 60 * 1000);
 
                         // Add current time
                         timeDone += Instant.now().toEpochMilli();
                         break;
                     case "minutes":
-                        timeDone = (long) Integer.parseInt(time) * 60 * 1000;
+                        timeDone = (long) (Double.parseDouble(time) * 60 * 1000);
 
                         // Add current time
                         timeDone += Instant.now().toEpochMilli();
                         break;
                     case "seconds":
-                        timeDone = (long) Integer.parseInt(time) * 1000;
+                        timeDone = (long) (Double.parseDouble(time) * 1000);
 
                         // Add current time
                         timeDone += Instant.now().toEpochMilli();
@@ -153,14 +173,14 @@ public class RemindersCommand extends BaseCommand {
                         return ErrorCode.WRONG_ARGUMENTS;
                 }
 
-                if(timeDone - Instant.now().toEpochMilli() < 0)
+                if (timeDone - Instant.now().toEpochMilli() < 0)
                     return ErrorCode.REMINDER_TOO_SHORT;
 
                 // Add it to the list
                 ErrorCode error = Reminders.addReminder(e.getGuild(), e.getChannel(), Util.generateId(), e.getMember().getId(), timeDone, reason.toString());
 
                 // If addReminders didn't succeed, return the error
-                if(error != ErrorCode.SUCCESS)
+                if (error != ErrorCode.SUCCESS)
                     return error;
 
                 // Tell the user the reminder got added
@@ -175,9 +195,9 @@ public class RemindersCommand extends BaseCommand {
 
                 // Send the embed
                 e.getChannel().sendMessage(embed.build()).queue();
-            } else if(operation.equalsIgnoreCase("remove")) {
+            } else if (operation.equalsIgnoreCase("remove")) {
                 // Remove only takes 2 args
-                if(args.length != 2)
+                if (args.length != 2)
                     return ErrorCode.WRONG_ARGUMENTS;
 
                 // Get reminder ID
@@ -187,7 +207,7 @@ public class RemindersCommand extends BaseCommand {
                 Pair<ReminderEntry, ErrorCode> removed = Reminders.removeReminder(e.getGuild(), e.getMember().getId(), id);
 
                 // Check if removal succeeded
-                if(removed.getRight() != ErrorCode.SUCCESS)
+                if (removed.getRight() != ErrorCode.SUCCESS)
                     return removed.getRight();
 
                 // Removal was successful, so tell the user the reminder was removed
@@ -206,9 +226,6 @@ public class RemindersCommand extends BaseCommand {
                 // Wrong arguments
                 return ErrorCode.WRONG_ARGUMENTS;
             }
-        } else {
-            // Wrong arguments
-            return ErrorCode.WRONG_ARGUMENTS;
         }
 
         // Return success

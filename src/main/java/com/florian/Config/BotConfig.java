@@ -3,7 +3,6 @@ package com.florian.Config;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
-import net.dv8tion.jda.api.entities.Guild;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -14,10 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class BotConfig {
-    private static String cmdCounterId = "commandCounter";
-    private static String tokenId = "token";
+    private static final String cmdCounterId = "commandCounter";
+    private static final String tokenId = "token";
 
-    public static void incrementCommandCounter(Guild g) {
+    public static void incrementCommandCounter() {
         setValue(cmdCounterId, String.valueOf(Integer.parseInt(getValue(cmdCounterId)) + 1));
     }
 
@@ -25,7 +24,7 @@ public class BotConfig {
         String token = getValue(tokenId);
 
         // If token is null, return NO TOKEN
-        if(token == null)
+        if (token == null)
             return "NO TOKEN";
 
         // Return token
@@ -41,7 +40,7 @@ public class BotConfig {
         String file = Vars.botConfigFile;
 
         // Create config file if it doesn't exist
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
@@ -74,7 +73,7 @@ public class BotConfig {
         String file = Vars.botConfigFile;
 
         // Create bot config if it doesn't exist
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
@@ -111,7 +110,7 @@ public class BotConfig {
     private static boolean createDefaultConfig(String filename) {
         try {
             // Create file if it doesn't exist
-            if(!new File(filename).exists())
+            if (!new File(filename).exists())
                 Files.createFile(Paths.get(filename));
 
             // Create document

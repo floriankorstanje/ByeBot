@@ -3,7 +3,7 @@ package com.florian.Commands.Moderation;
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
 import com.florian.ErrorCode;
-import com.florian.GuildConfig.GuildConfig;
+import com.florian.Config.GuildConfig;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;

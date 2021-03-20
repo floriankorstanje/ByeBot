@@ -1,6 +1,7 @@
 package com.florian;
 
 import com.florian.Commands.Help.HelpCommand;
+import com.florian.Config.BotConfig;
 import com.florian.Userlog.UserEvents;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -19,13 +20,9 @@ import org.w3c.dom.NodeList;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Instant;
 
 public class Main extends ListenerAdapter {
-    private static final String tokenFile = Vars.botFolder + "token.txt";
-
     public static void main(String[] args) throws IOException, LoginException {
         // Output starting message
         System.out.println("Starting ByeBot v" + Vars.version);
@@ -54,21 +51,8 @@ public class Main extends ListenerAdapter {
             }
         }
 
-        // Check if the file with a bot token exists. If not, create one
-        if (!new File(tokenFile).exists()) {
-            System.out.println("Please enter your bots token in \"" + tokenFile + "\" to start the bot.");
-            Files.createFile(Paths.get(tokenFile));
-            return;
-        }
-
-        // Check if the token file isn't empty. If the user entered a wrong token, JDA will output an error
-        if (Util.readFile(tokenFile).size() == 0) {
-            System.out.println("Please enter your bots token in \"" + tokenFile + "\" to start the bot.");
-            return;
-        }
-
-        // Get the bot token from the token file
-        String token = Util.readFile(tokenFile).get(0);
+        // Get token
+        String token = BotConfig.getToken();
 
         // Initialize JDABuilder, specify GatewayIntents and add the event listeners
         JDABuilder builder = JDABuilder.createDefault(token);

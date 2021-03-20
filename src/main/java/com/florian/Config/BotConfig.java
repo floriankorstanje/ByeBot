@@ -1,4 +1,4 @@
-package com.florian.GuildConfig;
+package com.florian.Config;
 
 import com.florian.ErrorCode;
 import com.florian.Util;
@@ -13,59 +13,39 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class GuildConfig {
+public class BotConfig {
     private static String cmdCounterId = "commandCounter";
-    private static String prefixId = "prefix";
-
-    public static ErrorCode setPrefix(Guild g, String prefix) {
-        ErrorCode error = setValue(g, prefixId, prefix);
-
-        // Return the error
-        return error;
-    }
+    private static String tokenId = "token";
 
     public static void incrementCommandCounter(Guild g) {
-        setValue(g, cmdCounterId, String.valueOf(Integer.parseInt(getValue(g, cmdCounterId)) + 1));
+        setValue(cmdCounterId, String.valueOf(Integer.parseInt(getValue(cmdCounterId)) + 1));
     }
 
-    public static String getPrefix(Guild g) {
-        String prefix = getValue(g, prefixId);
+    public static String getToken() {
+        String token = getValue(tokenId);
 
-        // If prefix is null, return the default one
-        if(prefix == null)
-            return Vars.botPrefix;
+        // If token is null, return NO TOKEN
+        if(token == null)
+            return "NO TOKEN";
 
-        // Return prefix
-        return prefix;
+        // Return token
+        return token;
     }
 
-    public static int getCommandCounter(Guild g) {
-        return Integer.parseInt(getValue(g, cmdCounterId));
+    public static int getCommandCounter() {
+        return Integer.parseInt(getValue(cmdCounterId));
     }
 
-    private static String getValue(Guild g, String key) {
+    private static String getValue(String key) {
         // Get file location
-        String folder = Util.getGuildFolder(g);
-        String file = folder + Vars.guildConfigFile;
-
-        // Check if the guild folder exists
-        File guildsFolder = new File(folder);
-        if (!guildsFolder.exists()) {
-            boolean success = guildsFolder.mkdirs();
-
-            // If it wasn't successful, quit
-            if (!success) {
-                System.out.println("Unable to create guilds folder. Quitting.");
-                return "";
-            }
-        }
+        String file = Vars.botConfigFile;
 
         // Create config file if it doesn't exist
         if(!new File(file).exists()) {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
-                System.out.println("Couldn't create guild config file for guild " + g.getId());
+                System.out.println("Couldn't create bot config file");
                 return "";
             }
         }
@@ -89,15 +69,16 @@ public class GuildConfig {
         return element.getTextContent();
     }
 
-    private static ErrorCode setValue(Guild g, String key, String value) {
+    private static ErrorCode setValue(String key, String value) {
         // Get file location
-        String file = Util.getGuildFolder(g) + Vars.guildConfigFile;
+        String file = Vars.botConfigFile;
 
+        // Create bot config if it doesn't exist
         if(!new File(file).exists()) {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
-                System.out.println("Couldn't create guild config file for guild " + g.getId());
+                System.out.println("Couldn't create bot config file");
                 return ErrorCode.OTHER_ERROR;
             }
         }
@@ -139,12 +120,12 @@ public class GuildConfig {
             Document document = builder.newDocument();
 
             // Add root element
-            Element root = document.createElement("guildConfig");
+            Element root = document.createElement("botConfig");
             document.appendChild(root);
 
-            // Add prefix entry
-            Element prefix = document.createElement(prefixId);
-            prefix.setTextContent(Vars.botPrefix);
+            // Add token entry
+            Element prefix = document.createElement(tokenId);
+            prefix.setTextContent("TOKEN HERE");
             root.appendChild(prefix);
 
             // Add commands executed counter

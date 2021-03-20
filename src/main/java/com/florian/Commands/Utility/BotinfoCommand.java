@@ -2,6 +2,7 @@ package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.Help.HelpCommand;
+import com.florian.Config.BotConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
@@ -28,6 +29,7 @@ public class BotinfoCommand extends BaseCommand {
         embed.addField("Version", "`" + Vars.version + "`", false);
         embed.addField("Gateway Latency", "`" + e.getJDA().getGatewayPing() + "ms`", false);
         embed.addField("REST Latency", "`" + e.getJDA().getRestPing().complete() + "ms`", false);
+        embed.addField("Commands Executed", "`" + BotConfig.getCommandCounter() + "`", false);
         embed.addField("Commands", "Total: `" + Vars.commands.length + "`\n*Type " + Vars.botPrefix + new HelpCommand().command + " to see all the commands.*", false);
 
         // Send the embed

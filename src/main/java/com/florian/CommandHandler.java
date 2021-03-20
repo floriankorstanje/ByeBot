@@ -2,9 +2,9 @@ package com.florian;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
-import com.florian.GuildConfig.GuildConfig;
+import com.florian.Config.BotConfig;
+import com.florian.Config.GuildConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -120,8 +120,9 @@ public class CommandHandler extends ListenerAdapter {
             // Log executed command to console
             System.out.println("Command " + cmd + " returned error code " + error.toString() + " in " + event.getGuild().getName());
 
-            // Increment command counter
+            // Increment command counter for bot and build
             GuildConfig.incrementCommandCounter(event.getGuild());
+            BotConfig.getCommandCounter();
         }
     }
 }

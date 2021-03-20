@@ -22,10 +22,11 @@ public class Vars {
     public static final String historyFile = "/history.xml";
     public static final String remindersFile = "/reminders.xml";
     public static final String guildConfigFile = "/config.xml";
+    public static final String botConfigFile = botFolder + "bot.xml";
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.7.2";
+    public static final String version = "0.7.3";
     public static ApplicationInfo appInfo;
     public static User botOwner;
 

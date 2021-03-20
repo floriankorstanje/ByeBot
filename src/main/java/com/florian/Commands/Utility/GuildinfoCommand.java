@@ -2,16 +2,13 @@ package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
 import com.florian.ErrorCode;
-import com.florian.GuildConfig.GuildConfig;
+import com.florian.Config.GuildConfig;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Date;
-import java.util.List;
 
 public class GuildinfoCommand extends BaseCommand {
     public GuildinfoCommand() {

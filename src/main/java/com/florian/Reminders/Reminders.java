@@ -71,6 +71,10 @@ public class Reminders {
             element = (Element) entries.item(userIndex);
         }
 
+        // Check if there isn't too many reminders
+        if(element.getChildNodes().getLength() >= Vars.maxReminderEntries)
+            return ErrorCode.TOO_MANY_REMINDERS;
+
         // Create entry and add all the info
         Element entry = document.createElement("entry");
         entry.setAttribute("id", id);

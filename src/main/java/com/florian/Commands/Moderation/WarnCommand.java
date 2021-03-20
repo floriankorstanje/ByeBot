@@ -39,6 +39,13 @@ public class WarnCommand extends BaseCommand {
                 return ErrorCode.UNKNOWN_ID;
             }
 
+            // Add this to the user's history if everything succeeded
+            ErrorCode error = UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.WARN, Util.generateId(), reason.toString());
+
+            // If addEntry failed, return the error
+            if(error != ErrorCode.SUCCESS)
+                return error;
+
             // Create an embed to send to the warned user
             EmbedBuilder embed = Util.defaultEmbed();
 
@@ -51,9 +58,6 @@ public class WarnCommand extends BaseCommand {
 
             // Send the embed
             e.getChannel().sendMessage(embed.build()).queue();
-
-            // Add this to the user's history if everything succeeded
-            UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.WARN, Util.generateId(), reason.toString());
         } else {
             // There aren't enough arguments
             return ErrorCode.WRONG_ARGUMENTS;

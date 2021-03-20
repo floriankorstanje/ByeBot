@@ -9,6 +9,7 @@ import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 
@@ -59,6 +60,13 @@ public class KickCommand extends BaseCommand {
             return ErrorCode.OTHER_ERROR;
         }
 
+        // Add this to the user's history if everything succeeded
+        ErrorCode error = UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.KICK, Util.generateId(), reason.toString());
+
+        // If addEntry didn't succeed, return the error
+        if(error != ErrorCode.SUCCESS)
+            return error;
+
         // Create an embed to tell the user the kick was successful
         EmbedBuilder embed = Util.defaultEmbed();
 
@@ -71,9 +79,6 @@ public class KickCommand extends BaseCommand {
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();
-
-        // Add this to the user's history if everything succeeded
-        UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.KICK, Util.generateId(), reason.toString());
 
         // Return success
         return ErrorCode.SUCCESS;

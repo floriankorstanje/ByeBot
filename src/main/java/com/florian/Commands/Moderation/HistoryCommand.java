@@ -46,10 +46,7 @@ public class HistoryCommand extends BaseCommand {
             embed.setTitle("History for `" + user + "`");
 
             // Fill embed
-            for (int i = 0; i < entries.getLeft().length; i++) {
-                // Get entry as easy variable
-                UserHistoryEntry entry = entries.getLeft()[i];
-
+            for (UserHistoryEntry entry : entries.getLeft()) {
                 // Save the executors ID so we can try and change it to a tag
                 String executor = entry.getExecutor();
 
@@ -60,7 +57,7 @@ public class HistoryCommand extends BaseCommand {
                 }
 
                 // Add it to the embed
-                embed.addField("Entry #" + i, "ID: `" + entry.getId() + "`\nIssued By: `" + executor + "`\nDate Issued: " + Util.formatDateAgo(new Date(entry.getTime())) + "\nType: `" + entry.getType() + "`\nReason: " + entry.getReason(), false);
+                embed.addField("Entry `" + entry.getId() + "`", "Issued By: `" + executor + "`\nDate Issued: " + Util.formatDateAgo(new Date(entry.getTime())) + "\nType: `" + entry.getType() + "`\nReason: " + entry.getReason(), false);
             }
 
             // Send the embed

@@ -157,7 +157,11 @@ public class RemindersCommand extends BaseCommand {
                     return ErrorCode.REMINDER_TOO_SHORT;
 
                 // Add it to the list
-                Reminders.addReminder(e.getGuild(), e.getChannel(), Util.generateId(), e.getMember().getId(), timeDone, reason.toString());
+                ErrorCode error = Reminders.addReminder(e.getGuild(), e.getChannel(), Util.generateId(), e.getMember().getId(), timeDone, reason.toString());
+
+                // If addReminders didn't succeed, return the error
+                if(error != ErrorCode.SUCCESS)
+                    return error;
 
                 // Tell the user the reminder got added
                 EmbedBuilder embed = Util.defaultEmbed();

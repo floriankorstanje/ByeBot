@@ -64,9 +64,7 @@ public class BanCommand extends BaseCommand {
         // Add this to the user's history if everything succeeded
         ErrorCode error = UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.BAN, Util.generateId(), reason.toString());
 
-        if (error == ErrorCode.OTHER_ERROR)
-            return ErrorCode.OTHER_ERROR;
-
+        // If addEntry didn't succeed, return the error
         if (error != ErrorCode.SUCCESS)
             return error;
 

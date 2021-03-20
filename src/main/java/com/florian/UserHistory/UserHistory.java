@@ -72,6 +72,10 @@ public class UserHistory {
             element = (Element) entries.item(userIndex);
         }
 
+        // Check if there isn't too many entries
+        if(element.getChildNodes().getLength() >= Vars.maxHistoryEntries)
+            return ErrorCode.TOO_MUCH_HISTORY;
+
         // Create entry and add all the info
         Element entry = document.createElement("entry");
         entry.setAttribute("id", historyId);

@@ -25,7 +25,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.7.1";
+    public static final String version = "0.7.2";
     public static ApplicationInfo appInfo;
     public static User botOwner;
 
@@ -33,9 +33,13 @@ public class Vars {
     public static final int waitForPruneReactionDelay = 5;
     public static final int commandCooldown = 3;
 
+    // Max entries
+    public static final int maxUserlogEntries = 4;
+    public static final int maxHistoryEntries = 16;
+    public static final int maxReminderEntries = 16;
+
     // Other
     public static final Random random = new Random();
-    public static final int maxUserlogEntries = 3;
     public static final int color = 0x890BEF;
     public static final BaseCommand[] commands = {new HelpCommand(), new ModhelpCommand(), new OwnerhelpCommand(), new InviteCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand()};
 }

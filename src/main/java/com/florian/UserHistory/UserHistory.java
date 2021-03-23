@@ -145,6 +145,10 @@ public class UserHistory {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 if (element.getAttribute("id").equals(id)) {
+                    // If the element is a ban, revoke the ban
+                    if(element.getAttribute("type").equalsIgnoreCase(OffenseType.BAN.toString()))
+                        g.unban(user).queue();
+
                     // Remove the entry
                     entries.item(userIndex).removeChild(node);
                     deleted = true;

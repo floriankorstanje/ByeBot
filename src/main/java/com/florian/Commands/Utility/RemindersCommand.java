@@ -96,26 +96,23 @@ public class RemindersCommand extends BaseCommand {
 
                 // Get milliseconds to wait for
                 switch (unit.toLowerCase()) {
+                    case "day":
                     case "days":
                         timeDone = (long) (Double.parseDouble(time) * 24 * 60 * 60 * 1000);
 
                         // Add current time
                         timeDone += Instant.now().toEpochMilli();
                         break;
+                    case "hour":
                     case "hours":
                         timeDone = (long) (Double.parseDouble(time) * 60 * 60 * 1000);
 
                         // Add current time
                         timeDone += Instant.now().toEpochMilli();
                         break;
+                    case "minute":
                     case "minutes":
                         timeDone = (long) (Double.parseDouble(time) * 60 * 1000);
-
-                        // Add current time
-                        timeDone += Instant.now().toEpochMilli();
-                        break;
-                    case "seconds":
-                        timeDone = (long) (Double.parseDouble(time) * 1000);
 
                         // Add current time
                         timeDone += Instant.now().toEpochMilli();

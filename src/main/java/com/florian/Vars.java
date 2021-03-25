@@ -3,8 +3,6 @@ package com.florian;
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.Fun.RollCommand;
 import com.florian.Commands.Help.HelpCommand;
-import com.florian.Commands.Help.ModhelpCommand;
-import com.florian.Commands.Help.OwnerhelpCommand;
 import com.florian.Commands.Moderation.*;
 import com.florian.Commands.Owner.LeaveguildCommand;
 import com.florian.Commands.Owner.StopCommand;
@@ -26,7 +24,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.7.5";
+    public static final String version = "0.7.6";
 
     // Delays (Seconds)
     public static final int waitForPruneReactionDelay = 5;
@@ -41,7 +39,7 @@ public class Vars {
     // Other
     public static final Random random = new Random();
     public static final int color = 0x890BEF;
-    public static final BaseCommand[] commands = {new HelpCommand(), new ModhelpCommand(), new OwnerhelpCommand(), new InviteCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand()};
+    public static final BaseCommand[] commands = {new HelpCommand(), new InviteCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand()};
     public static ApplicationInfo appInfo;
     public static User botOwner;
 }

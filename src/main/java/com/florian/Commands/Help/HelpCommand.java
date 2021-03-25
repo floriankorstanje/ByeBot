@@ -57,17 +57,40 @@ public class HelpCommand extends BaseCommand {
         embed.setTitle("Help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);
         embed.addField("You can type `" + Vars.botPrefix + this.command + " " + this.arguments + "` to get more specific help about a command.\nThis guild's custom prefix is `" + GuildConfig.getPrefix(e.getGuild()) + "`", "", false);
 
+        // StringBuilders for all the categories
+        StringBuilder everyone = new StringBuilder();
+        StringBuilder mod = new StringBuilder();
+        StringBuilder owner = new StringBuilder();
+
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {
-            // Only add commands that don't need permission to execute (mod commands)
-            if (command.userType == UserType.EVERYONE)
-                embed.addField(Vars.botPrefix + command.command, command.description, false);
+            // Add the commands to the right StringBuilder
+            switch (command.userType) {
+                case EVERYONE:
+                    addToStringBuilder(everyone, command);
+                    break;
+                case MODERATOR:
+                    addToStringBuilder(mod, command);
+                    break;
+                case OWNER:
+                    addToStringBuilder(owner, command);
+                    break;
+            }
         }
+
+        // Add commands to embed
+        embed.addField("\uD83D\uDE0E Commands", everyone.toString(), false);
+        embed.addField("\uD83D\uDD27 Mod Commands", mod.toString(), false);
+        embed.addField("⚙  Owner commands", owner.toString(), false);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();
 
         // Return success
         return ErrorCode.SUCCESS;
+    }
+
+    private void addToStringBuilder(StringBuilder builder, BaseCommand command) {
+        builder.append("**").append(command.command).append("** - ").append(command.description).append("\n");
     }
 }

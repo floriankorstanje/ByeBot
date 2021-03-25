@@ -83,9 +83,6 @@ public class Main extends ListenerAdapter {
         // Create JDA class and start the bot
         JDA jda = builder.build();
 
-        // Set the bot presence
-        jda.getPresence().setActivity(Activity.listening(Vars.botPrefix + new HelpCommand().command));
-
         // Set some variables
         Vars.appInfo = jda.retrieveApplicationInfo().complete();
         Vars.botOwner = Vars.appInfo.getOwner();
@@ -93,6 +90,50 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onReady(@NotNull ReadyEvent e) {
+        // Make a thread to change the bots status every 10 seconds
+        new Thread(() -> {
+            int count = 0;
+            while(true) {
+                String status = Vars.botPrefix + new HelpCommand().command + " | ";
+
+                // Check which status it is now
+                switch (count) {
+                    case 0:
+                        // 0 shows the bot version
+                        status += "v" + Vars.version;
+                        break;
+                    case 1:
+                        // 1 shows the the amount of guilds the bot is in
+                        status += e.getJDA().getGuilds().size() + " guilds";
+                        break;
+                    case 2:
+                        // 1 shows the the amount of users in all the guilds
+                        int users = 0;
+                        for(Guild g : e.getJDA().getGuilds())
+                            users += g.getMemberCount();
+                        status += users + " users";
+                        break;
+                }
+
+                // Set the bot presence
+                e.getJDA().getPresence().setActivity(Activity.listening(status));
+
+                // Increment counter
+                count++;
+
+                // Make sure counter doesn't go too high
+                if(count > 2)
+                    count = 0;
+
+                // Wait for 10 seconds
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
+
         // Make a thread to check if any reminders expired and notify the user
         new Thread(() -> {
             while (true) {

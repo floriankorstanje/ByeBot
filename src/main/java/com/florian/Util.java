@@ -54,7 +54,7 @@ public class Util {
         // Set the default values
         embed.setColor(Vars.color);
         if(footer)
-            embed.setFooter(Vars.appInfo.getName() + " made with ❤ by " + Vars.botOwner.getName(), Vars.botOwner.getAvatarUrl());
+            embed.setFooter(Vars.appInfo.getName() + " made with ❤ by " + Vars.botOwner.getName() + " - v" + Vars.version, Vars.botOwner.getAvatarUrl());
 
         // Return the embed
         return embed;

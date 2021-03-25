@@ -4,6 +4,7 @@ import com.florian.Commands.BaseCommand;
 import com.florian.Commands.Fun.RollCommand;
 import com.florian.Commands.Help.HelpCommand;
 import com.florian.Commands.Moderation.*;
+import com.florian.Commands.Owner.ClearlogsCommand;
 import com.florian.Commands.Owner.LeaveguildCommand;
 import com.florian.Commands.Owner.StopCommand;
 import com.florian.Commands.Utility.*;
@@ -21,10 +22,12 @@ public class Vars {
     public static final String remindersFile = "/reminders.xml";
     public static final String guildConfigFile = "/config.xml";
     public static final String botConfigFile = botFolder + "bot.xml";
+    public static final String logsFolder = botFolder + "logs/";
+    public static String logFile = logsFolder + "botlog.txt";
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.7.6";
+    public static final String version = "0.7.7";
 
     // Delays (Seconds)
     public static final int waitForPruneReactionDelay = 5;
@@ -39,7 +42,7 @@ public class Vars {
     // Other
     public static final Random random = new Random();
     public static final int color = 0x890BEF;
-    public static final BaseCommand[] commands = {new HelpCommand(), new InviteCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand()};
+    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand()};
     public static ApplicationInfo appInfo;
     public static User botOwner;
 }

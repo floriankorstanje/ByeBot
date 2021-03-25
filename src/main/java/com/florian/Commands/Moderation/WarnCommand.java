@@ -43,7 +43,7 @@ public class WarnCommand extends BaseCommand {
             ErrorCode error = UserHistory.addEntry(e.getGuild(), m.getId(), e.getMember(), OffenseType.WARN, Util.generateId(), reason.toString());
 
             // If addEntry failed, return the error
-            if(error != ErrorCode.SUCCESS)
+            if (error != ErrorCode.SUCCESS)
                 return error;
 
             // Create an embed to send to the warned user

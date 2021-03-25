@@ -2,6 +2,7 @@ package com.florian;
 
 import com.florian.Commands.Help.HelpCommand;
 import com.florian.Config.BotConfig;
+import com.florian.Log.Log;
 import com.florian.Userlog.UserEvents;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -23,9 +24,24 @@ import java.io.IOException;
 import java.time.Instant;
 
 public class Main extends ListenerAdapter {
-    public static void main(String[] args) throws IOException, LoginException {
+    public static void main(String[] args) throws LoginException {
+        // Check if logs folder exists
+        File logFolder = new File(Vars.logsFolder);
+        if (!logFolder.exists()) {
+            boolean success = logFolder.mkdirs();
+
+            // If it wasn't successful, quit
+            if (!success) {
+                System.out.println("Unable to create log folder. Quitting.");
+                return;
+            }
+        }
+
+        // Set logging file
+        Vars.logFile = Vars.logsFolder + "log-" + Instant.now().toEpochMilli() + ".txt";
+
         // Output starting message
-        System.out.println("Starting ByeBot v" + Vars.version);
+        Log.log("Starting ByeBot v" + Vars.version);
 
         // Check if a folder for bot files exits. If not, create one
         File botFolder = new File(Vars.botFolder);
@@ -34,7 +50,7 @@ public class Main extends ListenerAdapter {
 
             // If it wasn't successful, quit
             if (!success) {
-                System.out.println("Unable to create bot folder. Quitting.");
+                Log.log("Unable to create bot folder. Quitting.");
                 return;
             }
         }
@@ -46,7 +62,7 @@ public class Main extends ListenerAdapter {
 
             // If it wasn't successful, quit
             if (!success) {
-                System.out.println("Unable to create guilds folder. Quitting.");
+                Log.log("Unable to create guilds folder. Quitting.");
                 return;
             }
         }

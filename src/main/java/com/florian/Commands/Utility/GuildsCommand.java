@@ -32,9 +32,9 @@ public class GuildsCommand extends BaseCommand {
 
         // Get all the guilds the bot is in and add them to the embed
         for (Guild g : e.getJDA().getGuilds()) {
-            if(added < Vars.maxGuildsInEmbed) {
+            if (added < Vars.maxGuildsInEmbed) {
                 // Make sure the current guild doesn't get re-added
-                if(!g.getId().equalsIgnoreCase(e.getGuild().getId()))
+                if (!g.getId().equalsIgnoreCase(e.getGuild().getId()))
                     addGuildToEmbed(embed, g);
                 added++;
             } else

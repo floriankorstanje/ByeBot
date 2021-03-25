@@ -1,6 +1,7 @@
 package com.florian.Userlog;
 
 import com.florian.ErrorCode;
+import com.florian.Log.Log;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
@@ -39,7 +40,7 @@ public class Userlog {
             try {
                 Util.createXmlFile(file, "userlog");
             } catch (Exception e) {
-                System.out.println("Couldn't create history file for guild " + g.getId());
+                Log.log("Couldn't create history file for guild " + g.getId());
                 return;
             }
         }

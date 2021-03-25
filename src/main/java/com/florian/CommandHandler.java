@@ -4,6 +4,7 @@ import com.florian.Commands.BaseCommand;
 import com.florian.Commands.UserType;
 import com.florian.Config.BotConfig;
 import com.florian.Config.GuildConfig;
+import com.florian.Log.Log;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -122,8 +123,8 @@ public class CommandHandler extends ListenerAdapter {
                 event.getChannel().sendMessage(embed.build()).queue();
             }
 
-            // Log executed command to console
-            System.out.println("Command " + cmd + " returned error code " + error.toString() + " in " + event.getGuild().getName());
+            // Log executed command to console and logfile
+            Log.log("[" + event.getMember().getEffectiveName() + " (" + event.getMember().getId() + ")] [" + event.getGuild().getName() + " (" + event.getGuild().getId() + ")]: " + cmd + " [" + args.length + "] -> " + error.toString());
         }
     }
 }

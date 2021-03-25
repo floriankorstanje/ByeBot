@@ -1,7 +1,6 @@
 package com.florian.Commands.Help;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
 import com.florian.Config.GuildConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
@@ -54,7 +53,7 @@ public class HelpCommand extends BaseCommand {
         }
 
         // Set some basic info for the embed
-        embed.setTitle("Help for " + e.getJDA().getSelfUser().getName() + " version " + Vars.version);
+        embed.setTitle("Help for " + e.getJDA().getSelfUser().getName());
         embed.addField("You can type `" + Vars.botPrefix + this.command + " " + this.arguments + "` to get more specific help about a command.\nThis guild's custom prefix is `" + GuildConfig.getPrefix(e.getGuild()) + "`", "", false);
 
         // StringBuilders for all the categories
@@ -81,7 +80,7 @@ public class HelpCommand extends BaseCommand {
         // Add commands to embed
         embed.addField("\uD83D\uDE0E Commands", everyone.toString(), false);
         embed.addField("\uD83D\uDD27 Mod Commands", mod.toString(), false);
-        embed.addField("⚙  Owner commands", owner.toString(), false);
+        embed.addField("\u2699  Owner commands", owner.toString(), false);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

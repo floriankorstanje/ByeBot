@@ -1,6 +1,7 @@
 package com.florian.Config;
 
 import com.florian.ErrorCode;
+import com.florian.Log.Log;
 import com.florian.Util;
 import com.florian.Vars;
 import org.w3c.dom.Document;
@@ -44,7 +45,7 @@ public class BotConfig {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
-                System.out.println("Couldn't create bot config file");
+                Log.log("Couldn't create bot config file");
                 return "";
             }
         }
@@ -77,7 +78,7 @@ public class BotConfig {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
-                System.out.println("Couldn't create bot config file");
+                Log.log("Couldn't create bot config file");
                 return ErrorCode.OTHER_ERROR;
             }
         }

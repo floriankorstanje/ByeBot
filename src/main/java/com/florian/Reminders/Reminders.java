@@ -1,6 +1,7 @@
 package com.florian.Reminders;
 
 import com.florian.ErrorCode;
+import com.florian.Log.Log;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
@@ -24,7 +25,7 @@ public class Reminders {
             try {
                 Util.createXmlFile(file, "reminders");
             } catch (Exception e) {
-                System.out.println("Couldn't create reminders file for guild " + g.getId());
+                Log.log("Couldn't create reminders file for guild " + g.getId());
                 return ErrorCode.OTHER_ERROR;
             }
         }

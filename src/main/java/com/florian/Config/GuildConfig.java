@@ -1,6 +1,7 @@
 package com.florian.Config;
 
 import com.florian.ErrorCode;
+import com.florian.Log.Log;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
@@ -55,7 +56,7 @@ public class GuildConfig {
 
             // If it wasn't successful, quit
             if (!success) {
-                System.out.println("Unable to create guilds folder. Quitting.");
+                Log.log("Unable to create guilds folder. Quitting.");
                 return "";
             }
         }
@@ -65,7 +66,7 @@ public class GuildConfig {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
-                System.out.println("Couldn't create guild config file for guild " + g.getId());
+                Log.log("Couldn't create guild config file for guild " + g.getId());
                 return "";
             }
         }
@@ -97,7 +98,7 @@ public class GuildConfig {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
-                System.out.println("Couldn't create guild config file for guild " + g.getId());
+                Log.log("Couldn't create guild config file for guild " + g.getId());
                 return ErrorCode.OTHER_ERROR;
             }
         }

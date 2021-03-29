@@ -15,8 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class GuildConfig {
-    private static String cmdCounterId = "commandCounter";
-    private static String prefixId = "prefix";
+    private static final String cmdCounterId = "commandCounter";
+    private static final String prefixId = "prefix";
 
     public static ErrorCode setPrefix(Guild g, String prefix) {
         ErrorCode error = setValue(g, prefixId, prefix);
@@ -33,7 +33,7 @@ public class GuildConfig {
         String prefix = getValue(g, prefixId);
 
         // If prefix is null, return the default one
-        if(prefix == null)
+        if (prefix == null)
             return Vars.botPrefix;
 
         // Return prefix
@@ -62,7 +62,7 @@ public class GuildConfig {
         }
 
         // Create config file if it doesn't exist
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
@@ -94,7 +94,7 @@ public class GuildConfig {
         // Get file location
         String file = Util.getGuildFolder(g) + Vars.guildConfigFile;
 
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 createDefaultConfig(file);
             } catch (Exception e) {
@@ -131,7 +131,7 @@ public class GuildConfig {
     private static boolean createDefaultConfig(String filename) {
         try {
             // Create file if it doesn't exist
-            if(!new File(filename).exists())
+            if (!new File(filename).exists())
                 Files.createFile(Paths.get(filename));
 
             // Create document

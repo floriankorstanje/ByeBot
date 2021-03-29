@@ -1,6 +1,7 @@
-package com.florian.Commands.Utility;
+package com.florian.Commands.Info;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.Config.GuildConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
@@ -17,6 +18,7 @@ public class GuildinfoCommand extends BaseCommand {
         super.aliases.add("guild");
         super.aliases.add("server");
         super.aliases.add("serverinfo");
+        super.commandType = CommandType.INFO;
     }
 
     @Override

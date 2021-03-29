@@ -1,6 +1,7 @@
-package com.florian.Commands.Help;
+package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.Config.GuildConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
@@ -14,6 +15,7 @@ public class HelpCommand extends BaseCommand {
         super.description = "Shows all the commands and how to use them.";
         super.arguments = "[command]";
         super.examples.add("invite");
+        super.commandType = CommandType.UTILITY;
     }
 
     @Override
@@ -57,18 +59,28 @@ public class HelpCommand extends BaseCommand {
         embed.addField("You can type `" + Vars.botPrefix + this.command + " " + this.arguments + "` to get more specific help about a command.\nThis guild's custom prefix is `" + GuildConfig.getPrefix(e.getGuild()) + "`", "", false);
 
         // StringBuilders for all the categories
-        StringBuilder everyone = new StringBuilder();
+        StringBuilder fun = new StringBuilder();
+        StringBuilder utility = new StringBuilder();
+        StringBuilder info = new StringBuilder();
         StringBuilder mod = new StringBuilder();
         StringBuilder owner = new StringBuilder();
+
+        //FUN, UTILITY, INFO, MODERATION, OWNER
 
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {
             // Add the commands to the right StringBuilder
-            switch (command.userType) {
-                case EVERYONE:
-                    addToStringBuilder(everyone, command);
+            switch (command.commandType) {
+                case FUN:
+                    addToStringBuilder(fun, command);
                     break;
-                case MODERATOR:
+                case UTILITY:
+                    addToStringBuilder(utility, command);
+                    break;
+                case INFO:
+                    addToStringBuilder(info, command);
+                    break;
+                case MODERATION:
                     addToStringBuilder(mod, command);
                     break;
                 case OWNER:
@@ -78,9 +90,11 @@ public class HelpCommand extends BaseCommand {
         }
 
         // Add commands to embed
-        embed.addField("\uD83D\uDE0E Commands", everyone.toString(), false);
-        embed.addField("\uD83D\uDD27 Mod Commands", mod.toString(), false);
-        embed.addField("\u2699  Owner commands", owner.toString(), false);
+        embed.addField("\uD83E\uDE9B Utility", utility.toString(), false);
+        embed.addField("\u2139 Information", info.toString(), false);
+        embed.addField("\uD83D\uDE04 Fun", fun.toString(), false);
+        embed.addField("\uD83D\uDD27 Moderation", mod.toString(), false);
+        embed.addField("\u2699  Owner", owner.toString(), false);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

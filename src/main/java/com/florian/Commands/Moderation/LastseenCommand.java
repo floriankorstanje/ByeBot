@@ -1,7 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Userlog.Userlog;
 import com.florian.Userlog.UserlogEntry;
@@ -19,7 +19,7 @@ public class LastseenCommand extends BaseCommand {
         super.command = "lastseen";
         super.description = "Shows when I last saw this user do something in this guild.";
         super.arguments = "<user>";
-        super.userType = UserType.MODERATOR;
+        super.commandType = CommandType.MODERATION;
         super.permission = Permission.KICK_MEMBERS;
         super.requiredArguments = true;
     }

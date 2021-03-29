@@ -1,13 +1,16 @@
 package com.florian;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.Fun.AskCommand;
 import com.florian.Commands.Fun.RollCommand;
-import com.florian.Commands.Help.HelpCommand;
+import com.florian.Commands.Info.*;
 import com.florian.Commands.Moderation.*;
 import com.florian.Commands.Owner.ClearlogsCommand;
 import com.florian.Commands.Owner.LeaveguildCommand;
 import com.florian.Commands.Owner.StopCommand;
-import com.florian.Commands.Utility.*;
+import com.florian.Commands.Utility.HelpCommand;
+import com.florian.Commands.Utility.PollCommand;
+import com.florian.Commands.Utility.RemindersCommand;
 import net.dv8tion.jda.api.entities.ApplicationInfo;
 import net.dv8tion.jda.api.entities.User;
 
@@ -27,9 +30,10 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.7.8";
+    public static final String version = "0.8.0";
 
     // Delays (Seconds)
+    public static final int waitForClearReactionDelay = 5;
     public static final int waitForPruneReactionDelay = 5;
     public static final int commandCooldown = 3;
 
@@ -42,7 +46,7 @@ public class Vars {
     // Other
     public static final Random random = new Random();
     public static final int color = 0x890BEF;
-    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new PruneCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand()};
+    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand()};
     public static ApplicationInfo appInfo;
     public static User botOwner;
 }

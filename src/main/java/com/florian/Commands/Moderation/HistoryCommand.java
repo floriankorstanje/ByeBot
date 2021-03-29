@@ -1,7 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.UserHistory.UserHistory;
 import com.florian.UserHistory.UserHistoryEntry;
@@ -19,7 +19,7 @@ public class HistoryCommand extends BaseCommand {
         super.description = "Shows, removes, or edits someones history.";
         super.arguments = "<user> [operation(edit/remove/clear)] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
-        super.userType = UserType.MODERATOR;
+        super.commandType = CommandType.MODERATION;
         super.requiredArguments = true;
         super.examples.add("399594813390848002");
         super.examples.add("399594813390848002 edit 178218de667 This is a new reason");

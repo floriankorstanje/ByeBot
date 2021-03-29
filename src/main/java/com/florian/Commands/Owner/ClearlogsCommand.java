@@ -1,7 +1,7 @@
 package com.florian.Commands.Owner;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Log.Log;
 import com.florian.Util;
@@ -12,7 +12,7 @@ public class ClearlogsCommand extends BaseCommand {
     public ClearlogsCommand() {
         super.command = "clearlogs";
         super.description = "Clears all the logs the bot created.";
-        super.userType = UserType.OWNER;
+        super.commandType = CommandType.OWNER;
         super.aliases.add("deletelogs");
     }
 
@@ -22,7 +22,7 @@ public class ClearlogsCommand extends BaseCommand {
         ErrorCode error = Log.clearLogs();
 
         // Check if error is SUCCESS, if not, tell the user
-        if(error != ErrorCode.SUCCESS)
+        if (error != ErrorCode.SUCCESS)
             return error;
 
         // Create embed to tell the user the log was cleared

@@ -1,6 +1,7 @@
-package com.florian.Commands.Utility;
+package com.florian.Commands.Info;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
@@ -12,6 +13,7 @@ public class HostinfoCommand extends BaseCommand {
         super.command = "hostinfo";
         super.description = "Gives info about the bot host.";
         super.aliases.add("host");
+        super.commandType = CommandType.INFO;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.florian;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
+import com.florian.Commands.CommandType;
 import com.florian.Config.BotConfig;
 import com.florian.Config.GuildConfig;
 import com.florian.Log.Log;
@@ -59,7 +59,7 @@ public class CommandHandler extends ListenerAdapter {
             for (BaseCommand command : Vars.commands) {
                 if (command.command.equalsIgnoreCase(cmd) || Util.containsIgnoreCase(command.aliases, cmd)) {
                     // Check if the user that's trying to execute isn't executing an owner-only command as owner
-                    if (command.userType == UserType.OWNER && !event.getMember().getId().equals(Vars.botOwner.getId())) {
+                    if (command.commandType == CommandType.OWNER && !event.getMember().getId().equals(Vars.botOwner.getId())) {
                         error = ErrorCode.NO_PERMISSION;
                         break;
                     }

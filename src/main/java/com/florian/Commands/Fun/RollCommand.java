@@ -1,6 +1,7 @@
 package com.florian.Commands.Fun;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
@@ -15,6 +16,7 @@ public class RollCommand extends BaseCommand {
         super.arguments = "[max]";
         super.examples.add("100");
         super.aliases.add("random");
+        super.commandType = CommandType.FUN;
     }
 
     @Override

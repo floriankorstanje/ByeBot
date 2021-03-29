@@ -1,6 +1,7 @@
 package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -14,6 +15,7 @@ public class PollCommand extends BaseCommand {
         super.arguments = "<question>";
         super.requiredArguments = true;
         super.examples.add("Is this a good bot?");
+        super.commandType = CommandType.UTILITY;
     }
 
     @Override

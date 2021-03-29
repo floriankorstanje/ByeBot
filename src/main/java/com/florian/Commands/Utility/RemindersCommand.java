@@ -1,6 +1,7 @@
 package com.florian.Commands.Utility;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Reminders.ReminderEntry;
 import com.florian.Reminders.Reminders;
@@ -28,13 +29,14 @@ public class RemindersCommand extends BaseCommand {
         super.examples.add("clear");
         super.aliases.add("reminder");
         super.aliases.add("remindme");
+        super.commandType = CommandType.UTILITY;
     }
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         if (args.length == 0) {
             // Get all reminders
-            Pair<ReminderEntry[], ErrorCode> reminders = Reminders.getReminders(e.getGuild(), e.getMember().getId());
+            Pair<ReminderEntry[], ErrorCode> reminders = Reminders.getReminders(e.getMember().getId());
 
             // Check if getReminders was successful. If not, return the error
             if (reminders.getRight() != ErrorCode.SUCCESS)
@@ -60,7 +62,7 @@ public class RemindersCommand extends BaseCommand {
             // Check if user wants to clear all reminders
             if (args[0].equalsIgnoreCase("clear")) {
                 // Remove all reminders and get count and error back
-                Pair<Integer, ErrorCode> result = Reminders.clearReminders(e.getGuild(), e.getMember().getId());
+                Pair<Integer, ErrorCode> result = Reminders.clearReminders(e.getMember().getId());
 
                 // Check if clearReminders succeeded, if not, return the error
                 if (result.getRight() != ErrorCode.SUCCESS)
@@ -174,7 +176,7 @@ public class RemindersCommand extends BaseCommand {
                     return ErrorCode.REMINDER_TOO_SHORT;
 
                 // Add it to the list
-                ErrorCode error = Reminders.addReminder(e.getGuild(), e.getChannel(), Util.generateId(), e.getMember().getId(), timeDone, reason.toString());
+                ErrorCode error = Reminders.addReminder(e.getGuild().getId(), Util.generateId(), e.getMember().getId(), timeDone, reason.toString());
 
                 // If addReminders didn't succeed, return the error
                 if (error != ErrorCode.SUCCESS)
@@ -190,8 +192,12 @@ public class RemindersCommand extends BaseCommand {
                 embed.addField("Time Done", Util.formatDateTime(new Date(timeDone)), false);
                 embed.addField("Reminder", reason.toString(), false);
 
-                // Send the embed
-                e.getChannel().sendMessage(embed.build()).queue();
+                // Check if the user's DMs are open to send the reminder when it's done
+                e.getMember().getUser().openPrivateChannel().complete().sendMessage(embed.build()).queue(null, err -> {
+                    e.getChannel().sendMessage(e.getMember().getAsMention() + ", your DMs are closed. Please open them to use reminders.").queue();
+                });
+
+                return ErrorCode.SUCCESS;
             } else if (operation.equalsIgnoreCase("remove")) {
                 // Remove only takes 2 args
                 if (args.length != 2)
@@ -201,7 +207,7 @@ public class RemindersCommand extends BaseCommand {
                 String id = args[1];
 
                 // Remove entry
-                Pair<ReminderEntry, ErrorCode> removed = Reminders.removeReminder(e.getGuild(), e.getMember().getId(), id);
+                Pair<ReminderEntry, ErrorCode> removed = Reminders.removeReminder(e.getMember().getId(), id);
 
                 // Check if removal succeeded
                 if (removed.getRight() != ErrorCode.SUCCESS)

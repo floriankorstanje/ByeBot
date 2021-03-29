@@ -1,7 +1,8 @@
-package com.florian.Commands.Utility;
+package com.florian.Commands.Info;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.Help.HelpCommand;
+import com.florian.Commands.CommandType;
+import com.florian.Commands.Utility.HelpCommand;
 import com.florian.Config.BotConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
@@ -15,6 +16,7 @@ public class BotinfoCommand extends BaseCommand {
         super.command = "botinfo";
         super.description = "Provides some information about the bot.";
         super.aliases.add("bot");
+        super.commandType = CommandType.INFO;
     }
 
     @Override

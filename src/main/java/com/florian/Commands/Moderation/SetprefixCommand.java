@@ -1,7 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
+import com.florian.Commands.CommandType;
 import com.florian.Config.GuildConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
@@ -17,7 +17,7 @@ public class SetprefixCommand extends BaseCommand {
         super.requiredArguments = true;
         super.examples.add("?");
         super.examples.add("ByeBot!");
-        super.userType = UserType.MODERATOR;
+        super.commandType = CommandType.MODERATION;
         super.permission = Permission.MANAGE_SERVER;
     }
 

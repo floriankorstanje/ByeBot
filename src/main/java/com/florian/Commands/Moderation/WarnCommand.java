@@ -1,7 +1,7 @@
 package com.florian.Commands.Moderation;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.UserHistory.OffenseType;
 import com.florian.UserHistory.UserHistory;
@@ -17,7 +17,7 @@ public class WarnCommand extends BaseCommand {
         super.description = "Warns a user.";
         super.arguments = "<user> <reason>";
         super.permission = Permission.KICK_MEMBERS;
-        super.userType = UserType.MODERATOR;
+        super.commandType = CommandType.MODERATION;
         super.requiredArguments = true;
         super.examples.add("399594813390848002 Acting sus");
     }

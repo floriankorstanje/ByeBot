@@ -1,6 +1,7 @@
-package com.florian.Commands.Utility;
+package com.florian.Commands.Info;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.Config.GuildConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
@@ -14,6 +15,7 @@ public class GuildsCommand extends BaseCommand {
         super.command = "guilds";
         super.description = "Shows a list of guilds this bot is in.";
         super.aliases.add("guidlist");
+        super.commandType = CommandType.INFO;
     }
 
     @Override

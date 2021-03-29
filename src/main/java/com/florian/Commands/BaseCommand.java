@@ -15,7 +15,7 @@ public class BaseCommand {
     public Permission permission;
     public List<String> aliases;
     public List<String> examples;
-    public UserType userType;
+    public CommandType commandType;
     public boolean requiredArguments;
 
     public BaseCommand() {
@@ -41,7 +41,7 @@ public class BaseCommand {
         examples = new ArrayList<>();
 
         // userType is used to differentiate between mod, owner and normal commands
-        userType = UserType.EVERYONE;
+        commandType = CommandType.NOT_SET;
 
         // requiredArguments is true if the command requires one or more arguments
         requiredArguments = false;

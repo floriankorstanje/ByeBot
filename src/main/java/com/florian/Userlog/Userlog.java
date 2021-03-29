@@ -158,11 +158,52 @@ public class Userlog {
                 String action = element.getAttribute("action");
                 long time = Long.parseLong(element.getAttribute("time"));
 
-                list.add(new UserlogEntry(time, action));
+                list.add(new UserlogEntry(user, time, action));
             }
         }
 
         // Return success
         return Pair.of(list.toArray(new UserlogEntry[0]), ErrorCode.SUCCESS);
+    }
+
+    public static Pair<UserlogEntry[], ErrorCode> getInactive(Guild g, int days) {
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.userlogFile;
+
+        if (!new File(file).exists())
+            return Pair.of(new UserlogEntry[]{}, ErrorCode.NO_USER_LOG);
+
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return Pair.of(new UserlogEntry[]{}, ErrorCode.OTHER_ERROR);
+        }
+
+        // Get all log entries
+        NodeList entries = document.getElementsByTagName("entries");
+
+        // List for users
+        List<UserlogEntry> users = new ArrayList<>();
+
+        // Get time to compare against
+        long compareTo = Instant.now().toEpochMilli() - ((long) days * 24 * 60 * 60 * 1000);
+
+        // Loop through all the entries and check if it's and entry old enough to add to the list
+        for (int i = 0; i < entries.getLength(); i++) {
+            Element element = (Element) entries.item(i);
+            Element entry = (Element) element.getChildNodes().item(element.getChildNodes().getLength() - 1);
+            long time = Long.parseLong(entry.getAttribute("time"));
+            if (time < compareTo)
+                users.add(new UserlogEntry(element.getAttribute("user"), time, entry.getAttribute("action")));
+        }
+
+        // Return list
+        return Pair.of(users.toArray(new UserlogEntry[0]), ErrorCode.SUCCESS);
     }
 }

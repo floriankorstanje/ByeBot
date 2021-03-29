@@ -4,8 +4,6 @@ import com.florian.ErrorCode;
 import com.florian.Log.Log;
 import com.florian.Util;
 import com.florian.Vars;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,15 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Reminders {
-    public static ErrorCode addReminder(Guild g, TextChannel channel, String id, String user, long time, String reason) {
+    public static ErrorCode addReminder(String guild, String id, String user, long time, String reason) {
         // Get file location
-        String file = Util.getGuildFolder(g) + Vars.remindersFile;
+        String file = Vars.botFolder + Vars.remindersFile;
 
         if (!new File(file).exists()) {
             try {
                 Util.createXmlFile(file, "reminders");
             } catch (Exception e) {
-                Log.log("Couldn't create reminders file for guild " + g.getId());
+                Log.log("Couldn't create reminders file");
                 return ErrorCode.OTHER_ERROR;
             }
         }
@@ -48,7 +46,7 @@ public class Reminders {
         // Save index of user
         int userIndex = -1;
 
-        // Get one for the current user=
+        // Get one for the current user
         for (int i = 0; i < entries.getLength(); i++) {
             Node node = entries.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -73,15 +71,15 @@ public class Reminders {
         }
 
         // Check if there isn't too many reminders
-        if(element.getChildNodes().getLength() >= Vars.maxReminderEntries)
+        if (element.getChildNodes().getLength() >= Vars.maxReminderEntries)
             return ErrorCode.TOO_MANY_REMINDERS;
 
         // Create entry and add all the info
         Element entry = document.createElement("entry");
         entry.setAttribute("id", id);
-        entry.setAttribute("channel", channel.getId());
         entry.setAttribute("time", String.valueOf(time));
         entry.setAttribute("reason", reason.trim());
+        entry.setAttribute("guild", guild);
 
         // Add entry to document
         element.appendChild(entry);
@@ -93,9 +91,9 @@ public class Reminders {
         return ErrorCode.SUCCESS;
     }
 
-    public static Pair<ReminderEntry, ErrorCode> removeReminder(Guild g, String user, String id) {
+    public static Pair<ReminderEntry, ErrorCode> removeReminder(String user, String id) {
         // Get file location
-        String file = Util.getGuildFolder(g) + Vars.remindersFile;
+        String file = Vars.botFolder + Vars.remindersFile;
 
         if (!new File(file).exists())
             return Pair.of(null, ErrorCode.NO_REMINDERS);
@@ -144,13 +142,12 @@ public class Reminders {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 if (element.getAttribute("id").equals(id)) {
-                    String channel = element.getAttribute("channel");
                     long time = Long.parseLong(element.getAttribute("time"));
                     String reason = element.getAttribute("reason");
                     String reminderId = element.getAttribute("id");
 
                     // Save all the values of the deleted entry
-                    deleted = new ReminderEntry(reminderId, user, channel, time, reason);
+                    deleted = new ReminderEntry(reminderId, user, time, reason);
 
                     // Remove the element
                     entries.item(userIndex).removeChild(node);
@@ -171,9 +168,9 @@ public class Reminders {
         return Pair.of(deleted, ErrorCode.SUCCESS);
     }
 
-    public static Pair<ReminderEntry[], ErrorCode> getReminders(Guild g, String user) {
+    public static Pair<ReminderEntry[], ErrorCode> getReminders(String user) {
         // Get file location
-        String file = Util.getGuildFolder(g) + Vars.remindersFile;
+        String file = Vars.botFolder + Vars.remindersFile;
 
         if (!new File(file).exists())
             return Pair.of(new ReminderEntry[]{}, ErrorCode.NO_REMINDERS);
@@ -223,12 +220,11 @@ public class Reminders {
             Node node = userEntries.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String channel = element.getAttribute("channel");
                 long time = Long.parseLong(element.getAttribute("time"));
                 String reason = element.getAttribute("reason");
                 String id = element.getAttribute("id");
 
-                list.add(new ReminderEntry(id, user, channel, time, reason));
+                list.add(new ReminderEntry(id, user, time, reason));
             }
         }
 
@@ -236,9 +232,9 @@ public class Reminders {
         return Pair.of(list.toArray(new ReminderEntry[0]), ErrorCode.SUCCESS);
     }
 
-    public static Pair<Integer, ErrorCode> clearReminders(Guild g, String user) {
+    public static Pair<Integer, ErrorCode> clearReminders(String user) {
         // Get file location
-        String file = Util.getGuildFolder(g) + Vars.remindersFile;
+        String file = Vars.botFolder + Vars.remindersFile;
 
         if (!new File(file).exists())
             return Pair.of(0, ErrorCode.NO_REMINDERS);

@@ -1,7 +1,7 @@
 package com.florian.Commands.Owner;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.UserType;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -12,7 +12,7 @@ public class LeaveguildCommand extends BaseCommand {
     public LeaveguildCommand() {
         super.command = "leaveguild";
         super.description = "Leaves a guild.";
-        super.userType = UserType.OWNER;
+        super.commandType = CommandType.OWNER;
         super.arguments = "<guild-id>";
         super.requiredArguments = true;
     }

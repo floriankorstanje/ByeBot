@@ -1,6 +1,7 @@
-package com.florian.Commands.Utility;
+package com.florian.Commands.Info;
 
 import com.florian.Commands.BaseCommand;
+import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -17,6 +18,7 @@ public class UserinfoCommand extends BaseCommand {
         super.arguments = "[user]";
         super.aliases.add("user");
         super.aliases.add("memberinfo");
+        super.commandType = CommandType.INFO;
     }
 
     @Override

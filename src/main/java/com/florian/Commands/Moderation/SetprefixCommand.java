@@ -5,6 +5,7 @@ import com.florian.Commands.CommandType;
 import com.florian.Config.GuildConfig;
 import com.florian.ErrorCode;
 import com.florian.Util;
+import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -24,6 +25,10 @@ public class SetprefixCommand extends BaseCommand {
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         if (args.length == 1) {
+            // Check if prefix isn't too long
+            if(args[0].length() > Vars.maxPrefixLength)
+                return ErrorCode.PREFIX_TOO_LONG;
+
             // Save old prefix
             String oldPrefix = GuildConfig.getPrefix(e.getGuild());
 
@@ -42,6 +47,9 @@ public class SetprefixCommand extends BaseCommand {
 
             // Send embed
             e.getChannel().sendMessage(embed.build()).queue();
+
+            // Change the bots nickname according to the prefix
+            e.getGuild().getSelfMember().modifyNickname("[" + args[0] + "] " + e.getJDA().getSelfUser().getName()).queue();
         } else {
             // Wrong arguments
             return ErrorCode.WRONG_ARGUMENTS;

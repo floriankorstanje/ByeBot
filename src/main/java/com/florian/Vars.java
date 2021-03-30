@@ -30,7 +30,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.8.0";
+    public static final String version = "0.8.1";
 
     // Delays (Seconds)
     public static final int waitForClearReactionDelay = 5;
@@ -42,6 +42,7 @@ public class Vars {
     public static final int maxHistoryEntries = 16;
     public static final int maxReminderEntries = 16;
     public static final int maxGuildsInEmbed = 15;
+    public static final int maxPrefixLength = 16;
 
     // Other
     public static final Random random = new Random();

@@ -44,7 +44,7 @@ public class UserinfoCommand extends BaseCommand {
         embed.setImage(m.getUser().getAvatarUrl());
         embed.addField("User", m.getAsMention(), true);
         embed.addField("User ID", "`" + m.getId() + "`", true);
-        embed.addField("Member Color", String.format("`#%06X`", m.getColor().getRGB() & 0xFFFFFF), true);
+        embed.addField("Member Color", e.getMember().getRoles().size() > 0 ? String.format("`#%06X`", m.getColor().getRGB() & 0xFFFFFF) : "none", true);
         embed.addField("Joined Discord", Util.formatDateAgo(new Date(m.getUser().getTimeCreated().toEpochSecond() * 1000)), true);
         embed.addField("Joined Guild", Util.formatDateAgo(new Date(m.getTimeJoined().toEpochSecond() * 1000)), true);
         embed.addField("Guild Owner", m.isOwner() ? "Yes" : "No", true);

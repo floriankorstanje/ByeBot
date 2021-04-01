@@ -1,22 +1,14 @@
 package com.florian;
 
-import com.florian.Commands.Utility.HelpCommand;
 import com.florian.Config.BotConfig;
 import com.florian.Log.Log;
+import com.florian.ScoreSystem.ScoreEvents;
 import com.florian.Userlog.UserEvents;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -77,6 +69,7 @@ public class Main extends ListenerAdapter {
         // Add all the event listeners
         builder.addEventListeners(new CommandHandler());
         builder.addEventListeners(new UserEvents());
+        builder.addEventListeners(new ScoreEvents());
         builder.addEventListeners(new Events());
 
         // Create JDA class and start the bot

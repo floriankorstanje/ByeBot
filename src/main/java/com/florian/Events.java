@@ -1,6 +1,7 @@
 package com.florian;
 
 import com.florian.Commands.Utility.HelpCommand;
+import com.florian.ScoreSystem.ScoreSystem;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -24,6 +25,9 @@ public class Events extends ListenerAdapter {
 
     @Override
     public void onReady(@NotNull ReadyEvent e) {
+        // Start XP message thread
+        ScoreSystem.messageScoreThread();
+
         // Make a thread to change the bots status every 10 seconds
         new Thread(() -> {
             int count = 0;

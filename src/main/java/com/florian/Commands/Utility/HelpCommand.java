@@ -62,6 +62,7 @@ public class HelpCommand extends BaseCommand {
         StringBuilder fun = new StringBuilder();
         StringBuilder utility = new StringBuilder();
         StringBuilder info = new StringBuilder();
+        StringBuilder score = new StringBuilder();
         StringBuilder mod = new StringBuilder();
         StringBuilder owner = new StringBuilder();
 
@@ -80,6 +81,9 @@ public class HelpCommand extends BaseCommand {
                 case INFO:
                     addToStringBuilder(info, command);
                     break;
+                case SCORE:
+                    addToStringBuilder(score, command);
+                    break;
                 case MODERATION:
                     addToStringBuilder(mod, command);
                     break;
@@ -92,6 +96,7 @@ public class HelpCommand extends BaseCommand {
         // Add commands to embed
         embed.addField("\uD83E\uDE9B Utility", utility.toString(), false);
         embed.addField("\u2139 Information", info.toString(), false);
+        embed.addField("\uD83D\uDCAF Score", score.toString(), false);
         embed.addField("\uD83D\uDE04 Fun", fun.toString(), false);
         embed.addField("\uD83D\uDD27 Moderation", mod.toString(), false);
         embed.addField("\u2699  Owner", owner.toString(), false);

@@ -2,6 +2,7 @@ package com.florian;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -14,15 +15,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -160,13 +159,13 @@ public class Util {
         return factory.newDocumentBuilder();
     }
 
-    public static List<String> readFile(String fileName) throws IOException {
-        Path path = Paths.get(fileName);
-        return Files.readAllLines(path, StandardCharsets.UTF_8);
-    }
+    public static List<Member> removeBots(List<Member> list) {
+        List<Member> newList = new ArrayList<>();
+        for(Member m : list) {
+            if(!m.getUser().isBot())
+                newList.add(m);
+        }
 
-    public static void writeFile(String fileName, List<String> lines) throws IOException {
-        Path path = Paths.get(fileName);
-        Files.write(path, lines, StandardCharsets.UTF_8);
+        return newList;
     }
 }

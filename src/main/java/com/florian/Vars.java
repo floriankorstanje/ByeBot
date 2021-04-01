@@ -8,6 +8,7 @@ import com.florian.Commands.Moderation.*;
 import com.florian.Commands.Owner.ClearlogsCommand;
 import com.florian.Commands.Owner.LeaveguildCommand;
 import com.florian.Commands.Owner.StopCommand;
+import com.florian.Commands.Score.ScoreCommand;
 import com.florian.Commands.Utility.HelpCommand;
 import com.florian.Commands.Utility.PollCommand;
 import com.florian.Commands.Utility.RemindersCommand;
@@ -26,15 +27,18 @@ public class Vars {
     public static final String guildConfigFile = "/config.xml";
     public static final String botConfigFile = botFolder + "bot.xml";
     public static final String logsFolder = botFolder + "logs/";
+    public static final String scoreFile = "scores.xml";
     public static String logFile = logsFolder + "botlog.txt";
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.8.2";
+    public static final String version = "0.9.0";
 
     // Delays (Seconds)
     public static final int waitForClearReactionDelay = 5;
     public static final int waitForPruneReactionDelay = 5;
+    public static final int messageScoreDelay = 60;
+    public static final int voiceScoreDelay = 300;
     public static final int commandCooldown = 3;
 
     // Max entries
@@ -47,7 +51,7 @@ public class Vars {
     // Other
     public static final Random random = new Random();
     public static final int color = 0x890BEF;
-    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand()};
+    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand(), new ScoreCommand()};
     public static ApplicationInfo appInfo;
     public static User botOwner;
 }

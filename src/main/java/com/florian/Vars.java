@@ -33,7 +33,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.9.1";
+    public static final String version = "0.9.2";
 
     // Delays (Seconds)
     public static final int waitForClearReactionDelay = 5;

@@ -10,7 +10,7 @@ public class ScoreEvents extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // Add user to the list to add score if they're not on the list yet
-        if(!ScoreSystem.sentMessage.contains(Pair.of(event.getGuild(), event.getMember())))
+        if (!ScoreSystem.sentMessage.contains(Pair.of(event.getGuild(), event.getMember())) && !event.getMember().getUser().isBot())
             ScoreSystem.sentMessage.add(Pair.of(event.getGuild(), event.getMember()));
     }
 

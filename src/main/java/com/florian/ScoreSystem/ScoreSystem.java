@@ -1,5 +1,6 @@
 package com.florian.ScoreSystem;
 
+import com.florian.ErrorCode;
 import com.florian.Log.Log;
 import com.florian.Util;
 import com.florian.Vars;
@@ -14,6 +15,7 @@ import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreSystem {
     public static ArrayList<Pair<Guild, Member>> sentMessage = new ArrayList<>();
@@ -43,6 +45,10 @@ public class ScoreSystem {
     public static void voiceChannelScoreThread(GuildVoiceJoinEvent e) {
         new Thread(() -> {
             while (true) {
+                // Make sure the user isn't a bot
+                if (e.getMember().getUser().isBot())
+                    return;
+
                 // Sleep for some time before giving Score again
                 try {
                     Thread.sleep(Vars.voiceScoreDelay * 1000);
@@ -121,7 +127,7 @@ public class ScoreSystem {
         Util.writeXml(file, document);
 
         // Log
-        Log.log("[" + user + "]" + "[" + g.getName() + " (" + g.getId() + ")]: Add Score -> " + score);
+        Log.log("[" + user + "] [" + g.getName() + " (" + g.getId() + ")]: Add Score -> " + score);
     }
 
     public static int getScore(Guild g, String user) {
@@ -144,7 +150,7 @@ public class ScoreSystem {
             return 0;
         }
 
-        // Get all history entries
+        // Get all score entries
         NodeList entries = document.getElementsByTagName("entry");
 
         // Get one for the current user
@@ -159,5 +165,70 @@ public class ScoreSystem {
 
         // Return 0 as default
         return 0;
+    }
+
+    public static Pair<UserScore[], ErrorCode> getLeaderboard(Guild g, int places) {
+        // Get file location for score file
+        String file = Util.getGuildFolder(g) + Vars.scoreFile;
+
+        // Check if the file exists
+        if (!new File(file).exists())
+            return Pair.of(new UserScore[]{}, ErrorCode.NO_SCORES);
+
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return Pair.of(new UserScore[]{}, ErrorCode.OTHER_ERROR);
+        }
+
+        // Get all score entries
+        NodeList entries = document.getElementsByTagName("entry");
+
+        // Create list for all users and their scores
+        UserScore[] userScores = new UserScore[entries.getLength()];
+
+        // Get one for the current user
+        for (int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                userScores[i] = new UserScore(element.getAttribute("user"), Integer.parseInt(element.getAttribute("score")));
+            }
+        }
+
+        // Sort the array to get the leaderboard
+        userScores = sortScore(userScores);
+
+        // Get new array to return
+        List<UserScore> leaderboard = new ArrayList<>();
+
+        // Only get the last few elements in the array
+        for (int i = userScores.length - places; i < userScores.length; i++) {
+            if (i >= 0)
+                leaderboard.add(userScores[i]);
+        }
+
+        return Pair.of(leaderboard.toArray(new UserScore[0]), ErrorCode.SUCCESS);
+    }
+
+    private static UserScore[] sortScore(UserScore[] array) {
+        UserScore temp;
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (array[j].getScore() < array[j - 1].getScore()) {
+                    temp = array[j];
+                    array[j] = array[j - 1];
+                    array[j - 1] = temp;
+                }
+            }
+        }
+
+        return array;
     }
 }

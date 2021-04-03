@@ -19,13 +19,12 @@ public class ScoreCommand extends BaseCommand {
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if(args.length < 2) {
+        if (args.length < 2) {
             Member member = e.getMember();
 
             // Check if user entered other user to get score from
-            if(args.length == 1) {
-                e.getGuild().retrieveMemberById(args[0]).complete();
-            }
+            if (args.length == 1)
+                member = e.getGuild().retrieveMemberById(args[0]).complete();
 
             // Get score
             int score = ScoreSystem.getScore(e.getGuild(), member.getId());

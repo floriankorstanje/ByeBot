@@ -6,11 +6,13 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class CheckWordEvents extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
-        if(event.getMember().getPermissions().contains(new WordblacklistCommand().permission))
+        if(Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
             return;
 
         if(WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
@@ -26,7 +28,7 @@ public class CheckWordEvents extends ListenerAdapter {
     @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
-        if(event.getMember().getPermissions().contains(new WordblacklistCommand().permission))
+        if(Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
             return;
 
         if(WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {

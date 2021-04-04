@@ -29,11 +29,12 @@ public class Vars {
     public static final String botConfigFile = botFolder + "bot.xml";
     public static final String logsFolder = botFolder + "logs/";
     public static final String scoreFile = "scores.xml";
+    public static final String blacklistedWordsFile = "blacklistedwords.txt";
     public static String logFile = logsFolder + "botlog.txt";
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.9.1";
+    public static final String version = "0.9.2";
 
     // Delays (Seconds)
     public static final int waitForClearReactionDelay = 5;
@@ -53,7 +54,7 @@ public class Vars {
     // Other
     public static final Random random = new Random();
     public static final int color = 0x890BEF;
-    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand(), new ScoreCommand(), new LeaderboardCommand()};
+    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand(), new ScoreCommand(), new LeaderboardCommand(), new WordblacklistCommand()};
     public static ApplicationInfo appInfo;
     public static User botOwner;
 }

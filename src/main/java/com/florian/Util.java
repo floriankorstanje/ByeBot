@@ -15,9 +15,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -167,5 +170,15 @@ public class Util {
         }
 
         return newList;
+    }
+
+    public static List<String> readFile(String fileName) throws IOException {
+        Path path = Paths.get(fileName);
+        return Files.readAllLines(path, StandardCharsets.UTF_8);
+    }
+
+    public static void writeFile(String fileName, List<String> lines) throws IOException {
+        Path path = Paths.get(fileName);
+        Files.write(path, lines, StandardCharsets.UTF_8);
     }
 }

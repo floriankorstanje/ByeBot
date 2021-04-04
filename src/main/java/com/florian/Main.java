@@ -4,6 +4,7 @@ import com.florian.Config.BotConfig;
 import com.florian.Log.Log;
 import com.florian.ScoreSystem.ScoreEvents;
 import com.florian.Userlog.UserEvents;
+import com.florian.WordBlacklist.CheckWordEvents;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -71,6 +72,7 @@ public class Main extends ListenerAdapter {
         builder.addEventListeners(new UserEvents());
         builder.addEventListeners(new ScoreEvents());
         builder.addEventListeners(new Events());
+        builder.addEventListeners(new CheckWordEvents());
 
         // Create JDA class and start the bot
         JDA jda = builder.build();

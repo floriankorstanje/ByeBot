@@ -56,8 +56,8 @@ public class ScoreSystem {
                     interruptedException.printStackTrace();
                 }
 
-                // Make sure the user isn't in the AFK channel
-                if (e.getChannelJoined().getId().equals(e.getGuild().getAfkChannel().getId()))
+                // Make sure the user isn't in the AFK channel if the guild has one
+                if (e.getGuild().getAfkChannel() != null && e.getChannelJoined().getId().equals(e.getGuild().getAfkChannel().getId()))
                     return;
 
                 // Make sure the user is still in the channel

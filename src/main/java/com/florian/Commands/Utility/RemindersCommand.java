@@ -197,7 +197,8 @@ public class RemindersCommand extends BaseCommand {
                     e.getChannel().sendMessage(e.getMember().getAsMention() + ", your DMs are closed. Please open them to use reminders.").queue();
                 });
 
-                return ErrorCode.SUCCESS;
+                // Add checkmark to command message to show user command succeeded
+                e.getMessage().addReaction("✅").queue();
             } else if (operation.equalsIgnoreCase("remove")) {
                 // Remove only takes 2 args
                 if (args.length != 2)

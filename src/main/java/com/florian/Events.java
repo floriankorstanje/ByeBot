@@ -75,7 +75,6 @@ public class Events extends ListenerAdapter {
         // Make a thread to check if any reminders expired and notify the user
         new Thread(() -> {
             while (true) {
-                // Check for a reminders file for each guild
                 // Get file
                 String file = Vars.botFolder + Vars.remindersFile;
                 File input = new File(file);

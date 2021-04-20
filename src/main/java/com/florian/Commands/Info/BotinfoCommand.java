@@ -36,6 +36,7 @@ public class BotinfoCommand extends BaseCommand {
         embed.addField("Commands Executed", "`" + BotConfig.getCommandCounter() + "`", false);
         embed.addField("Commands", "Total: `" + Vars.commands.length + "`\n*Type " + Vars.botPrefix + new HelpCommand().command + " to see all the commands.*", false);
         embed.addField("Invite Link", "[Click Here](" + url + ") to add the bot to your guild.", false);
+        embed.addField("Bot Profile Picture", "Huge thanks to davour#0917 for making the bot's profile picture.\n[Davour's YouTube](https://www.youtube.com/channel/UCpGriMmtbKl52iMbr6WqZmw)", false);
 
         // Send the embed
         e.getChannel().sendMessage(embed.build()).queue();

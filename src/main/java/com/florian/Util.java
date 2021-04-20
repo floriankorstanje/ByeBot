@@ -55,7 +55,7 @@ public class Util {
 
         // Set the default values
         embed.setColor(Vars.color);
-        if(footer)
+        if (footer)
             embed.setFooter(Vars.appInfo.getName() + " made with ❤ by " + Vars.botOwner.getName() + " - v" + Vars.version, Vars.botOwner.getAvatarUrl());
 
         // Return the embed
@@ -122,7 +122,7 @@ public class Util {
     public static boolean createXmlFile(String filename, String rootTag) {
         try {
             // Create file if it doesn't exist
-            if(!new File(filename).exists())
+            if (!new File(filename).exists())
                 Files.createFile(Paths.get(filename));
 
             // Create document
@@ -164,8 +164,8 @@ public class Util {
 
     public static List<Member> removeBots(List<Member> list) {
         List<Member> newList = new ArrayList<>();
-        for(Member m : list) {
-            if(!m.getUser().isBot())
+        for (Member m : list) {
+            if (!m.getUser().isBot())
                 newList.add(m);
         }
 
@@ -180,5 +180,15 @@ public class Util {
     public static void writeFile(String fileName, List<String> lines) throws IOException {
         Path path = Paths.get(fileName);
         Files.write(path, lines, StandardCharsets.UTF_8);
+    }
+
+    public static boolean validUser(Guild g, String user) {
+        try {
+            g.retrieveMemberById(user).complete();
+        } catch (Exception ignored) {
+            return false;
+        }
+
+        return true;
     }
 }

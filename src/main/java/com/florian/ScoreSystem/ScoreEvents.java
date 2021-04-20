@@ -16,7 +16,7 @@ public class ScoreEvents extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
-        // Start a loop to give the user points while they're in the call
+        // Start a loop to give the user score while they're in the call
         ScoreSystem.voiceChannelScoreThread(event);
     }
 }

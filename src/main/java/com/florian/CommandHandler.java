@@ -49,7 +49,6 @@ public class CommandHandler extends ListenerAdapter {
                         args[i] = nums.replaceAll("");
                     }
                 }
-
             }
 
             // Save the error code and command for error handling
@@ -124,7 +123,7 @@ public class CommandHandler extends ListenerAdapter {
             }
 
             // Log executed command to console and logfile
-            Log.log("[" + event.getMember().getEffectiveName() + " (" + event.getMember().getId() + ")] [" + event.getGuild().getName() + " (" + event.getGuild().getId() + ")]: " + cmd + " [" + args.length + "] -> " + error.toString());
+            Log.log("[" + event.getMember().getId() + "] [" + event.getGuild().getId() + "]: " + cmd + " [" + args.length + "] -> " + error);
         }
     }
 }

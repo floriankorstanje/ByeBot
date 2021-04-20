@@ -6,6 +6,7 @@ import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.w3c.dom.Document;
@@ -76,6 +77,48 @@ public class ScoreSystem {
     }
 
     public static void addScore(Guild g, String user, int score) {
+        // Set the score
+        setScore(g, user, getScore(g, user) + score);
+    }
+
+    public static void checkRole(Guild g, String user, int score) {
+        // Get all role rewards
+        Pair<RoleRewardEntry[], ErrorCode> roleRewards = RoleReward.getRoleRewards(g);
+
+        // Make sure getRoleRewards succeeded
+        if (roleRewards.getRight() != ErrorCode.SUCCESS)
+            return;
+
+        // Loop through all role rewards and give the user a new role if they have the score
+        for (RoleRewardEntry entry : roleRewards.getLeft()) {
+            Role role = g.getRoleById(entry.getRole());
+
+            // Add the role to the user if they don't have it already and they have enough score
+            if (score > entry.getScore() && !g.getMemberById(user).getRoles().contains(role)) {
+                // Give role to user
+                g.addRoleToMember(user, role).queue(null, (err) -> Log.log("[" + user + "] [" + g.getName() + "(" + g.getId() + ")] Unable to find reward role"));
+
+                // Announce that the user got the role
+                try {
+                    g.getSystemChannel().sendMessage("Congratulations " + g.getMemberById(user).getAsMention() + " on reaching a score of " + entry.getScore() + "! You have been awarded the `" + g.getRoleById(entry.getRole()).getName() + "` role!").queue();
+                } catch (Exception ignored) {
+                    // Server doesn't have a system channel, so don't send the message
+                }
+                return;
+            }
+
+            // The user has the role, but they don't have enough score for it, so we remove it
+            if (score < entry.getScore() && g.getMemberById(user).getRoles().contains(role)) {
+                g.removeRoleFromMember(user, role).queue(null, (err) -> Log.log("[" + user + "] [" + g.getName() + "(" + g.getId() + ")] Unable to find reward role"));
+            }
+        }
+    }
+
+    public static ErrorCode setScore(Guild g, String user, int score) {
+        // Make sure the score that is trying to be set isn't invalid
+        if (score < 0 || score >= Integer.MAX_VALUE)
+            return ErrorCode.INVALID_SCORE;
+
         // Get file path
         String file = Util.getGuildFolder(g) + Vars.scoreFile;
 
@@ -94,7 +137,7 @@ public class ScoreSystem {
             document = Util.getDocBuilder().parse(input);
         } catch (Exception e) {
             // Failed to parse
-            return;
+            return ErrorCode.OTHER_ERROR;
         }
 
         // Get all history entries
@@ -109,7 +152,7 @@ public class ScoreSystem {
                 Element element = (Element) node;
                 if (element.getAttribute("user").equals(user)) {
                     hasEntrty = true;
-                    element.setAttribute("score", String.valueOf(Integer.parseInt(element.getAttribute("score")) + score));
+                    element.setAttribute("score", String.valueOf(score));
                     break;
                 }
             }
@@ -127,7 +170,13 @@ public class ScoreSystem {
         Util.writeXml(file, document);
 
         // Log
-        Log.log("[" + user + "] [" + g.getName() + " (" + g.getId() + ")]: Add Score -> " + score);
+        Log.log("[" + user + "] [" + g.getId() + "]: Set Score -> " + score);
+
+        // Check if user should get new role
+        checkRole(g, user, score);
+
+        // Return success
+        return ErrorCode.SUCCESS;
     }
 
     public static int getScore(Guild g, String user) {

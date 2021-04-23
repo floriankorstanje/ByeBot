@@ -280,4 +280,58 @@ public class ScoreSystem {
 
         return array;
     }
+
+    public static Pair<Integer, ErrorCode> getLeaderboardPosition(Guild g, String user) {
+        // Get leaderboard
+        Pair<UserScore[], ErrorCode> leaderboard = getLeaderboard(g, Integer.MAX_VALUE);
+
+        // Make sure getLeaderboard succeeded
+        if (leaderboard.getRight() != ErrorCode.SUCCESS)
+            return Pair.of(-1, leaderboard.getRight());
+
+        // Get user's position
+        int position = leaderboard.getLeft().length;
+        for (int i = 0; i < leaderboard.getLeft().length; i++) {
+            if (leaderboard.getLeft()[i].getUser().equalsIgnoreCase(user)) {
+                position = leaderboard.getLeft().length - i;
+                break;
+            }
+        }
+
+        // Return position and success
+        return Pair.of(position, ErrorCode.SUCCESS);
+    }
+
+    public static String getCurrentRole(Guild g, String user) {
+        // Get all rolerewards
+        Pair<RoleRewardEntry[], ErrorCode> roleRewards = RoleReward.getRoleRewards(g);
+
+        // Make sure getRoleRewards succeeded
+        if (roleRewards.getRight() != ErrorCode.SUCCESS)
+            return "Unknown";
+
+        // Get user's current score
+        int currentScore = getScore(g, user);
+
+        // Save current highest role points and role
+        int rolePoints = 0;
+        String role = "";
+
+        // Get role
+        for (RoleRewardEntry entry : roleRewards.getLeft()) {
+            if (entry.getScore() > rolePoints)
+                rolePoints = entry.getScore();
+
+            if (currentScore > rolePoints) {
+                try {
+                    role = g.getRoleById(entry.getRole()).getAsMention();
+                } catch (Exception ex) {
+                    role = "Unknown";
+                }
+            }
+        }
+
+        // Return role
+        return role;
+    }
 }

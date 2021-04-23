@@ -1,5 +1,6 @@
 package com.florian.ScoreSystem;
 
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -18,5 +19,11 @@ public class ScoreEvents extends ListenerAdapter {
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         // Start a loop to give the user score while they're in the call
         ScoreSystem.voiceChannelScoreThread(event);
+    }
+
+    @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        // Give a joining user 1 point so they're on the leaderboard
+        ScoreSystem.setScore(event.getGuild(), event.getMember().getId(), 1);
     }
 }

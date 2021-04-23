@@ -8,6 +8,7 @@ import com.florian.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 public class ScoreCommand extends BaseCommand {
     public ScoreCommand() {
@@ -29,6 +30,16 @@ public class ScoreCommand extends BaseCommand {
             // Get score
             int score = ScoreSystem.getScore(e.getGuild(), member.getId());
 
+            // Get leaderboard position
+            Pair<Integer, ErrorCode> position = ScoreSystem.getLeaderboardPosition(e.getGuild(), member.getId());
+
+            // Make sure getLeaderboardPosition succeeded
+            if (position.getRight() != ErrorCode.SUCCESS)
+                return position.getRight();
+
+            // Get current user's role
+            String role = ScoreSystem.getCurrentRole(e.getGuild(), member.getId());
+
             // Create embed to send
             EmbedBuilder embed = Util.defaultEmbed();
 
@@ -36,7 +47,8 @@ public class ScoreCommand extends BaseCommand {
             embed.setTitle("Score of " + member.getUser().getAsTag());
 
             // Fill embed
-            embed.addField("Score", String.valueOf(score), false);
+            embed.addField("General Info", "Score: `" + score + "`\nRank: `" + position.getLeft() + "`", false);
+            embed.addField("Role Info", "Current Role: " + role + "", false);
 
             // Send message
             e.getChannel().sendMessage(embed.build()).queue();

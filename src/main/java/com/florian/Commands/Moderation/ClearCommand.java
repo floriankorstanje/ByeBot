@@ -19,6 +19,7 @@ public class ClearCommand extends BaseCommand {
     public ClearCommand() {
         super.command = "clear";
         super.description = "Deletes specified amount of messages from channel.";
+        super.advancedDescription = "This can only delete a maximum of 100 messages.";
         super.arguments = "<amount>";
         super.commandType = CommandType.MODERATION;
         super.permission = Permission.MESSAGE_MANAGE;
@@ -37,6 +38,10 @@ public class ClearCommand extends BaseCommand {
                 return ErrorCode.WRONG_ARGUMENTS;
             }
 
+            // Make sure the user isn't trying to delete more than 100 messages
+            if(amount > 100)
+                return ErrorCode.WRONG_ARGUMENTS;
+
             // Confirmation
             e.getChannel().sendMessage("Are you sure you want to remove " + amount + " messages?").queue(message -> {
                 // Add reactions for the user to decide
@@ -52,8 +57,17 @@ public class ClearCommand extends BaseCommand {
                     }
 
                     if (message.retrieveReactionUsers("\uD83D\uDC4D").complete().contains(e.getMember().getUser())) {
-                        // Start deleting the messages. Add 2 for the users and the bots message
-                        clear(e.getChannel(), e.getMember(), amount + 2);
+                        // Get date from 2 weeks ago (Because the bot can't delete messages older than 2 weeks)
+                        OffsetDateTime twoWeeksAgo = OffsetDateTime.now().minus(2, ChronoUnit.WEEKS);
+
+                        // Get past <amount> message
+                        List<Message> messages = e.getChannel().getHistory().retrievePast(amount).complete();
+
+                        // Remove all the messages older than 2 weeks
+                        messages.removeIf(msg -> msg.getTimeCreated().isBefore(twoWeeksAgo));
+
+                        // Delete all remaining messages
+                        e.getChannel().deleteMessages(messages).complete();
                     } else {
                         // User didn't respond or didn't agree, so cancel
                         message.editMessage("Clear cancelled.").queue();
@@ -68,34 +82,5 @@ public class ClearCommand extends BaseCommand {
 
         // Return success
         return ErrorCode.SUCCESS;
-    }
-
-    private void clear(TextChannel channel, Member caller, int amount) {
-        // Can't delete earlier than 2 weeks because Discord said so
-        OffsetDateTime twoWeeksAgo = OffsetDateTime.now().minus(2, ChronoUnit.WEEKS);
-
-        new Thread(() -> {
-            AtomicInteger count = new AtomicInteger();
-            AtomicInteger deleted = new AtomicInteger();
-            while (true) {
-                // Get all messages and remove the ones older than 2 weeks
-                List<Message> messages = channel.getHistory().retrievePast(100).complete();
-                messages.removeIf(msg -> msg.getTimeCreated().isBefore(twoWeeksAgo));
-                messages.removeIf(msg -> count.getAndIncrement() >= amount);
-
-                // If list is empty we're done
-                if (messages.isEmpty())
-                    break;
-
-                // Actually delete messages
-                channel.deleteMessages(messages).complete();
-
-                // Get the count of actually deleted messages
-                deleted.addAndGet(messages.size());
-            }
-
-            // Tell the user how many message were deleted
-            channel.sendMessage(deleted.get() + " messages were deleted by " + caller.getAsMention()).queue();
-        }).start();
     }
 }

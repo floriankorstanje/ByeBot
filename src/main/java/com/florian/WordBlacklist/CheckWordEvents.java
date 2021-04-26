@@ -12,10 +12,10 @@ public class CheckWordEvents extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
-        if(Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
+        if (Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
             return;
 
-        if(WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
+        if (WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
             // Try to remove the message
             event.getMessage().delete().queue(msg -> {
                 event.getChannel().sendMessage(event.getMember().getAsMention() + ", please don't use blacklisted words!").queue();
@@ -28,10 +28,10 @@ public class CheckWordEvents extends ListenerAdapter {
     @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
-        if(Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
+        if (Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
             return;
 
-        if(WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
+        if (WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
             // Try to remove the message
             event.getMessage().delete().queue(msg -> {
                 event.getChannel().sendMessage(event.getMember().getAsMention() + ", please don't use blacklisted words!").queue();

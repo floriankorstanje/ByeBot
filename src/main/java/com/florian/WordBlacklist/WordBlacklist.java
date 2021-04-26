@@ -21,7 +21,7 @@ public class WordBlacklist {
         String file = Util.getGuildFolder(g) + Vars.blacklistedWordsFile;
 
         // Check if the file exists, if not, create one
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 Files.createFile(Paths.get(file));
             } catch (IOException e) {
@@ -40,9 +40,9 @@ public class WordBlacklist {
         }
 
         // Loop through all the words we want to add and then add them
-        for(String word : wordsArray) {
+        for (String word : wordsArray) {
             // Check if the word isn't already in the list. If it's already added, skip to the next word
-            if(words.contains(word))
+            if (words.contains(word))
                 continue;
 
             // Add the word we want to add to the list
@@ -66,7 +66,7 @@ public class WordBlacklist {
         String file = Util.getGuildFolder(g) + Vars.blacklistedWordsFile;
 
         // Check if the file exists, if not, return success
-        if(!new File(file).exists())
+        if (!new File(file).exists())
             return ErrorCode.SUCCESS;
 
         // Get original list of words
@@ -82,8 +82,8 @@ public class WordBlacklist {
         List<String> writeBack = new ArrayList<>();
 
         // Loop through all the words and only add them back to the file if we don't want to remove them
-        for(String word : words) {
-            if(!Arrays.asList(wordsArray).contains(word))
+        for (String word : words) {
+            if (!Arrays.asList(wordsArray).contains(word))
                 writeBack.add(word);
         }
 
@@ -104,7 +104,7 @@ public class WordBlacklist {
         String file = Util.getGuildFolder(g) + Vars.blacklistedWordsFile;
 
         // Check if the file exists, if not, return success
-        if(!new File(file).exists())
+        if (!new File(file).exists())
             return ErrorCode.SUCCESS;
 
         // Delete the file
@@ -124,12 +124,12 @@ public class WordBlacklist {
         String file = Util.getGuildFolder(g) + Vars.blacklistedWordsFile;
 
         // Check if the file exists, if not, create one
-        if(!new File(file).exists()) {
+        if (!new File(file).exists()) {
             try {
                 Files.createFile(Paths.get(file));
             } catch (IOException e) {
                 Log.log("Unable to create blacklisted words file for guild " + g.getId());
-                return Pair.of(new String[] {}, ErrorCode.OTHER_ERROR);
+                return Pair.of(new String[]{}, ErrorCode.OTHER_ERROR);
             }
         }
 
@@ -139,7 +139,7 @@ public class WordBlacklist {
             words = Util.readFile(file);
         } catch (IOException e) {
             Log.log("Unable to read blacklisted words file for guild " + g.getId());
-            return Pair.of(new String[] {}, ErrorCode.OTHER_ERROR);
+            return Pair.of(new String[]{}, ErrorCode.OTHER_ERROR);
         }
 
         // Return the words
@@ -151,16 +151,16 @@ public class WordBlacklist {
         Pair<String[], ErrorCode> blacklistedWords = getBlacklistedWords(g);
 
         // Make sure getBlacklistedWords succeeded
-        if(blacklistedWords.getRight() != ErrorCode.SUCCESS)
+        if (blacklistedWords.getRight() != ErrorCode.SUCCESS)
             return false;
 
         // Check message for words
-        for(String word : blacklistedWords.getLeft()) {
+        for (String word : blacklistedWords.getLeft()) {
             // Make sure it isn't an empty line
-            if(word.length() < 1)
+            if (word.length() < 1)
                 continue;
 
-            if(message.toLowerCase().contains(word.toLowerCase()))
+            if (message.toLowerCase().contains(word.toLowerCase().trim()))
                 return true;
         }
 

@@ -25,7 +25,7 @@ public class LeaderboardCommand extends BaseCommand {
         Pair<UserScore[], ErrorCode> leaderboard = ScoreSystem.getLeaderboard(e.getGuild(), Vars.maxLeaderboardPlaces);
 
         // Make sure ErrorCode is success
-        if(leaderboard.getRight() != ErrorCode.SUCCESS)
+        if (leaderboard.getRight() != ErrorCode.SUCCESS)
             return leaderboard.getRight();
 
         // Get amount of places

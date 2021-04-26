@@ -29,12 +29,12 @@ public class WordblacklistCommand extends BaseCommand {
 
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             // Get all blacklisted words
             Pair<String[], ErrorCode> blacklistedWords = WordBlacklist.getBlacklistedWords(e.getGuild());
 
             // Make sure getBlacklistedWords succeeded
-            if(blacklistedWords.getRight() != ErrorCode.SUCCESS)
+            if (blacklistedWords.getRight() != ErrorCode.SUCCESS)
                 return blacklistedWords.getRight();
 
             // Get amount of blacklisted words
@@ -42,7 +42,7 @@ public class WordblacklistCommand extends BaseCommand {
 
             // Add all the words to one string
             StringBuilder words = new StringBuilder();
-            for(String word : blacklistedWords.getLeft())
+            for (String word : blacklistedWords.getLeft())
                 words.append("`").append(word).append("` ");
 
             // Create embed to send
@@ -56,13 +56,13 @@ public class WordblacklistCommand extends BaseCommand {
 
             // Send embed
             e.getChannel().sendMessage(embed.build()).queue();
-        } else if(args.length == 1) {
+        } else if (args.length == 1) {
             // Make sure the user really wants to clear the list
-            if(args[0].equalsIgnoreCase("clear")) {
+            if (args[0].equalsIgnoreCase("clear")) {
                 ErrorCode error = WordBlacklist.clearBlacklistedWords(e.getGuild());
 
                 // Make sure clearBlacklistedWords succeeded
-                if(error != ErrorCode.SUCCESS)
+                if (error != ErrorCode.SUCCESS)
                     return error;
 
                 // Create embed to tell user operation was successful
@@ -85,12 +85,12 @@ public class WordblacklistCommand extends BaseCommand {
             String[] words = new String[args.length - 1];
             System.arraycopy(args, 1, words, 0, args.length - 1);
 
-            if(operation.equalsIgnoreCase("add")) {
+            if (operation.equalsIgnoreCase("add")) {
                 // Add the words to the blacklisted words list
                 ErrorCode error = WordBlacklist.addBlacklistedWords(e.getGuild(), words);
 
                 // Make sure the operation succeeded
-                if(error != ErrorCode.SUCCESS)
+                if (error != ErrorCode.SUCCESS)
                     return error;
 
                 // Create embed to tell the user the words were added
@@ -101,12 +101,12 @@ public class WordblacklistCommand extends BaseCommand {
 
                 // Send embed
                 e.getChannel().sendMessage(embed.build()).queue();
-            } else if(operation.equalsIgnoreCase("remove")) {
+            } else if (operation.equalsIgnoreCase("remove")) {
                 // Try to remove the words
                 ErrorCode error = WordBlacklist.removeBlacklistedWords(e.getGuild(), words);
 
                 // Make sure removeBlacklistedWords succeeded
-                if(error != ErrorCode.SUCCESS)
+                if (error != ErrorCode.SUCCESS)
                     return error;
 
                 // Create embed to tell user if words weren't removed

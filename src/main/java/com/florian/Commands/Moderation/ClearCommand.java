@@ -5,15 +5,12 @@ import com.florian.Commands.CommandType;
 import com.florian.ErrorCode;
 import com.florian.Vars;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClearCommand extends BaseCommand {
     public ClearCommand() {
@@ -39,7 +36,7 @@ public class ClearCommand extends BaseCommand {
             }
 
             // Make sure the user isn't trying to delete more than 100 messages
-            if(amount > 100)
+            if (amount > 100)
                 return ErrorCode.WRONG_ARGUMENTS;
 
             // Confirmation

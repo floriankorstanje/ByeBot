@@ -37,7 +37,7 @@ public class HelpCommand extends BaseCommand {
                     embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.arguments.length() > 0 ? " " + command.arguments + "`" : "`"), false);
                     embed.addField("Examples", command.examples.size() == 0 ? "none" : "`" + Vars.botPrefix + command.command + " " + String.join("`\n`" + Vars.botPrefix + command.command + " ", command.examples) + "`", false);
                     embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);
-                    embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission.toString() + "`", false);
+                    embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission + "`", false);
 
                     // Send the embed to the user
                     e.getChannel().sendMessage(embed.build()).queue();

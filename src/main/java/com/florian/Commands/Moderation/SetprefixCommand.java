@@ -26,7 +26,7 @@ public class SetprefixCommand extends BaseCommand {
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         if (args.length == 1) {
             // Check if prefix isn't too long
-            if(args[0].length() > Vars.maxPrefixLength)
+            if (args[0].length() > Vars.maxPrefixLength)
                 return ErrorCode.PREFIX_TOO_LONG;
 
             // Save old prefix

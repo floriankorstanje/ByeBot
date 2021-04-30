@@ -34,23 +34,29 @@ public class Events extends ListenerAdapter {
             while (true) {
                 String status = Vars.botPrefix + new HelpCommand().command + " | ";
 
-                // Check which status it is now
-                switch (count) {
-                    case 0:
-                        // 0 shows the bot version
-                        status += "v" + Vars.version;
-                        break;
-                    case 1:
-                        // 1 shows the the amount of guilds the bot is in
-                        status += e.getJDA().getGuilds().size() + " guilds";
-                        break;
-                    case 2:
-                        // 1 shows the the amount of users in all the guilds
-                        int users = 0;
-                        for (Guild g : e.getJDA().getGuilds())
-                            users += g.getMemberCount();
-                        status += users + " users";
-                        break;
+                // If custom status is set, use that
+                if (Vars.customStatus.equals("")) {
+                    // Check which status it is now
+                    switch (count) {
+                        case 0:
+                            // 0 shows the bot version
+                            status += "v" + Vars.version;
+                            break;
+                        case 1:
+                            // 1 shows the the amount of guilds the bot is in
+                            status += e.getJDA().getGuilds().size() + " guilds";
+                            break;
+                        case 2:
+                            // 1 shows the the amount of users in all the guilds
+                            int users = 0;
+                            for (Guild g : e.getJDA().getGuilds())
+                                users += g.getMemberCount();
+                            status += users + " users";
+                            break;
+                    }
+                } else {
+                    // Append custom status to status
+                    status += Vars.customStatus;
                 }
 
                 // Set the bot presence

@@ -12,8 +12,11 @@ public class CheckWordEvents extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
-        if (Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
-            return;
+        try {
+            if (event.getMember().getPermissions().contains(new WordblacklistCommand().permission))
+                return;
+        } catch (NullPointerException ignored) {
+        }
 
         if (WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
             // Try to remove the message

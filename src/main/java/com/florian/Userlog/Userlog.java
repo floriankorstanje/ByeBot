@@ -23,6 +23,10 @@ public class Userlog {
         if (g == null || m == null || action == null)
             return;
 
+        // Make sure the member isn't a bot
+        if(m.getUser().isBot())
+            return;
+
         // Get the file location
         String file = Util.getGuildFolder(g) + Vars.userlogFile;
 

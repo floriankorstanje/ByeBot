@@ -116,7 +116,7 @@ public class CommandHandler extends ListenerAdapter {
                 embed.addField("Command", "`" + Vars.botPrefix + cmd + " [" + args.length + "]`", false);
                 embed.addField("Bot Version", "`" + Vars.version + "`", false);
                 embed.addField("Error", "`" + error.toString() + "`", false);
-                embed.addField("Report Bug", "If you'd like to report this error as a bug, submit a new issue [here](https://github.com/floriankorstanje/ByeBot/issues)", false);
+                embed.addField("Report Bug", "If you'd like to report this error as a bug, submit a new issue [here](https://github.com/flornian/ByeBot/issues)", false);
 
                 // Send the embed
                 event.getChannel().sendMessage(embed.build()).queue();

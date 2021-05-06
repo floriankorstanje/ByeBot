@@ -37,7 +37,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.10.9";
+    public static final String version = "0.10.10";
     public static String customStatus = "";
 
     // Delays (Seconds)

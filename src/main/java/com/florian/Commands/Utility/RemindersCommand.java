@@ -42,6 +42,9 @@ public class RemindersCommand extends BaseCommand {
             if (reminders.getRight() != ErrorCode.SUCCESS)
                 return reminders.getRight();
 
+            // Sort reminders
+            ReminderEntry[] sortedReminders = sortReminders(reminders.getLeft());
+
             // Create embed to list reminders
             EmbedBuilder embed = Util.defaultEmbed();
 
@@ -49,9 +52,7 @@ public class RemindersCommand extends BaseCommand {
             embed.setTitle("Reminders for " + e.getMember().getUser().getAsTag());
 
             // Fill the embed
-            for (int i = 0; i < reminders.getLeft().length; i++) {
-                ReminderEntry entry = reminders.getLeft()[i];
-
+            for (ReminderEntry entry : sortedReminders) {
                 // Add embed field
                 embed.addField("Reminder `" + entry.getId() + "`", "Ends At: " + Util.formatDateTime(new Date(entry.getTime())) + "\nReminder: " + entry.getReason(), false);
             }
@@ -234,5 +235,20 @@ public class RemindersCommand extends BaseCommand {
 
         // Return success
         return ErrorCode.SUCCESS;
+    }
+
+    private ReminderEntry[] sortReminders(ReminderEntry[] array) {
+        ReminderEntry temp;
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (array[j].getTime() < array[j - 1].getTime()) {
+                    temp = array[j];
+                    array[j] = array[j - 1];
+                    array[j - 1] = temp;
+                }
+            }
+        }
+
+        return array;
     }
 }

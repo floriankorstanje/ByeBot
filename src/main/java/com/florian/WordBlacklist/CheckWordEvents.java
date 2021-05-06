@@ -20,27 +20,24 @@ public class CheckWordEvents extends ListenerAdapter {
 
         if (WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
             // Try to remove the message
-            event.getMessage().delete().queue(msg -> {
-                event.getChannel().sendMessage(event.getMember().getAsMention() + ", please don't use blacklisted words!").queue();
-            }, err -> {
-                event.getChannel().sendMessage(event.getMember().getAsMention() + ", I couldn't delete your message, but please don't use blacklisted words!").queue();
-            });
+            event.getMessage().delete().queue();
+            event.getChannel().sendMessage(event.getMember().getAsMention() + ", please don't use blacklisted words!").queue();
         }
     }
 
     @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
-        if (Objects.requireNonNull(event.getMember()).getPermissions().contains(new WordblacklistCommand().permission))
-            return;
+        try {
+            if (event.getMember().getPermissions().contains(new WordblacklistCommand().permission))
+                return;
+        } catch (NullPointerException ignored) {
+        }
 
         if (WordBlacklist.checkMessage(event.getGuild(), event.getMessage().getContentRaw()) && !event.getMember().getUser().isBot()) {
             // Try to remove the message
-            event.getMessage().delete().queue(msg -> {
-                event.getChannel().sendMessage(event.getMember().getAsMention() + ", please don't use blacklisted words!").queue();
-            }, err -> {
-                event.getChannel().sendMessage(event.getMember().getAsMention() + ", I couldn't delete your message, but please don't use blacklisted words!").queue();
-            });
+            event.getMessage().delete().queue();
+            event.getChannel().sendMessage(event.getMember().getAsMention() + ", please don't use blacklisted words!").queue();
         }
     }
 }

@@ -47,7 +47,7 @@ public class LeaderboardCommand extends BaseCommand {
 
             // Try and get the user's actual name if they're still in the guild
             try {
-                user = e.getGuild().retrieveMemberById(elem.getUser()).complete().getEffectiveName();
+                user = e.getGuild().retrieveMemberById(elem.getUser()).complete().getUser().getAsTag();
             } catch (Exception ex) {
                 // Couldn't get user's name so just stay with the ID
             }

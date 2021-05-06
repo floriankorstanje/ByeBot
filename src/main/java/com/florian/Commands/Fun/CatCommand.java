@@ -16,7 +16,7 @@ public class CatCommand extends BaseCommand {
     @Override
     public ErrorCode execute(GuildMessageReceivedEvent e, String[] args) {
         // Send the cat
-        String catUrl = "https://tenor.com/view/cat-kitty-cope-gif-20110606";
+        String catUrl = "https://tenor.com/view/stupid-lamer-gato-funny-cat-gif-14420187";
         e.getChannel().sendMessage(catUrl).queue();
 
         // Return success

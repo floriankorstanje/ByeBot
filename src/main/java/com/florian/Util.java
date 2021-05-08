@@ -193,7 +193,12 @@ public class Util {
         return true;
     }
 
-    public static BaseCommand getCommandByName(String name) {
+    public static BaseCommand getCommandByName(String name) throws Exception {
+        for (BaseCommand command : Vars.commands) {
+            if (command.command.equalsIgnoreCase(name) || containsIgnoreCase(command.aliases, name))
+                return command;
+        }
 
+        throw new Exception("Unable to find command with name \"" + name + "\"");
     }
 }

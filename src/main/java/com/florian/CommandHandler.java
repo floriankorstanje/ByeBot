@@ -4,6 +4,7 @@ import com.florian.Commands.BaseCommand;
 import com.florian.Commands.CommandType;
 import com.florian.Config.BotConfig;
 import com.florian.Config.GuildConfig;
+import com.florian.DisabledCommands.DisabledCommands;
 import com.florian.Log.Log;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -54,42 +55,42 @@ public class CommandHandler extends ListenerAdapter {
                 }
             }
 
-            // Save the error code and command for error handling
-            ErrorCode error;
-
             // Check if the command was recognized, if so, execute it
-            BaseCommand command = Util.getCommandByName(cmd);
+            BaseCommand command;
+            try {
+                command = Util.getCommandByName(cmd);
+            } catch (Exception ignored) {
+                handleError(ErrorCode.UNKNOWN_COMMAND, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                return;
+            }
+
+            // Check if the command is disabled
+            if (DisabledCommands.isDisabled(event.getGuild(), command)) {
+                handleError(ErrorCode.COMMAND_DISABLED, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                return;
+            }
 
             // Check if the user that's trying to execute isn't executing an owner-only command as owner
             if (command.commandType == CommandType.OWNER && !event.getMember().getId().equals(Vars.botOwner.getId())) {
-                error = ErrorCode.NO_PERMISSION;
-
-                // Handle error if any
-                handleError(error, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                handleError(ErrorCode.NO_PERMISSION, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
                 return;
             }
 
             // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
             if (command.requiredArguments && args.length == 0) {
-                error = ErrorCode.WRONG_ARGUMENTS;
-
-                // Handle error if any
-                handleError(error, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                handleError(ErrorCode.WRONG_ARGUMENTS, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
                 return;
             }
 
             if (command.permission == null) {
-                error = command.execute(event, args);
+                handleError(command.execute(event, args), event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
             } else {
                 if (event.getMember().hasPermission(command.permission)) {
-                    error = command.execute(event, args);
+                    handleError(command.execute(event, args), event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
                 } else {
-                    error = ErrorCode.NO_PERMISSION;
+                    handleError(ErrorCode.NO_PERMISSION, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
                 }
             }
-
-            // Handle error if any
-            handleError(error, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
         }
     }
 

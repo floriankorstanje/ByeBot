@@ -118,8 +118,10 @@ public class Events extends ListenerAdapter {
                                 String user = ((Element) element.getParentNode()).getAttribute("user");
                                 e.getJDA().getGuildById(guild).retrieveMemberById(user).queue(member -> {
                                     // Send message
-                                    member.getUser().openPrivateChannel().complete().sendMessage(member.getAsMention() + ", your reminder for \"" + reason + "\" is done.").queue(null, err -> {
-                                        // Do nothing, just here to handle the error
+                                    member.getUser().openPrivateChannel().queue(channel -> {
+                                        channel.sendMessage(member.getAsMention() + ", your reminder for \"" + reason + "\" is done.").queue(null, err -> {
+                                            // Do nothing, just here to handle the error
+                                        });
                                     });
                                 });
 

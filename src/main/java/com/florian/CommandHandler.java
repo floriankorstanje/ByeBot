@@ -6,7 +6,10 @@ import com.florian.Config.BotConfig;
 import com.florian.Config.GuildConfig;
 import com.florian.Log.Log;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -52,78 +55,86 @@ public class CommandHandler extends ListenerAdapter {
             }
 
             // Save the error code and command for error handling
-            ErrorCode error = ErrorCode.UNKNOWN_COMMAND;
+            ErrorCode error;
 
             // Check if the command was recognized, if so, execute it
-            for (BaseCommand command : Vars.commands) {
-                if (command.command.equalsIgnoreCase(cmd) || Util.containsIgnoreCase(command.aliases, cmd)) {
-                    // Check if the user that's trying to execute isn't executing an owner-only command as owner
-                    if (command.commandType == CommandType.OWNER && !event.getMember().getId().equals(Vars.botOwner.getId())) {
-                        error = ErrorCode.NO_PERMISSION;
-                        break;
-                    }
+            BaseCommand command = Util.getCommandByName(cmd);
 
-                    // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
-                    if (command.requiredArguments && args.length == 0) {
-                        error = ErrorCode.WRONG_ARGUMENTS;
-                        break;
-                    }
+            // Check if the user that's trying to execute isn't executing an owner-only command as owner
+            if (command.commandType == CommandType.OWNER && !event.getMember().getId().equals(Vars.botOwner.getId())) {
+                error = ErrorCode.NO_PERMISSION;
 
-                    if (command.permission == null) {
-                        error = command.execute(event, args);
-                    } else {
-                        if (event.getMember().hasPermission(command.permission)) {
-                            error = command.execute(event, args);
-                        } else {
-                            error = ErrorCode.NO_PERMISSION;
-                        }
-                    }
-                    break;
+                // Handle error if any
+                handleError(error, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                return;
+            }
+
+            // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
+            if (command.requiredArguments && args.length == 0) {
+                error = ErrorCode.WRONG_ARGUMENTS;
+
+                // Handle error if any
+                handleError(error, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                return;
+            }
+
+            if (command.permission == null) {
+                error = command.execute(event, args);
+            } else {
+                if (event.getMember().hasPermission(command.permission)) {
+                    error = command.execute(event, args);
+                } else {
+                    error = ErrorCode.NO_PERMISSION;
                 }
             }
 
-            // Add user to cooldown list
-            if (error == ErrorCode.SUCCESS) {
-                // Add user to cooldown list
-                cooldowns.put(event.getMember().getId(), Instant.now().toEpochMilli());
-
-                // Wait for the amount of cooldown and then remove the user from the cooldown list
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(Vars.commandCooldown * 1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    cooldowns.remove(event.getMember().getId());
-                }).start();
-
-                // Increment command counter for bot and build
-                GuildConfig.incrementCommandCounter(event.getGuild());
-                BotConfig.incrementCommandCounter();
-            }
-
-            // Tell the user the command failed if it did, otherwise don't output anything
-            if (error != ErrorCode.SUCCESS && error != ErrorCode.UNKNOWN_COMMAND) {
-                // Create an embed to show the error to the user
-                EmbedBuilder embed = Util.defaultEmbed();
-
-                // Set title and color
-                embed.setTitle("An error occurred");
-                embed.setColor(0xFF0000);
-
-                // Fill the embed
-                embed.addField("Executor", event.getMember().getAsMention(), false);
-                embed.addField("Command", "`" + Vars.botPrefix + cmd + " [" + args.length + "]`", false);
-                embed.addField("Bot Version", "`" + Vars.version + "`", false);
-                embed.addField("Error", "`" + error.toString() + "`", false);
-                embed.addField("Report Bug", "If you'd like to report this error as a bug, submit a new issue [here](https://github.com/flornian/ByeBot/issues)", false);
-
-                // Send the embed
-                event.getChannel().sendMessage(embed.build()).queue();
-            }
-
-            // Log executed command to console and logfile
-            Log.log("[" + event.getMember().getId() + "] [" + event.getGuild().getId() + "]: " + cmd + " [" + args.length + "] -> " + error);
+            // Handle error if any
+            handleError(error, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
         }
+    }
+
+    private void handleError(ErrorCode error, TextChannel channel, Guild g, Member member, String cmd, int argsLength) {
+        // Add user to cooldown list
+        if (error == ErrorCode.SUCCESS) {
+            // Add user to cooldown list
+            cooldowns.put(member.getId(), Instant.now().toEpochMilli());
+
+            // Wait for the amount of cooldown and then remove the user from the cooldown list
+            new Thread(() -> {
+                try {
+                    Thread.sleep(Vars.commandCooldown * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                cooldowns.remove(member.getId());
+            }).start();
+
+            // Increment command counter for bot and build
+            GuildConfig.incrementCommandCounter(g);
+            BotConfig.incrementCommandCounter();
+        }
+
+        // Tell the user the command failed if it did, otherwise don't output anything
+        if (error != ErrorCode.SUCCESS && error != ErrorCode.UNKNOWN_COMMAND) {
+            // Create an embed to show the error to the user
+            EmbedBuilder embed = Util.defaultEmbed();
+
+            // Set title and color
+            embed.setTitle("An error occurred");
+            embed.setColor(0xFF0000);
+
+            // Fill the embed
+            embed.addField("Executor", member.getAsMention(), false);
+            embed.addField("Command", "`" + Vars.botPrefix + cmd + " [" + argsLength + "]`", false);
+            embed.addField("Bot Version", "`" + Vars.version + "`", false);
+            embed.addField("Error", "`" + error.toString() + "`", false);
+            embed.addField("Report Bug", "If you'd like to report this error as a bug, submit a new issue [here](https://github.com/flornian/ByeBot/issues)", false);
+
+            // Send the embed
+            channel.sendMessage(embed.build()).queue();
+        }
+
+        // Log executed command to console and logfile
+        Log.log("[" + member.getId() + "] [" + g.getId() + "]: " + cmd + " [" + argsLength + "] -> " + error);
     }
 }

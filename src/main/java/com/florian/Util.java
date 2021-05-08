@@ -1,5 +1,6 @@
 package com.florian;
 
+import com.florian.Commands.BaseCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -190,5 +191,9 @@ public class Util {
         }
 
         return true;
+    }
+
+    public static BaseCommand getCommandByName(String name) {
+
     }
 }

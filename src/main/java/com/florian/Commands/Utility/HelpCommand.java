@@ -3,10 +3,12 @@ package com.florian.Commands.Utility;
 import com.florian.Commands.BaseCommand;
 import com.florian.Commands.CommandType;
 import com.florian.Config.GuildConfig;
+import com.florian.DisabledCommands.DisabledCommands;
 import com.florian.ErrorCode;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class HelpCommand extends BaseCommand {
@@ -25,30 +27,30 @@ public class HelpCommand extends BaseCommand {
 
         // Check if the user wants more advanced info about a command by specifying it as an argument
         if (args.length == 1) {
-            for (BaseCommand command : Vars.commands) {
-                if (command.command.equalsIgnoreCase(args[0]) || Util.containsIgnoreCase(command.aliases, args[0])) {
-                    // Set title
-                    embed.setTitle("Command info for " + Vars.botPrefix + command.command);
-
-                    // Add all the info about the command
-                    embed.addField("Name", command.command, false);
-                    embed.addField("Description", command.description, false);
-                    embed.addField("Advanced Description", command.advancedDescription, false);
-                    embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.arguments.length() > 0 ? " " + command.arguments + "`" : "`"), false);
-                    embed.addField("Examples", command.examples.size() == 0 ? "none" : "`" + Vars.botPrefix + command.command + " " + String.join("`\n`" + Vars.botPrefix + command.command + " ", command.examples) + "`", false);
-                    embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);
-                    embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission + "`", false);
-
-                    // Send the embed to the user
-                    e.getChannel().sendMessage(embed.build()).queue();
-
-                    // Return so it doesn't send the entire command list again
-                    return ErrorCode.SUCCESS;
-                }
+            BaseCommand command;
+            try {
+                command = Util.getCommandByName(args[0]);
+            } catch (Exception ignored) {
+                return ErrorCode.UNKNOWN_COMMAND_NAME;
             }
 
-            // Command wasn't recognized. Tell the user
-            return ErrorCode.WRONG_ARGUMENTS;
+            // Set title
+            embed.setTitle("Command info for " + Vars.botPrefix + command.command);
+
+            // Add all the info about the command
+            embed.addField("Name", command.command, false);
+            embed.addField("Description", command.description, false);
+            embed.addField("Advanced Description", command.advancedDescription, false);
+            embed.addField("Usage", "`" + Vars.botPrefix + command.command + (command.arguments.length() > 0 ? " " + command.arguments + "`" : "`"), false);
+            embed.addField("Examples", command.examples.size() == 0 ? "none" : "`" + Vars.botPrefix + command.command + " " + String.join("`\n`" + Vars.botPrefix + command.command + " ", command.examples) + "`", false);
+            embed.addField("Aliases", command.aliases.size() == 0 ? "none" : "`" + String.join("` `", command.aliases) + "`", false);
+            embed.addField("Permission", command.permission == null ? "none" : "`" + command.permission + "`", false);
+
+            // Send the embed to the user
+            e.getChannel().sendMessage(embed.build()).queue();
+
+            // Return so it doesn't send the entire command list again
+            return ErrorCode.SUCCESS;
         } else if (args.length > 1) {
             // There's too many arguments, so return an error
             return ErrorCode.WRONG_ARGUMENTS;
@@ -66,29 +68,27 @@ public class HelpCommand extends BaseCommand {
         StringBuilder mod = new StringBuilder();
         StringBuilder owner = new StringBuilder();
 
-        //FUN, UTILITY, INFO, MODERATION, OWNER
-
         // Add all the commands and their descriptions to the list
         for (BaseCommand command : Vars.commands) {
             // Add the commands to the right StringBuilder
             switch (command.commandType) {
                 case FUN:
-                    addToStringBuilder(fun, command);
+                    addToStringBuilder(fun, e.getGuild(), command);
                     break;
                 case UTILITY:
-                    addToStringBuilder(utility, command);
+                    addToStringBuilder(utility, e.getGuild(), command);
                     break;
                 case INFO:
-                    addToStringBuilder(info, command);
+                    addToStringBuilder(info, e.getGuild(), command);
                     break;
                 case SCORE:
-                    addToStringBuilder(score, command);
+                    addToStringBuilder(score, e.getGuild(), command);
                     break;
                 case MODERATION:
-                    addToStringBuilder(mod, command);
+                    addToStringBuilder(mod, e.getGuild(), command);
                     break;
                 case OWNER:
-                    addToStringBuilder(owner, command);
+                    addToStringBuilder(owner, e.getGuild(), command);
                     break;
             }
         }
@@ -108,7 +108,9 @@ public class HelpCommand extends BaseCommand {
         return ErrorCode.SUCCESS;
     }
 
-    private void addToStringBuilder(StringBuilder builder, BaseCommand command) {
+    private void addToStringBuilder(StringBuilder builder, Guild g, BaseCommand command) {
+        if (DisabledCommands.isDisabled(g, command))
+            builder.append("[__disabled__] ");
         builder.append("**").append(command.command).append("** - ").append(command.description).append("\n");
     }
 }

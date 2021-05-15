@@ -17,7 +17,7 @@ import java.util.Date;
 public class LastseenCommand extends BaseCommand {
     public LastseenCommand() {
         super.command = "lastseen";
-        super.description = "Shows when I last saw this user do something in this guild.";
+        super.description = "Shows when the bot last saw a user being active in this guild.";
         super.arguments = "<user>";
         super.commandType = CommandType.MODERATION;
         super.permission = Permission.KICK_MEMBERS;

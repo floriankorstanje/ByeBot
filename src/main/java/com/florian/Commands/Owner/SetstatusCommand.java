@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 public class SetstatusCommand extends BaseCommand {
     public SetstatusCommand() {
         super.command = "setstatus";
-        super.description = "Sets the bots status";
+        super.description = "Sets the bots status.";
         super.commandType = CommandType.OWNER;
         super.arguments = "<status|clear>";
         super.requiredArguments = true;

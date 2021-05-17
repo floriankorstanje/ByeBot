@@ -1,6 +1,7 @@
 package com.florian.Userlog;
 
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
@@ -53,5 +54,11 @@ public class UserEvents extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         Userlog.addEvent(event.getGuild(), event.getMember(), event.getClass().getSimpleName());
+    }
+
+    // Leave event
+    @Override
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+        Userlog.removeUserFromList(event.getGuild(), event.getMember().getId());
     }
 }

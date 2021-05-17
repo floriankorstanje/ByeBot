@@ -54,6 +54,7 @@ public class PruneCommand extends BaseCommand {
                         for (UserlogEntry entry : members.getLeft()) {
                             try {
                                 e.getGuild().kick(entry.getUser(), "Inactive for " + days + " days.").complete();
+                                Userlog.removeUserFromList(e.getGuild(), entry.getUser());
                             } catch (Exception ignored) {}
                         }
 

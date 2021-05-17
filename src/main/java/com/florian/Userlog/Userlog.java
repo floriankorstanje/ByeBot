@@ -2,6 +2,7 @@ package com.florian.Userlog;
 
 import com.florian.ErrorCode;
 import com.florian.Log.Log;
+import com.florian.UserHistory.OffenseType;
 import com.florian.Util;
 import com.florian.Vars;
 import net.dv8tion.jda.api.entities.Guild;
@@ -105,6 +106,47 @@ public class Userlog {
 
         // Write changes back to file
         Util.writeXml(file, document);
+    }
+
+    public static ErrorCode removeUserFromList(Guild g, String user) {
+        // Get file location
+        String file = Util.getGuildFolder(g) + Vars.historyFile;
+
+        if (!new File(file).exists())
+            return ErrorCode.NO_USER_HISTORY;
+
+        // Get file
+        File input = new File(file);
+        Document document;
+
+        // Try to parse existing entries
+        try {
+            document = Util.getDocBuilder().parse(input);
+        } catch (Exception e) {
+            // Failed to parse
+            return ErrorCode.OTHER_ERROR;
+        }
+
+        // Get all history entries
+        NodeList entries = document.getElementsByTagName("entries");
+
+        // Get one for the current user=
+        for (int i = 0; i < entries.getLength(); i++) {
+            Node node = entries.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.getAttribute("user").equals(user)) {
+                    document.removeChild(element);
+                    break;
+                }
+            }
+        }
+
+        // Write changes back to file
+        Util.writeXml(file, document);
+
+        // Return success
+        return ErrorCode.SUCCESS;
     }
 
     public static Pair<UserlogEntry[], ErrorCode> getEntries(Guild g, String user) {

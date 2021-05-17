@@ -51,8 +51,11 @@ public class PruneCommand extends BaseCommand {
                     }
 
                     if (msg.retrieveReactionUsers("\uD83D\uDC4D").complete().contains(e.getMember().getUser())) {
-                        for (UserlogEntry entry : members.getLeft())
-                            e.getGuild().kick(entry.getUser(), "Inactive for " + days + " days.").queue(null, err -> e.getChannel().sendMessage("Unable to kick user " + entry.getUser() + ". Reason: " + err.getMessage()).queue());
+                        for (UserlogEntry entry : members.getLeft()) {
+                            try {
+                                e.getGuild().kick(entry.getUser(), "Inactive for " + days + " days.").complete();
+                            } catch (Exception ignored) {}
+                        }
 
                         // Tell the user members were kicked
                         e.getChannel().sendMessage("Successfully kicked inactive members.").queue();

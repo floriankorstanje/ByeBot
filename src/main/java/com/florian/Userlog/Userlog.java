@@ -136,7 +136,7 @@ public class Userlog {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 if (element.getAttribute("user").equals(user)) {
-                    document.removeChild(element);
+                    document.getElementsByTagName("userlog").item(0).removeChild(element);
                     break;
                 }
             }

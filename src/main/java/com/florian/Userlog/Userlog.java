@@ -110,10 +110,10 @@ public class Userlog {
 
     public static ErrorCode removeUserFromList(Guild g, String user) {
         // Get file location
-        String file = Util.getGuildFolder(g) + Vars.historyFile;
+        String file = Util.getGuildFolder(g) + Vars.userlogFile;
 
         if (!new File(file).exists())
-            return ErrorCode.NO_USER_HISTORY;
+            return ErrorCode.NO_USER_LOG;
 
         // Get file
         File input = new File(file);

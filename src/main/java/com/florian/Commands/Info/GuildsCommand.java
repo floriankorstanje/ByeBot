@@ -14,7 +14,7 @@ public class GuildsCommand extends BaseCommand {
     public GuildsCommand() {
         super.command = "guilds";
         super.description = "Shows a list of guilds this bot is in.";
-        super.aliases.add("guidlist");
+        super.aliases.add("guildlist");
         super.commandType = CommandType.INFO;
     }
 

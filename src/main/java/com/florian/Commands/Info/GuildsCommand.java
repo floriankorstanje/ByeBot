@@ -23,8 +23,14 @@ public class GuildsCommand extends BaseCommand {
         // Create an embed because, who doesn't love them?
         EmbedBuilder embed = Util.defaultEmbed();
 
+        // Get total user count
+        int users = 0;
+        for (Guild g : e.getJDA().getGuilds())
+            users += g.getMemberCount();
+
         // Set embed title
-        embed.setTitle(Vars.appInfo.getName() + " guild list - Total: " + e.getJDA().getGuilds().size());
+        embed.setTitle(Vars.appInfo.getName() + " guild list");
+        embed.setDescription("**Total Guilds:** " + e.getJDA().getGuilds().size() + " - **Total Users:** " + users);
 
         // Make sure the current guild is always added
         addGuildToEmbed(embed, e.getGuild());

@@ -34,11 +34,11 @@ public class GuildinfoCommand extends BaseCommand {
         embed.addField("Guild ID", "`" + e.getGuild().getId() + "`", true);
         embed.addField("Guild Region", "`" + e.getGuild().getRegionRaw() + "`", true);
         embed.addField("Owner", e.getGuild().retrieveOwner().complete().getAsMention(), true);
-        embed.addField("Boosts", "`" + e.getGuild().getBoostCount() + "/30`\nTier " + e.getGuild().getBoostTier().getKey(), true);
+        embed.addField("Boosts", "`" + e.getGuild().getBoostCount() + "/30`: Tier " + e.getGuild().getBoostTier().getKey(), true);
         embed.addField("Roles", "`" + e.getGuild().getRoles().size() + "`", true);
         embed.addField("Members", "`" + e.getGuild().getMemberCount() + "`", true);
         embed.addField("Channels", "Total: `" + getChannelCount(e.getGuild()) + "`\nVoice: `" + e.getGuild().getVoiceChannels().size() + "`\nText: `" + e.getGuild().getTextChannels().size() + "`", true);
-        embed.addField("Time Created", Util.formatDateAgo(new Date(e.getGuild().getTimeCreated().toEpochSecond() * 1000)), true);
+        embed.addField("Time Created", Util.formatDateAgo(new Date(e.getGuild().getTimeCreated().toEpochSecond() * 1000), true), true);
         embed.addField("Commands Executed", "`" + GuildConfig.getCommandCounter(e.getGuild()) + "`", true);
 
         // Send the embed

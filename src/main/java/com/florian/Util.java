@@ -91,7 +91,7 @@ public class Util {
         return "`" + formatter.format(date) + "`";
     }
 
-    public static String formatDateAgo(Date date) {
+    public static String formatDateAgo(Date date, boolean newline) {
         // SimpleDateFormat to get the date
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -99,7 +99,11 @@ public class Util {
         PrettyTime pretty = new PrettyTime();
 
         // Return result
-        return "`" + formatter.format(date) + "` (" + pretty.format(date) + ")";
+        return "`" + formatter.format(date) + "`" + (newline ? "\n" : " ") + "(" + pretty.format(date) + ")";
+    }
+
+    public static String formatDateAgo(Date date) {
+        return formatDateAgo(date, false);
     }
 
     public static String getUptime() {

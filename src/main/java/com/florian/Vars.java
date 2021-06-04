@@ -40,7 +40,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.11.11";
+    public static final String version = "0.11.12";
     public static String customStatus = "";
 
     // Delays (Seconds)
@@ -62,7 +62,7 @@ public class Vars {
 
     // Other
     public static final Random random = new Random();
-    public static final int color = 0x890BEF;
+    public static final int color = 0xFF0080;
     public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand(), new ScoreCommand(), new LeaderboardCommand(), new WordblacklistCommand(), new CatCommand(), new RolerewardCommand(), new ChangescoreCommand(), new SetstatusCommand(), new DisabledcommandsCommand(), new SomeoneCommand(), new EncodeCommand()};
     public static ApplicationInfo appInfo;
     public static User botOwner;

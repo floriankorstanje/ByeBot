@@ -315,7 +315,7 @@ public class ScoreSystem {
 
         // Save current highest role points and role
         int rolePoints = 0;
-        String role = "";
+        String role = "Unknown";
 
         // Get role
         for (RoleRewardEntry entry : roleRewards.getLeft()) {
@@ -326,7 +326,7 @@ public class ScoreSystem {
                 try {
                     role = g.getRoleById(entry.getRole()).getAsMention();
                 } catch (Exception ex) {
-                    role = "Unknown";
+                    role = "`[" + entry.getRole() + "]` (This role doesn't exist anymore)";
                 }
             }
         }

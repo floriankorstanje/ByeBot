@@ -12,6 +12,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 public class LogsCommand extends BaseCommand {
@@ -95,6 +97,7 @@ public class LogsCommand extends BaseCommand {
 
                 // Sort logs by date modified
                 sortLogs(logs);
+                Collections.reverse(Arrays.asList(logs));
 
                 // Create embed to list all
                 EmbedBuilder embed = Util.defaultEmbed();
@@ -107,7 +110,14 @@ public class LogsCommand extends BaseCommand {
                 StringBuilder info = new StringBuilder();
                 for (File log : logs) {
                     try {
-                        info.append("File Name: `").append(log.getName()).append("` - Size: `").append(Files.size(log.toPath()) / 1024).append("KiB`\n");
+                        StringBuilder temp = new StringBuilder();
+                        temp.append("File Name: `").append(log.getName()).append("` - Size: `").append(Files.size(log.toPath()) / 1024).append("KiB`\n");
+
+                        // Make sure embed doesn't exceed 1024 characters
+                        if (info.toString().length() + temp.toString().length() > 1024)
+                            break;
+
+                        info.append(temp);
                     } catch (IOException ignored) {
                     }
                 }

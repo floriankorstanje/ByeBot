@@ -7,7 +7,7 @@ import com.florian.Commands.Fun.RollCommand;
 import com.florian.Commands.Fun.SomeoneCommand;
 import com.florian.Commands.Info.*;
 import com.florian.Commands.Moderation.*;
-import com.florian.Commands.Owner.ClearlogsCommand;
+import com.florian.Commands.Owner.LogsCommand;
 import com.florian.Commands.Owner.LeaveguildCommand;
 import com.florian.Commands.Owner.SetstatusCommand;
 import com.florian.Commands.Owner.StopCommand;
@@ -40,7 +40,7 @@ public class Vars {
 
     // Bot info
     public static final String botPrefix = "$";
-    public static final String version = "0.11.13";
+    public static final String version = "0.11.14";
     public static String customStatus = "";
 
     // Delays (Seconds)
@@ -63,7 +63,7 @@ public class Vars {
     // Other
     public static final Random random = new Random();
     public static final int color = 0xFF0080;
-    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new ClearlogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand(), new ScoreCommand(), new LeaderboardCommand(), new WordblacklistCommand(), new CatCommand(), new RolerewardCommand(), new ChangescoreCommand(), new SetstatusCommand(), new DisabledcommandsCommand(), new SomeoneCommand(), new EncodeCommand()};
+    public static final BaseCommand[] commands = {new HelpCommand(), new UserinfoCommand(), new GuildinfoCommand(), new GuildsCommand(), new BotinfoCommand(), new BanCommand(), new KickCommand(), new WarnCommand(), new HistoryCommand(), new LastseenCommand(), new HostinfoCommand(), new ClearCommand(), new LeaveguildCommand(), new StopCommand(), new PollCommand(), new RemindersCommand(), new RollCommand(), new SetprefixCommand(), new LogsCommand(), new PruneCommand(), new AvatarCommand(), new AskCommand(), new ScoreCommand(), new LeaderboardCommand(), new WordblacklistCommand(), new CatCommand(), new RolerewardCommand(), new ChangescoreCommand(), new SetstatusCommand(), new DisabledcommandsCommand(), new SomeoneCommand(), new EncodeCommand()};
     public static ApplicationInfo appInfo;
     public static User botOwner;
 }

@@ -248,7 +248,6 @@ public class ScoreSystem {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 userScores[i] = new UserScore(element.getAttribute("user"), Integer.parseInt(element.getAttribute("score")));
-                System.out.println(i);
             }
         }
 
@@ -262,8 +261,6 @@ public class ScoreSystem {
         for (int i = userScores.length - places; i < userScores.length; i++) {
             if (i >= 0)
                 leaderboard.add(userScores[i]);
-
-            System.out.println("Places: " + places + " - Length: " + userScores.length);
         }
 
         return Pair.of(leaderboard.toArray(new UserScore[0]), ErrorCode.SUCCESS);

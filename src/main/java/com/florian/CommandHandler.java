@@ -26,6 +26,9 @@ public class CommandHandler extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+        // Time the amount of time command takes to be executed
+        long startTime = Instant.now().toEpochMilli();
+
         // Check if the message starts with the bot prefix
         if ((event.getMessage().getContentRaw().startsWith(Vars.botPrefix) || event.getMessage().getContentRaw().startsWith(GuildConfig.getPrefix(event.getGuild()))) && !event.getAuthor().isBot()) {
             // Check if the user is still on cooldown
@@ -60,41 +63,41 @@ public class CommandHandler extends ListenerAdapter {
             try {
                 command = Util.getCommandByName(cmd);
             } catch (Exception ignored) {
-                handleError(ErrorCode.UNKNOWN_COMMAND, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                handleError(ErrorCode.UNKNOWN_COMMAND, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length, startTime);
                 return;
             }
 
             // Check if the command is disabled
             if (DisabledCommands.isDisabled(event.getGuild(), command)) {
-                handleError(ErrorCode.COMMAND_DISABLED, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                handleError(ErrorCode.COMMAND_DISABLED, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length, startTime);
                 return;
             }
 
             // Check if the user that's trying to execute isn't executing an owner-only command as owner
             if (command.commandType == CommandType.OWNER && !event.getMember().getId().equals(Vars.botOwner.getId())) {
-                handleError(ErrorCode.NO_PERMISSION, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                handleError(ErrorCode.NO_PERMISSION, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length, startTime);
                 return;
             }
 
             // If the commands has no arguments but args > 0 or if the command requires arguments but args = 0, return an error
             if (command.requiredArguments && args.length == 0) {
-                handleError(ErrorCode.WRONG_ARGUMENTS, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                handleError(ErrorCode.WRONG_ARGUMENTS, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length, startTime);
                 return;
             }
 
             if (command.permission == null) {
-                handleError(command.execute(event, args), event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                handleError(command.execute(event, args), event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length, startTime);
             } else {
                 if (event.getMember().hasPermission(command.permission)) {
-                    handleError(command.execute(event, args), event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                    handleError(command.execute(event, args), event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length, startTime);
                 } else {
-                    handleError(ErrorCode.NO_PERMISSION, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length);
+                    handleError(ErrorCode.NO_PERMISSION, event.getChannel(), event.getGuild(), event.getMember(), cmd, args.length, startTime);
                 }
             }
         }
     }
 
-    private void handleError(ErrorCode error, TextChannel channel, Guild g, Member member, String cmd, int argsLength) {
+    private void handleError(ErrorCode error, TextChannel channel, Guild g, Member member, String cmd, int argsLength, long startTime) {
         // Add user to cooldown list
         if (error == ErrorCode.SUCCESS) {
             // Add user to cooldown list
@@ -135,7 +138,10 @@ public class CommandHandler extends ListenerAdapter {
             channel.sendMessage(embed.build()).queue();
         }
 
+        // Get time done
+        long endTime = Instant.now().toEpochMilli();
+
         // Log executed command to console and logfile
-        Log.log("[" + member.getId() + "] [" + g.getId() + "]: " + cmd + " [" + argsLength + "] -> " + error);
+        Log.log("[" + (endTime - startTime) + "ms] [" + member.getId() + "] [" + g.getId() + "]: " + cmd + " [" + argsLength + "] -> " + error);
     }
 }

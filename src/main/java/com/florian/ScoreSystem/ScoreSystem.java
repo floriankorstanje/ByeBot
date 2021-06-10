@@ -248,11 +248,12 @@ public class ScoreSystem {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 userScores[i] = new UserScore(element.getAttribute("user"), Integer.parseInt(element.getAttribute("score")));
+                System.out.println(i);
             }
         }
 
         // Sort the array to get the leaderboard
-        userScores = sortScore(userScores);
+        sortScore(userScores);
 
         // Get new array to return
         List<UserScore> leaderboard = new ArrayList<>();
@@ -261,12 +262,14 @@ public class ScoreSystem {
         for (int i = userScores.length - places; i < userScores.length; i++) {
             if (i >= 0)
                 leaderboard.add(userScores[i]);
+
+            System.out.println("Places: " + places + " - Length: " + userScores.length);
         }
 
         return Pair.of(leaderboard.toArray(new UserScore[0]), ErrorCode.SUCCESS);
     }
 
-    private static UserScore[] sortScore(UserScore[] array) {
+    private static void sortScore(UserScore[] array) {
         UserScore temp;
         for (int i = 1; i < array.length; i++) {
             for (int j = i; j > 0; j--) {
@@ -278,12 +281,11 @@ public class ScoreSystem {
             }
         }
 
-        return array;
     }
 
     public static Pair<Integer, ErrorCode> getLeaderboardPosition(Guild g, String user) {
         // Get leaderboard
-        Pair<UserScore[], ErrorCode> leaderboard = getLeaderboard(g, Integer.MAX_VALUE);
+        Pair<UserScore[], ErrorCode> leaderboard = getLeaderboard(g, g.getMemberCount());
 
         // Make sure getLeaderboard succeeded
         if (leaderboard.getRight() != ErrorCode.SUCCESS)

@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 
+import java.time.Instant;
+
 public class ScoreCommand extends BaseCommand {
     public ScoreCommand() {
         super.command = "score";

@@ -13,7 +13,7 @@ import net.dv8tion.jda.internal.utils.tuple.Pair;
 public class PruneCommand extends BaseCommand {
     public PruneCommand() {
         super.command = "prune";
-        super.description = "Kicks all the users that haven't sent a message in the past specified days";
+        super.description = "Kicks all the users that haven't sent a message in the past specified days.";
         super.arguments = "<days-inactive>";
         super.commandType = CommandType.MODERATION;
         super.permission = Permission.KICK_MEMBERS;
@@ -55,7 +55,8 @@ public class PruneCommand extends BaseCommand {
                             try {
                                 e.getGuild().kick(entry.getUser(), "Inactive for " + days + " days.").complete();
                                 Userlog.removeUserFromList(e.getGuild(), entry.getUser());
-                            } catch (Exception ignored) { }
+                            } catch (Exception ignored) {
+                            }
                         }
 
                         // Tell the user members were kicked

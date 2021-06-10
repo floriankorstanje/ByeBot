@@ -27,7 +27,7 @@ public class CommandHandler extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // Check if the message starts with the bot prefix
-        if (event.getMessage().getContentRaw().startsWith(Vars.botPrefix) || event.getMessage().getContentRaw().startsWith(GuildConfig.getPrefix(event.getGuild()))) {
+        if ((event.getMessage().getContentRaw().startsWith(Vars.botPrefix) || event.getMessage().getContentRaw().startsWith(GuildConfig.getPrefix(event.getGuild()))) && !event.getAuthor().isBot()) {
             // Check if the user is still on cooldown
             if (cooldowns.get(event.getMember().getId()) != null) {
                 long expiresAt = cooldowns.get(event.getMember().getId()) + Vars.commandCooldown * 1000;

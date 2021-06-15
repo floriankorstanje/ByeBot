@@ -10,8 +10,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 
-public class WordblacklistCommand extends BaseCommand {
-    public WordblacklistCommand() {
+public class WordBlacklistCommand extends BaseCommand {
+    public WordBlacklistCommand() {
         super.command = "wordblacklist";
         super.description = "Makes a word blacklisted so when users use them they will be told not to use the word.";
         super.arguments = "[add/remove/clear] [words]";

@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class ChangescoreCommand extends BaseCommand {
-    public ChangescoreCommand() {
+public class ChangeScoreCommand extends BaseCommand {
+    public ChangeScoreCommand() {
         super.command = "changescore";
         super.description = "Changes a user's score.";
         super.aliases.add("modscore");

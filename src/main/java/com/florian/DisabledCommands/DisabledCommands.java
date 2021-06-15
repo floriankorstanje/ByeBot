@@ -1,7 +1,7 @@
 package com.florian.DisabledCommands;
 
 import com.florian.Commands.BaseCommand;
-import com.florian.Commands.Moderation.DisabledcommandsCommand;
+import com.florian.Commands.Moderation.DisabledCommandsCommand;
 import com.florian.Commands.Utility.HelpCommand;
 import com.florian.ErrorCode;
 import com.florian.Log.Log;
@@ -144,7 +144,7 @@ public class DisabledCommands {
     public static List<String> getCannotBeDisabled() {
         List<String> list = new ArrayList<>();
         list.add(new HelpCommand().command);
-        list.add(new DisabledcommandsCommand().command);
+        list.add(new DisabledCommandsCommand().command);
 
         return list;
     }

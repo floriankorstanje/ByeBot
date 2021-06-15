@@ -10,8 +10,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class SetprefixCommand extends BaseCommand {
-    public SetprefixCommand() {
+public class SetPrefixCommand extends BaseCommand {
+    public SetPrefixCommand() {
         super.command = "setprefix";
         super.description = "Sets the prefix of the bot for this guild.";
         super.arguments = "<prefix>";

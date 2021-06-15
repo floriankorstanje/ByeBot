@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Date;
 
-public class UserinfoCommand extends BaseCommand {
-    public UserinfoCommand() {
+public class UserInfoCommand extends BaseCommand {
+    public UserInfoCommand() {
         super.command = "userinfo";
         super.description = "Shows info about you or a user specified.";
         super.arguments = "[user]";

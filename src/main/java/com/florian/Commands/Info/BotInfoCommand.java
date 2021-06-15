@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class BotinfoCommand extends BaseCommand {
-    public BotinfoCommand() {
+public class BotInfoCommand extends BaseCommand {
+    public BotInfoCommand() {
         super.command = "botinfo";
         super.description = "Provides some information about the bot.";
         super.aliases.add("bot");

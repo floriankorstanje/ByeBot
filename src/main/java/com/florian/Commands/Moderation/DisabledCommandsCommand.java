@@ -10,8 +10,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 
-public class DisabledcommandsCommand extends BaseCommand {
-    public DisabledcommandsCommand() {
+public class DisabledCommandsCommand extends BaseCommand {
+    public DisabledCommandsCommand() {
         super.command = "disabledcommands";
         super.description = "Enables or disables a command.";
         super.arguments = "[add/remove] [command]";

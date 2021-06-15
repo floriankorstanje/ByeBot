@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 
-public class RolerewardCommand extends BaseCommand {
-    public RolerewardCommand() {
+public class RoleRewardCommand extends BaseCommand {
+    public RoleRewardCommand() {
         super.command = "rolereward";
         super.description = "Adds a role to reward to people when they reach a certain score.";
         super.arguments = "[add/remove] [score/id] [role]";

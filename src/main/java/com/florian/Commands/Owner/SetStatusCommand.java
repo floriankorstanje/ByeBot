@@ -8,8 +8,8 @@ import com.florian.Vars;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class SetstatusCommand extends BaseCommand {
-    public SetstatusCommand() {
+public class SetStatusCommand extends BaseCommand {
+    public SetStatusCommand() {
         super.command = "setstatus";
         super.description = "Sets the bots status.";
         super.commandType = CommandType.OWNER;

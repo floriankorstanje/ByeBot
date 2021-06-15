@@ -17,7 +17,7 @@ public class HistoryCommand extends BaseCommand {
     public HistoryCommand() {
         super.command = "history";
         super.description = "Shows, removes, or edits someones history.";
-        super.arguments = "<user> [operation(edit/remove/clear)] [history-id] [new-reason]";
+        super.arguments = "<user> [edit/remove/clear] [history-id] [new-reason]";
         super.permission = Permission.KICK_MEMBERS;
         super.commandType = CommandType.MODERATION;
         super.requiredArguments = true;

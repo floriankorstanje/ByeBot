@@ -17,7 +17,7 @@ public class ChangescoreCommand extends BaseCommand {
         super.description = "Changes a user's score.";
         super.aliases.add("modscore");
         super.aliases.add("editscore");
-        super.arguments = "<user> <operation(add/remove/set/clear)> [score]";
+        super.arguments = "<user> <add/remove/set/clear> [score]";
         super.requiredArguments = true;
         super.examples.add("399594813390848002 add 100");
         super.examples.add("399594813390848002 remove 25");

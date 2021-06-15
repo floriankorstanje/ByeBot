@@ -15,7 +15,7 @@ public class RolerewardCommand extends BaseCommand {
     public RolerewardCommand() {
         super.command = "rolereward";
         super.description = "Adds a role to reward to people when they reach a certain score.";
-        super.arguments = "[operation(add/remove)] [score/id] [role]";
+        super.arguments = "[add/remove] [score/id] [role]";
         super.examples.add("");
         super.examples.add("add 2000 @coolpeople");
         super.examples.add("add 5000 818605390786592780");

@@ -13,7 +13,7 @@ public class SetstatusCommand extends BaseCommand {
         super.command = "setstatus";
         super.description = "Sets the bots status.";
         super.commandType = CommandType.OWNER;
-        super.arguments = "<status|clear>";
+        super.arguments = "<status/clear>";
         super.requiredArguments = true;
     }
 

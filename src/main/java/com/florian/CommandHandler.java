@@ -142,6 +142,6 @@ public class CommandHandler extends ListenerAdapter {
         long endTime = Instant.now().toEpochMilli();
 
         // Log executed command to console and logfile
-        Log.log("[" + member.getId() + "] [" + g.getId() + "]: " + cmd + " [" + argsLength + "] -> " + error + "[" + (endTime - startTime) + "ms]");
+        Log.log("[" + member.getId() + "] [" + g.getId() + "]: " + cmd + " [" + argsLength + "] -> " + error + " [" + (endTime - startTime) + "ms]");
     }
 }

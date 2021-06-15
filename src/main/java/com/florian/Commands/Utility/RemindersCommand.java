@@ -20,7 +20,7 @@ public class RemindersCommand extends BaseCommand {
     public RemindersCommand() {
         super.command = "reminders";
         super.description = "Pings you in a set time to remind you of something.";
-        super.arguments = "[operation(add/remove/clear)] [time|reminder-id] [time-unit(days/hours/minutes/date/time/datetime)] [reminder]";
+        super.arguments = "[add/remove/clear] [time/reminder-id] [days/hours/minutes/date/time/datetime] [reminder]";
         super.examples.add("add 3 hours Make a discord bot");
         super.examples.add("add 12/3/2021 date Do something epic!");
         super.examples.add("add 09:05 time Enter the void");

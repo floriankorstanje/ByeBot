@@ -1,6 +1,7 @@
 package com.florian;
 
 import com.florian.Config.BotConfig;
+import com.florian.JoinRoles.JoinRolesEvents;
 import com.florian.Log.Log;
 import com.florian.ScoreSystem.ScoreEvents;
 import com.florian.Userlog.UserEvents;
@@ -75,6 +76,7 @@ public class Main extends ListenerAdapter {
         builder.addEventListeners(new ScoreEvents());
         builder.addEventListeners(new Events());
         builder.addEventListeners(new CheckWordEvents());
+        builder.addEventListeners(new JoinRolesEvents());
 
         // Create JDA class and start the bot
         JDA jda = builder.build();

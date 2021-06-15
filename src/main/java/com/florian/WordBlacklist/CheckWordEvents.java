@@ -1,6 +1,6 @@
 package com.florian.WordBlacklist;
 
-import com.florian.Commands.Moderation.WordblacklistCommand;
+import com.florian.Commands.Moderation.WordBlacklistCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,7 +11,7 @@ public class CheckWordEvents extends ListenerAdapter {
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
         try {
-            if (event.getMember().getPermissions().contains(new WordblacklistCommand().permission))
+            if (event.getMember().getPermissions().contains(new WordBlacklistCommand().permission))
                 return;
         } catch (NullPointerException ignored) {
         }
@@ -27,7 +27,7 @@ public class CheckWordEvents extends ListenerAdapter {
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
         // If the user has perms to execute wordblacklist command ignore this
         try {
-            if (event.getMember().getPermissions().contains(new WordblacklistCommand().permission))
+            if (event.getMember().getPermissions().contains(new WordBlacklistCommand().permission))
                 return;
         } catch (NullPointerException ignored) {
         }
